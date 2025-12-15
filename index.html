@@ -351,10 +351,11 @@
         <thead>
           <tr>
             <th>Feature</th>
-            <th>v1 Minimal</th>
-            <th>v2 Core</th>
-            <th>v3 Advanced</th>
-            <th>v4 Full</th>
+            <th>v1</th>
+            <th>v2</th>
+            <th>v3</th>
+            <th>v4</th>
+            <th>v5</th>
           </tr>
         </thead>
         <tbody>
@@ -364,16 +365,11 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
-          </tr>
-          <tr>
-            <td>SHA-256 Hash</td>
-            <td class="check">✓</td>
-            <td class="check">✓</td>
-            <td class="check">✓</td>
             <td class="check">✓</td>
           </tr>
           <tr>
-            <td>AES-256 Encryption</td>
+            <td>SHA-256 / AES-256</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -385,10 +381,12 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>B+Tree Database</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -399,11 +397,13 @@
             <td class="cross">-</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Mini Transformer AI</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
           </tr>
@@ -413,16 +413,27 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="check">✓</td>
-          </tr>
-          <tr>
-            <td>Self-Compression</td>
-            <td class="cross">-</td>
-            <td class="cross">-</td>
-            <td class="check">✓</td>
             <td class="check">✓</td>
           </tr>
           <tr>
-            <td>Full UI</td>
+            <td>Particle System</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Physics Engine</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Multi-Shape 3D</td>
+            <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
@@ -476,6 +487,15 @@
         description: 'Complete Konomi Konception with all features including software 3D renderer, full UI, and comprehensive demos.',
         features: ['3D Renderer', 'Full UI', 'Demos', 'Canvas', 'Z-Buffer'],
         tests: 20
+      },
+      {
+        file: 'v5-enhanced.html',
+        version: 'v5',
+        title: 'Enhanced System',
+        size: '~180 KB',
+        description: 'Enhanced with particle system, physics simulation, multiple 3D shapes (cube, pyramid, sphere, torus), and collision detection.',
+        features: ['Particles', 'Physics', 'Multi-Shape', 'Collisions', 'Torus'],
+        tests: 24
       }
     ];
 

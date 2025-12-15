@@ -34,6 +34,14 @@
       "description": "Complete system with 3D renderer",
       "features": ["3D Renderer", "Full UI", "Demos", "Canvas"],
       "tests": 20
+    },
+    {
+      "file": "v5-enhanced.html",
+      "version": "v5",
+      "title": "Enhanced System",
+      "description": "Adds Particles, Physics, Multi-shape 3D",
+      "features": ["Particles", "Physics", "Pyramid", "Torus", "Collisions"],
+      "tests": 24
     }
   ]
 }

@@ -144,21 +144,22 @@ function render() {
   const zBuffer = new Array(WIDTH * HEIGHT).fill(Infinity);
 
   const camera = {
-    position: [0, 0, 5],
+    position: [0, 0, 4],
     target: [0, 0, 0],
     up: [0, 1, 0],
-    fov: Math.PI / 4,
+    fov: Math.PI / 3,  // 60 degree FOV
     near: 0.1,
     far: 100
   };
 
   const view = mat4.lookAt(camera.position, camera.target, camera.up);
-  const proj = mat4.perspective(camera.fov, WIDTH / HEIGHT, camera.near, camera.far);
+  // Adjust aspect ratio for terminal characters (~2:1 height:width)
+  const proj = mat4.perspective(camera.fov, (WIDTH / HEIGHT) * 2, camera.near, camera.far);
   const viewProj = mat4.multiply(proj, view);
 
-  const cube = createCube(1);
-  const angle = 0.5;
-  const transform = mat4.multiply(mat4.rotationY(angle), mat4.rotationX(angle * 0.5));
+  const cube = createCube(1.8);  // Larger cube
+  const angle = 0.6;
+  const transform = mat4.multiply(mat4.rotationY(angle), mat4.rotationX(angle * 0.7 + 0.4));
   const mvp = mat4.multiply(viewProj, transform);
 
   const shadeChars = ['@', '#', '%', '=', '+', '-', '.'];

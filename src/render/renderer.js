@@ -290,12 +290,12 @@ const KonomiRenderer = {
       width,
       height,
 
-      // Camera
+      // Camera - positioned for good cube viewing
       camera: {
-        position: [0, 0, 5],
+        position: [0, 0, 4],
         target: [0, 0, 0],
         up: [0, 1, 0],
-        fov: Math.PI / 4,
+        fov: Math.PI / 3,  // 60 degree FOV for better perspective
         near: 0.1,
         far: 100
       },

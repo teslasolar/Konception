@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Konomi Konception - Self-Contained System</title>
+  <title>Konomi Konception v5 - Enhanced System</title>
   <style>
 /* ============================================
-   KONOMI KONCEPTION - Styles
+   KONOMI KONCEPTION v5 - ENHANCED
    Pure CSS - Zero Dependencies
+   New: Particles, Physics, Multi-shape 3D
    ============================================ */
 
 :root {
@@ -631,8 +632,10 @@ print(arr[2]);
               <button class="btn btn-primary" data-demo="crypto">&#128274; Crypto Demo</button>
               <button class="btn btn-primary" data-demo="db">&#128451; Database Demo</button>
               <button class="btn btn-primary" data-demo="ai">&#129302; AI Demo</button>
-              <button class="btn btn-primary" data-demo="3d">&#127922; 3D Demo</button>
-              <button class="btn btn-primary" data-demo="compress">&#128230; Compression Demo</button>
+              <button class="btn btn-primary" data-demo="3d">&#127922; 3D Shapes</button>
+              <button class="btn btn-primary" data-demo="particles">&#10024; Particles</button>
+              <button class="btn btn-primary" data-demo="physics">&#9889; Physics</button>
+              <button class="btn btn-primary" data-demo="compress">&#128230; Compression</button>
             </div>
           </div>
         </div>
@@ -4236,6 +4239,298 @@ const KonomiRenderer = {
     }
 
     return { vertices, faces, color: [100, 200, 100] };
+  },
+
+  // Create pyramid mesh
+  createPyramid(baseSize = 1, height = 1.5) {
+    const s = baseSize / 2;
+    return {
+      vertices: [
+        [0, height / 2, 0],      // 0: apex
+        [-s, -height / 2, -s],   // 1: back-left
+        [s, -height / 2, -s],    // 2: back-right
+        [s, -height / 2, s],     // 3: front-right
+        [-s, -height / 2, s]     // 4: front-left
+      ],
+      faces: [
+        [0, 2, 1],  // Back face
+        [0, 3, 2],  // Right face
+        [0, 4, 3],  // Front face
+        [0, 1, 4],  // Left face
+        [1, 2, 3], [1, 3, 4]  // Base
+      ],
+      color: [200, 150, 50]
+    };
+  },
+
+  // Create torus mesh
+  createTorus(majorRadius = 1, minorRadius = 0.3, majorSegments = 16, minorSegments = 8) {
+    const vertices = [];
+    const faces = [];
+
+    for (let i = 0; i <= majorSegments; i++) {
+      const theta = (i / majorSegments) * Math.PI * 2;
+      for (let j = 0; j <= minorSegments; j++) {
+        const phi = (j / minorSegments) * Math.PI * 2;
+        const x = (majorRadius + minorRadius * Math.cos(phi)) * Math.cos(theta);
+        const y = minorRadius * Math.sin(phi);
+        const z = (majorRadius + minorRadius * Math.cos(phi)) * Math.sin(theta);
+        vertices.push([x, y, z]);
+      }
+    }
+
+    for (let i = 0; i < majorSegments; i++) {
+      for (let j = 0; j < minorSegments; j++) {
+        const a = i * (minorSegments + 1) + j;
+        const b = a + minorSegments + 1;
+        faces.push([a, b, a + 1]);
+        faces.push([a + 1, b, b + 1]);
+      }
+    }
+
+    return { vertices, faces, color: [180, 100, 180] };
+  }
+};
+
+// ============================================
+// KONOMI PARTICLE SYSTEM - v5 Enhancement
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiParticles = {
+  // Create particle system
+  create(options = {}) {
+    const config = {
+      maxParticles: options.maxParticles || 500,
+      emitRate: options.emitRate || 10,
+      lifetime: options.lifetime || 3,
+      gravity: options.gravity || [0, -9.8, 0],
+      startColor: options.startColor || [255, 200, 100],
+      endColor: options.endColor || [255, 50, 0],
+      startSize: options.startSize || 4,
+      endSize: options.endSize || 1,
+      spread: options.spread || 0.5,
+      speed: options.speed || 2
+    };
+
+    const particles = [];
+    let emitAccumulator = 0;
+
+    return {
+      config,
+      particles,
+
+      emit(position, direction = [0, 1, 0]) {
+        if (particles.length >= config.maxParticles) return;
+
+        const spread = config.spread;
+        const velocity = [
+          (direction[0] + (Math.random() - 0.5) * spread) * config.speed,
+          (direction[1] + (Math.random() - 0.5) * spread) * config.speed,
+          (direction[2] + (Math.random() - 0.5) * spread) * config.speed
+        ];
+
+        particles.push({
+          position: [...position],
+          velocity,
+          age: 0,
+          lifetime: config.lifetime * (0.8 + Math.random() * 0.4)
+        });
+      },
+
+      update(dt) {
+        // Auto-emit
+        emitAccumulator += dt * config.emitRate;
+        while (emitAccumulator >= 1) {
+          this.emit([0, 0, 0]);
+          emitAccumulator -= 1;
+        }
+
+        // Update particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.age += dt;
+
+          if (p.age >= p.lifetime) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          // Apply gravity
+          p.velocity[0] += config.gravity[0] * dt;
+          p.velocity[1] += config.gravity[1] * dt;
+          p.velocity[2] += config.gravity[2] * dt;
+
+          // Update position
+          p.position[0] += p.velocity[0] * dt;
+          p.position[1] += p.velocity[1] * dt;
+          p.position[2] += p.velocity[2] * dt;
+        }
+      },
+
+      render(ctx, mvp, width, height) {
+        for (const p of particles) {
+          const t = p.age / p.lifetime;
+
+          // Interpolate color
+          const r = Math.round(config.startColor[0] + (config.endColor[0] - config.startColor[0]) * t);
+          const g = Math.round(config.startColor[1] + (config.endColor[1] - config.startColor[1]) * t);
+          const b = Math.round(config.startColor[2] + (config.endColor[2] - config.startColor[2]) * t);
+          const alpha = 1 - t;
+
+          // Interpolate size
+          const size = config.startSize + (config.endSize - config.startSize) * t;
+
+          // Project to screen
+          const projected = KonomiRenderer.mat4.transformPoint(mvp, p.position);
+          if (projected[2] > 1) continue;
+
+          const screenX = (projected[0] + 1) * 0.5 * width;
+          const screenY = (1 - projected[1]) * 0.5 * height;
+
+          if (screenX < 0 || screenX >= width || screenY < 0 || screenY >= height) continue;
+
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.beginPath();
+          ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      },
+
+      clear() {
+        particles.length = 0;
+      }
+    };
+  }
+};
+
+// ============================================
+// KONOMI PHYSICS - v5 Enhancement
+// Simple 3D Physics Simulation
+// ============================================
+
+const KonomiPhysics = {
+  // Create physics world
+  createWorld(options = {}) {
+    const config = {
+      gravity: options.gravity || [0, -9.8, 0],
+      friction: options.friction || 0.1,
+      restitution: options.restitution || 0.5,
+      groundY: options.groundY || -2
+    };
+
+    const bodies = [];
+
+    return {
+      config,
+      bodies,
+
+      addBody(options = {}) {
+        const body = {
+          position: options.position || [0, 0, 0],
+          velocity: options.velocity || [0, 0, 0],
+          acceleration: [0, 0, 0],
+          mass: options.mass || 1,
+          radius: options.radius || 0.5,
+          fixed: options.fixed || false,
+          color: options.color || [100, 150, 200]
+        };
+        bodies.push(body);
+        return body;
+      },
+
+      update(dt) {
+        for (const body of bodies) {
+          if (body.fixed) continue;
+
+          // Apply gravity
+          body.acceleration[0] = config.gravity[0];
+          body.acceleration[1] = config.gravity[1];
+          body.acceleration[2] = config.gravity[2];
+
+          // Update velocity
+          body.velocity[0] += body.acceleration[0] * dt;
+          body.velocity[1] += body.acceleration[1] * dt;
+          body.velocity[2] += body.acceleration[2] * dt;
+
+          // Update position
+          body.position[0] += body.velocity[0] * dt;
+          body.position[1] += body.velocity[1] * dt;
+          body.position[2] += body.velocity[2] * dt;
+
+          // Ground collision
+          if (body.position[1] - body.radius < config.groundY) {
+            body.position[1] = config.groundY + body.radius;
+            body.velocity[1] = -body.velocity[1] * config.restitution;
+            body.velocity[0] *= (1 - config.friction);
+            body.velocity[2] *= (1 - config.friction);
+          }
+        }
+
+        // Body-body collisions
+        for (let i = 0; i < bodies.length; i++) {
+          for (let j = i + 1; j < bodies.length; j++) {
+            this.resolveCollision(bodies[i], bodies[j]);
+          }
+        }
+      },
+
+      resolveCollision(a, b) {
+        const dx = b.position[0] - a.position[0];
+        const dy = b.position[1] - a.position[1];
+        const dz = b.position[2] - a.position[2];
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const minDist = a.radius + b.radius;
+
+        if (dist < minDist && dist > 0) {
+          // Normalize collision vector
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const nz = dz / dist;
+
+          // Separate bodies
+          const overlap = (minDist - dist) / 2;
+          if (!a.fixed) {
+            a.position[0] -= nx * overlap;
+            a.position[1] -= ny * overlap;
+            a.position[2] -= nz * overlap;
+          }
+          if (!b.fixed) {
+            b.position[0] += nx * overlap;
+            b.position[1] += ny * overlap;
+            b.position[2] += nz * overlap;
+          }
+
+          // Calculate relative velocity
+          const dvx = b.velocity[0] - a.velocity[0];
+          const dvy = b.velocity[1] - a.velocity[1];
+          const dvz = b.velocity[2] - a.velocity[2];
+          const dvn = dvx * nx + dvy * ny + dvz * nz;
+
+          if (dvn > 0) return; // Moving apart
+
+          // Calculate impulse
+          const restitution = config.restitution;
+          const impulse = -(1 + restitution) * dvn / (1 / a.mass + 1 / b.mass);
+
+          // Apply impulse
+          if (!a.fixed) {
+            a.velocity[0] -= (impulse / a.mass) * nx;
+            a.velocity[1] -= (impulse / a.mass) * ny;
+            a.velocity[2] -= (impulse / a.mass) * nz;
+          }
+          if (!b.fixed) {
+            b.velocity[0] += (impulse / b.mass) * nx;
+            b.velocity[1] += (impulse / b.mass) * ny;
+            b.velocity[2] += (impulse / b.mass) * nz;
+          }
+        }
+      },
+
+      clear() {
+        bodies.length = 0;
+      }
+    };
   }
 };
 
@@ -4925,6 +5220,12 @@ const KonomiApp = {
       case '3d':
         this.demo3D();
         break;
+      case 'particles':
+        this.demoParticles();
+        break;
+      case 'physics':
+        this.demoPhysics();
+        break;
       case 'compress':
         this.demoCompression();
         break;
@@ -5012,7 +5313,7 @@ const KonomiApp = {
   },
 
   demo3D() {
-    this.log('info', '── 3D Rendering Demo ──');
+    this.log('info', '── 3D Rendering Demo (v5 Enhanced) ──');
 
     const renderer = this.components.renderer3d;
     if (!renderer) {
@@ -5020,34 +5321,188 @@ const KonomiApp = {
       return;
     }
 
-    // Create larger cube mesh for better visibility
-    const cube = KonomiRenderer.createCube(1.8);
-    cube.color = [80, 140, 200];
+    // Create multiple meshes to cycle through
+    const meshes = [
+      { mesh: KonomiRenderer.createCube(1.6), name: 'Cube', color: [80, 140, 200] },
+      { mesh: KonomiRenderer.createPyramid(1.8, 2.0), name: 'Pyramid', color: [200, 150, 50] },
+      { mesh: KonomiRenderer.createSphere(1.0, 12, 8), name: 'Sphere', color: [150, 80, 180] },
+      { mesh: KonomiRenderer.createTorus(0.8, 0.3, 16, 8), name: 'Torus', color: [80, 200, 150] }
+    ];
 
-    // Animation loop with smoother rotation
+    // Apply colors
+    meshes.forEach(m => m.mesh.color = m.color);
+
+    let currentMesh = 0;
     let angle = 0;
+    let meshTimer = 0;
+    const meshDuration = Math.PI * 2; // Time per shape
+
+    this.log('info', 'Cycling through shapes: Cube, Pyramid, Sphere, Torus...');
+
     const animate = () => {
       renderer.clear([15, 15, 25]);
 
-      // Rotate cube - use angles that show all 3 faces nicely
+      // Current mesh
+      const { mesh, name } = meshes[currentMesh];
+
+      // Rotate mesh
       const rotY = KonomiRenderer.mat4.rotationY(angle);
-      const rotX = KonomiRenderer.mat4.rotationX(angle * 0.7 + 0.4);
+      const rotX = KonomiRenderer.mat4.rotationX(angle * 0.5 + 0.3);
       const transform = KonomiRenderer.mat4.multiply(rotY, rotX);
 
-      renderer.renderMesh(cube, transform);
+      renderer.renderMesh(mesh, transform);
       renderer.present();
 
-      angle += 0.015;
+      angle += 0.02;
+      meshTimer += 0.02;
 
-      if (angle < Math.PI * 6) {
+      // Switch to next mesh
+      if (meshTimer >= meshDuration) {
+        meshTimer = 0;
+        const prevMesh = currentMesh;
+        currentMesh = (currentMesh + 1) % meshes.length;
+        if (currentMesh !== prevMesh) {
+          this.log('info', `Now showing: ${meshes[currentMesh].name}`);
+        }
+      }
+
+      // Run for all shapes twice
+      if (angle < Math.PI * 2 * meshes.length * 2) {
         requestAnimationFrame(animate);
       } else {
-        this.log('success', '3D rendering complete');
+        this.log('success', '3D shape showcase complete!');
+      }
+    };
+
+    this.log('info', `Now showing: ${meshes[0].name}`);
+    animate();
+  },
+
+  demoParticles() {
+    this.log('info', '── Particle System Demo (v5) ──');
+
+    const canvas = document.getElementById('canvas3d');
+    if (!canvas) {
+      this.log('error', 'Canvas not found');
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Create particle system
+    const particles = KonomiParticles.create({
+      maxParticles: 300,
+      emitRate: 50,
+      lifetime: 2.5,
+      gravity: [0, -3, 0],
+      startColor: [255, 200, 50],
+      endColor: [255, 50, 0],
+      startSize: 6,
+      endSize: 2,
+      spread: 1.5,
+      speed: 3
+    });
+
+    // Camera MVP
+    const view = KonomiRenderer.mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+    const proj = KonomiRenderer.mat4.perspective(Math.PI / 3, width / height, 0.1, 100);
+    const mvp = KonomiRenderer.mat4.multiply(proj, view);
+
+    let time = 0;
+    const duration = 5;
+
+    this.log('info', 'Emitting particles with gravity and color fade...');
+
+    const animate = () => {
+      ctx.fillStyle = 'rgb(15, 15, 25)';
+      ctx.fillRect(0, 0, width, height);
+
+      const dt = 0.016;
+      time += dt;
+
+      // Emit from center with upward direction
+      particles.config.emitRate = 50;
+      particles.emit([0, -1.5, 0], [0, 1, 0]);
+      particles.update(dt);
+      particles.render(ctx, mvp, width, height);
+
+      if (time < duration) {
+        requestAnimationFrame(animate);
+      } else {
+        this.log('success', `Particle demo complete! Peak particles: ${particles.particles.length}`);
       }
     };
 
     animate();
-    this.log('info', 'Rendering rotating cube...');
+  },
+
+  demoPhysics() {
+    this.log('info', '── Physics Simulation Demo (v5) ──');
+
+    const renderer = this.components.renderer3d;
+    if (!renderer) {
+      this.log('error', '3D canvas not found');
+      return;
+    }
+
+    // Create physics world
+    const world = KonomiPhysics.createWorld({
+      gravity: [0, -15, 0],
+      friction: 0.05,
+      restitution: 0.7,
+      groundY: -2
+    });
+
+    // Add bouncing spheres
+    const colors = [[200, 80, 80], [80, 200, 80], [80, 80, 200], [200, 200, 80], [200, 80, 200]];
+    for (let i = 0; i < 5; i++) {
+      world.addBody({
+        position: [(i - 2) * 0.8, 2 + i * 0.5, 0],
+        velocity: [(Math.random() - 0.5) * 2, 0, (Math.random() - 0.5) * 2],
+        radius: 0.3,
+        mass: 1,
+        color: colors[i]
+      });
+    }
+
+    const sphereMesh = KonomiRenderer.createSphere(0.3, 8, 6);
+
+    let time = 0;
+    const duration = 8;
+
+    this.log('info', 'Simulating 5 bouncing spheres with collision...');
+
+    const animate = () => {
+      renderer.clear([15, 15, 25]);
+
+      const dt = 0.016;
+      time += dt;
+
+      world.update(dt);
+
+      // Render each body
+      for (const body of world.bodies) {
+        sphereMesh.color = body.color;
+        const transform = KonomiRenderer.mat4.translation(
+          body.position[0],
+          body.position[1],
+          body.position[2]
+        );
+        renderer.renderMesh(sphereMesh, transform);
+      }
+
+      renderer.present();
+
+      if (time < duration) {
+        requestAnimationFrame(animate);
+      } else {
+        this.log('success', 'Physics simulation complete!');
+      }
+    };
+
+    animate();
   },
 
   demoCompression() {
