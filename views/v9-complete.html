@@ -111,8 +111,58 @@ body {
 /* Main Layout */
 .main {
   display: grid;
-  grid-template-columns: 250px 1fr 300px;
+  grid-template-columns: 220px 1fr;
   min-height: calc(100vh - 70px);
+}
+
+/* Output Grid - Canvas + Console side by side */
+.output-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.canvas-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.canvas-panel .panel-header {
+  background: var(--bg-tertiary);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.canvas-panel canvas {
+  display: block;
+  width: 100%;
+  height: 300px;
+  background: #0a0a0f;
+}
+
+.console-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.console-panel .console {
+  flex: 1;
+  height: 300px;
+  overflow-y: auto;
+  padding: 0.75rem;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 /* Sidebar */
@@ -274,23 +324,12 @@ body {
   color: white;
 }
 
-/* Right Panel */
-.right-panel {
-  background: var(--bg-secondary);
-  border-left: 1px solid var(--border);
-  padding: 1rem;
-  overflow: auto;
-}
-
 /* Console Output */
 .console {
   background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: 6px;
   font-family: 'Fira Code', monospace;
   font-size: 0.8rem;
-  max-height: 300px;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .console-line {
@@ -472,8 +511,12 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .sidebar, .right-panel {
+  .sidebar {
     display: none;
+  }
+
+  .output-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -625,23 +668,23 @@ print(arr[2]);
         <div class="panel">
           <div class="panel-header">
             <span class="panel-title">Component Demos</span>
+            <button class="btn btn-secondary" onclick="clearConsole()" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Clear Output</button>
           </div>
           <div class="panel-body">
-            <p class="mb-2">Click any button to run a demo and see the results in the console.</p>
             <div class="flex gap-1" style="flex-wrap: wrap;">
-              <button class="btn btn-primary" data-demo="crypto">&#128274; Crypto Demo</button>
-              <button class="btn btn-primary" data-demo="db">&#128451; Database Demo</button>
-              <button class="btn btn-primary" data-demo="ai">&#129302; AI Demo</button>
-              <button class="btn btn-primary" data-demo="3d">&#127922; 3D Shapes</button>
+              <button class="btn btn-primary" data-demo="crypto">&#128274; Crypto</button>
+              <button class="btn btn-primary" data-demo="db">&#128451; Database</button>
+              <button class="btn btn-primary" data-demo="ai">&#129302; AI</button>
+              <button class="btn btn-primary" data-demo="3d">&#127922; 3D</button>
               <button class="btn btn-primary" data-demo="particles">&#10024; Particles</button>
               <button class="btn btn-primary" data-demo="physics">&#9889; Physics</button>
-              <button class="btn btn-primary" data-demo="compress">&#128230; Compression</button>
+              <button class="btn btn-primary" data-demo="compress">&#128230; Compress</button>
               <button class="btn btn-primary" data-demo="audio">&#127925; Audio</button>
               <button class="btn btn-primary" data-demo="tween">&#127912; Tween</button>
               <button class="btn btn-primary" data-demo="ecs">&#127918; ECS</button>
               <button class="btn btn-primary" data-demo="graph">&#128200; Graph</button>
-              <button class="btn btn-primary" data-demo="fsm">&#128260; State Machine</button>
-              <button class="btn btn-primary" data-demo="path">&#128506; Pathfinding</button>
+              <button class="btn btn-primary" data-demo="fsm">&#128260; FSM</button>
+              <button class="btn btn-primary" data-demo="path">&#128506; Path</button>
               <button class="btn btn-primary" data-demo="noise">&#127956; Noise</button>
               <button class="btn btn-primary" data-demo="events">&#128172; Events</button>
               <button class="btn btn-primary" data-demo="input">&#127918; Input</button>
@@ -653,6 +696,22 @@ print(arr[2]);
               <button class="btn btn-primary" data-demo="save">&#128190; Save</button>
               <button class="btn btn-primary" data-demo="scene">&#127916; Scene</button>
             </div>
+          </div>
+        </div>
+
+        <!-- Output Grid: Canvas + Console side by side -->
+        <div class="output-grid">
+          <div class="canvas-panel">
+            <div class="panel-header">
+              <span class="panel-title">Render Output</span>
+            </div>
+            <canvas id="canvas2d" width="400" height="300"></canvas>
+          </div>
+          <div class="console-panel">
+            <div class="panel-header">
+              <span class="panel-title">Console Output</span>
+            </div>
+            <div class="console" id="console"></div>
           </div>
         </div>
 
@@ -823,32 +882,7 @@ print(arr[2]);
         </div>
       </div>
     </section>
-
-    <!-- Right Panel -->
-    <aside class="right-panel">
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Console Output</span>
-          <button class="btn btn-secondary" onclick="clearConsole()" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Clear</button>
-        </div>
-        <div class="console" id="console"></div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Quick Actions</span>
-        </div>
-        <div class="panel-body">
-          <button class="btn btn-secondary mb-1" style="width: 100%;" onclick="KonomiApp.saveState()">&#128190; Save State</button>
-          <button class="btn btn-secondary mb-1" style="width: 100%;" onclick="exportSystem()">&#128194; Export Data</button>
-          <button class="btn btn-secondary" style="width: 100%;" onclick="showAbout()">&#9432; About</button>
-        </div>
-      </div>
-    </aside>
   </main>
-
-  <!-- Hidden 2D Canvas for demos -->
-  <canvas id="canvas2d" width="400" height="300" style="display: none;"></canvas>
 
   <script>
 // ============================================
@@ -9633,6 +9667,9 @@ const KonomiApp = {
   // ============================================
 
   runDemo(demo) {
+    // Switch to demos tab to show canvas + console grid
+    this.switchTab('demos');
+
     switch (demo) {
       case 'crypto':
         this.demoCrypto();
@@ -10278,8 +10315,7 @@ const KonomiApp = {
   demoFSM() {
     this.log('info', '── Finite State Machine Demo (v9) ──');
 
-    // Auto-switch to 2D canvas
-    this.switchTab('2d');
+    // Get 2D canvas renderer
     const renderer = this.components.renderer2d;
     if (!renderer) {
       this.log('error', '2D canvas not found');
@@ -10958,8 +10994,7 @@ const KonomiApp = {
   demoTilemap() {
     this.log('info', '── Tilemap System Demo (v9) ──');
 
-    // Auto-switch to 2D canvas
-    this.switchTab('2d');
+    // Get 2D canvas renderer
     const renderer = this.components.renderer2d;
     if (!renderer) {
       this.log('error', '2D canvas not found');
@@ -11189,8 +11224,7 @@ const KonomiApp = {
   demoTimer() {
     this.log('info', '── Timer System Demo (v9) ──');
 
-    // Auto-switch to 2D canvas
-    this.switchTab('2d');
+    // Get 2D canvas renderer
     const renderer = this.components.renderer2d;
     if (!renderer) {
       this.log('error', '2D canvas not found');
@@ -11427,8 +11461,7 @@ const KonomiApp = {
   demoScene() {
     this.log('info', '── Scene Manager Demo (v9) ──');
 
-    // Auto-switch to 2D canvas
-    this.switchTab('2d');
+    // Get 2D canvas renderer
     const renderer = this.components.renderer2d;
     if (!renderer) {
       this.log('error', '2D canvas not found');
