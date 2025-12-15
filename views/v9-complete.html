@@ -10278,6 +10278,15 @@ const KonomiApp = {
   demoFSM() {
     this.log('info', '── Finite State Machine Demo (v9) ──');
 
+    // Auto-switch to 2D canvas
+    this.switchTab('2d');
+    const renderer = this.components.renderer2d;
+    if (!renderer) {
+      this.log('error', '2D canvas not found');
+      return;
+    }
+    const { ctx, width, height } = renderer;
+
     // Create a player state machine
     const player = KonomiState.create({
       initial: 'idle',
@@ -10315,9 +10324,82 @@ const KonomiApp = {
         transitions: { RECOVER: 'idle' }
       });
 
-    // Subscribe to state changes
+    // State positions for visualization
+    const statePositions = {
+      idle: { x: 200, y: 120 },
+      walking: { x: 80, y: 200 },
+      running: { x: 80, y: 300 },
+      jumping: { x: 320, y: 200 },
+      attacking: { x: 320, y: 300 },
+      hurt: { x: 200, y: 350 }
+    };
+
+    // Draw FSM visualization
+    const drawFSM = (currentState, context) => {
+      ctx.fillStyle = '#0a0a0f';
+      ctx.fillRect(0, 0, width, height);
+
+      // Draw title
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Finite State Machine Visualization', width/2, 30);
+
+      // Draw connections
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 2;
+      const connections = [
+        ['idle', 'walking'], ['idle', 'jumping'], ['idle', 'attacking'],
+        ['walking', 'running'], ['walking', 'jumping'],
+        ['running', 'jumping'], ['jumping', 'idle'],
+        ['attacking', 'idle'], ['hurt', 'idle']
+      ];
+      connections.forEach(([from, to]) => {
+        const p1 = statePositions[from];
+        const p2 = statePositions[to];
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      });
+
+      // Draw states
+      Object.entries(statePositions).forEach(([name, pos]) => {
+        const isActive = name === currentState;
+
+        // State circle
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 35, 0, Math.PI * 2);
+        ctx.fillStyle = isActive ? '#00d4ff' : '#1a1a25';
+        ctx.fill();
+        ctx.strokeStyle = isActive ? '#fff' : '#444';
+        ctx.lineWidth = isActive ? 3 : 2;
+        ctx.stroke();
+
+        // State name
+        ctx.fillStyle = isActive ? '#000' : '#ccc';
+        ctx.font = isActive ? 'bold 12px monospace' : '11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(name.toUpperCase(), pos.x, pos.y + 4);
+      });
+
+      // Draw context info
+      ctx.fillStyle = '#888';
+      ctx.font = '14px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`Health: ${context.health}`, 20, height - 60);
+      ctx.fillText(`Energy: ${context.energy}`, 20, height - 40);
+      ctx.fillStyle = '#00d4ff';
+      ctx.fillText(`Current: ${currentState}`, 20, height - 20);
+    };
+
+    // Initial draw
+    drawFSM('idle', player.context);
+
+    // Subscribe to state changes and redraw
     player.onChange((current, previous) => {
       this.log('info', `State: ${previous || 'none'} -> ${current}`);
+      drawFSM(current, player.context);
     });
 
     // Start and simulate
@@ -10876,10 +10958,19 @@ const KonomiApp = {
   demoTilemap() {
     this.log('info', '── Tilemap System Demo (v9) ──');
 
+    // Auto-switch to 2D canvas
+    this.switchTab('2d');
+    const renderer = this.components.renderer2d;
+    if (!renderer) {
+      this.log('error', '2D canvas not found');
+      return;
+    }
+    const { ctx, width, height } = renderer;
+
     // Create tilemap
     const tilemap = KonomiTilemap.create({
-      width: 10,
-      height: 8,
+      width: 12,
+      height: 10,
       tileWidth: 32,
       tileHeight: 32
     });
@@ -10892,21 +10983,177 @@ const KonomiApp = {
     this.log('info', 'Added 3 layers: ground, walls (collision), objects');
 
     // Fill ground with grass
-    tilemap.fillRect('ground', 0, 0, 10, 8, 1);
+    tilemap.fillRect('ground', 0, 0, 12, 10, 1);
     this.log('info', 'Filled ground layer with grass (tile 1)');
 
     // Create walls around edges
-    tilemap.fillRect('walls', 0, 0, 10, 1, 2);  // Top
-    tilemap.fillRect('walls', 0, 7, 10, 1, 2);  // Bottom
-    tilemap.fillRect('walls', 0, 0, 1, 8, 2);   // Left
-    tilemap.fillRect('walls', 9, 0, 1, 8, 2);   // Right
-    this.log('info', 'Created border walls (tile 2)');
+    tilemap.fillRect('walls', 0, 0, 12, 1, 2);  // Top
+    tilemap.fillRect('walls', 0, 9, 12, 1, 2);  // Bottom
+    tilemap.fillRect('walls', 0, 0, 1, 10, 2);   // Left
+    tilemap.fillRect('walls', 11, 0, 1, 10, 2);   // Right
+    // Add some interior walls
+    tilemap.fillRect('walls', 4, 3, 1, 4, 2);
+    tilemap.fillRect('walls', 7, 2, 1, 5, 2);
+    this.log('info', 'Created border walls and interior barriers');
 
-    // Add some objects
-    tilemap.setTile('objects', 3, 3, 5);
-    tilemap.setTile('objects', 5, 4, 6);
-    tilemap.setTile('objects', 7, 2, 7);
-    this.log('info', 'Placed 3 objects');
+    // Add objects (chest, gem, key)
+    tilemap.setTile('objects', 2, 2, 5);
+    tilemap.setTile('objects', 5, 5, 6);
+    tilemap.setTile('objects', 9, 4, 7);
+    tilemap.setTile('objects', 3, 7, 8);
+    tilemap.setTile('objects', 8, 7, 9);
+    this.log('info', 'Placed 5 objects');
+
+    // Tile color palette
+    const tileColors = {
+      0: null, // empty
+      1: '#2d5a27', // grass
+      2: '#5a4a3a', // wall
+      5: '#ffd700', // chest (gold)
+      6: '#00ff88', // gem (green)
+      7: '#ff6b6b', // key (red)
+      8: '#6b9fff', // blue item
+      9: '#ff6bff'  // pink item
+    };
+
+    // Draw tilemap visualization
+    const drawTilemap = () => {
+      const offsetX = (width - tilemap.pixelWidth) / 2;
+      const offsetY = 50;
+
+      // Clear canvas
+      ctx.fillStyle = '#0a0a0f';
+      ctx.fillRect(0, 0, width, height);
+
+      // Draw title
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Tilemap Visualization', width/2, 30);
+
+      // Draw ground layer first
+      const groundLayer = tilemap.layers.get('ground');
+      if (groundLayer) {
+        for (let y = 0; y < tilemap.height; y++) {
+          for (let x = 0; x < tilemap.width; x++) {
+            const tile = groundLayer.tiles[y * tilemap.width + x];
+            if (tile && tileColors[tile]) {
+              ctx.fillStyle = tileColors[tile];
+              ctx.fillRect(
+                offsetX + x * tilemap.tileWidth,
+                offsetY + y * tilemap.tileHeight,
+                tilemap.tileWidth - 1,
+                tilemap.tileHeight - 1
+              );
+            }
+          }
+        }
+      }
+
+      // Draw walls layer
+      const wallsLayer = tilemap.layers.get('walls');
+      if (wallsLayer) {
+        for (let y = 0; y < tilemap.height; y++) {
+          for (let x = 0; x < tilemap.width; x++) {
+            const tile = wallsLayer.tiles[y * tilemap.width + x];
+            if (tile && tileColors[tile]) {
+              ctx.fillStyle = tileColors[tile];
+              ctx.fillRect(
+                offsetX + x * tilemap.tileWidth,
+                offsetY + y * tilemap.tileHeight,
+                tilemap.tileWidth - 1,
+                tilemap.tileHeight - 1
+              );
+              // Add brick pattern
+              ctx.strokeStyle = '#3a3025';
+              ctx.lineWidth = 1;
+              ctx.strokeRect(
+                offsetX + x * tilemap.tileWidth + 2,
+                offsetY + y * tilemap.tileHeight + 2,
+                tilemap.tileWidth - 5,
+                tilemap.tileHeight - 5
+              );
+            }
+          }
+        }
+      }
+
+      // Draw objects layer
+      const objectsLayer = tilemap.layers.get('objects');
+      if (objectsLayer) {
+        for (let y = 0; y < tilemap.height; y++) {
+          for (let x = 0; x < tilemap.width; x++) {
+            const tile = objectsLayer.tiles[y * tilemap.width + x];
+            if (tile && tileColors[tile]) {
+              const cx = offsetX + x * tilemap.tileWidth + tilemap.tileWidth/2;
+              const cy = offsetY + y * tilemap.tileHeight + tilemap.tileHeight/2;
+
+              // Draw object as circle with glow
+              ctx.shadowColor = tileColors[tile];
+              ctx.shadowBlur = 10;
+              ctx.beginPath();
+              ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+              ctx.fillStyle = tileColors[tile];
+              ctx.fill();
+              ctx.shadowBlur = 0;
+
+              // Object icon
+              ctx.fillStyle = '#000';
+              ctx.font = '12px monospace';
+              ctx.textAlign = 'center';
+              ctx.fillText(tile === 5 ? '◆' : tile === 6 ? '●' : tile === 7 ? '♦' : '★', cx, cy + 4);
+            }
+          }
+        }
+      }
+
+      // Draw grid lines
+      ctx.strokeStyle = '#1a1a25';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= tilemap.width; x++) {
+        ctx.beginPath();
+        ctx.moveTo(offsetX + x * tilemap.tileWidth, offsetY);
+        ctx.lineTo(offsetX + x * tilemap.tileWidth, offsetY + tilemap.pixelHeight);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= tilemap.height; y++) {
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY + y * tilemap.tileHeight);
+        ctx.lineTo(offsetX + tilemap.pixelWidth, offsetY + y * tilemap.tileHeight);
+        ctx.stroke();
+      }
+
+      // Draw legend
+      ctx.textAlign = 'left';
+      ctx.font = '12px monospace';
+      const legendY = offsetY + tilemap.pixelHeight + 30;
+      ctx.fillStyle = '#888';
+      ctx.fillText('Legend:', 20, legendY);
+
+      const legendItems = [
+        { color: '#2d5a27', label: 'Grass' },
+        { color: '#5a4a3a', label: 'Wall (collision)' },
+        { color: '#ffd700', label: 'Chest' },
+        { color: '#00ff88', label: 'Gem' },
+        { color: '#ff6b6b', label: 'Key' }
+      ];
+
+      legendItems.forEach((item, i) => {
+        const lx = 20 + (i % 3) * 130;
+        const ly = legendY + 20 + Math.floor(i / 3) * 20;
+        ctx.fillStyle = item.color;
+        ctx.fillRect(lx, ly - 10, 14, 14);
+        ctx.fillStyle = '#ccc';
+        ctx.fillText(item.label, lx + 20, ly);
+      });
+
+      // Draw info
+      ctx.fillStyle = '#00d4ff';
+      ctx.fillText(`Size: ${tilemap.width}x${tilemap.height} tiles (${tilemap.pixelWidth}x${tilemap.pixelHeight}px)`, 20, height - 20);
+    };
+
+    // Initial draw
+    drawTilemap();
 
     // Test collision
     const collision1 = tilemap.checkCollision(0, 0);
@@ -10942,53 +11189,176 @@ const KonomiApp = {
   demoTimer() {
     this.log('info', '── Timer System Demo (v9) ──');
 
+    // Auto-switch to 2D canvas
+    this.switchTab('2d');
+    const renderer = this.components.renderer2d;
+    if (!renderer) {
+      this.log('error', '2D canvas not found');
+      return;
+    }
+    const { ctx, width, height } = renderer;
+
     // Create timer manager
     const timer = KonomiTimer.create({ timeScale: 1 });
     this.log('success', 'Created timer manager');
 
-    // One-shot timer
-    const id1 = timer.after(500, () => this.log('info', '  [500ms] One-shot fired!'));
-    this.log('info', `Created one-shot timer (id: ${id1})`);
+    // Visual timer tracking
+    const visualTimers = [];
+    let elapsed = 0;
 
-    // Repeating timer
+    // Draw timer visualization
+    const drawTimers = () => {
+      ctx.fillStyle = '#0a0a0f';
+      ctx.fillRect(0, 0, width, height);
+
+      // Draw title
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Timer System Visualization', width/2, 30);
+
+      // Draw elapsed time
+      ctx.fillStyle = '#888';
+      ctx.font = '14px monospace';
+      ctx.fillText(`Elapsed: ${elapsed.toFixed(0)}ms`, width/2, 55);
+
+      // Draw timer bars
+      const barWidth = 300;
+      const barHeight = 30;
+      const startX = (width - barWidth) / 2;
+      let startY = 90;
+
+      visualTimers.forEach((vt, i) => {
+        const y = startY + i * 60;
+
+        // Label
+        ctx.fillStyle = '#ccc';
+        ctx.font = '12px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(vt.label, startX, y - 8);
+
+        // Background bar
+        ctx.fillStyle = '#1a1a25';
+        ctx.fillRect(startX, y, barWidth, barHeight);
+
+        // Progress bar
+        const progress = Math.min(vt.progress, 1);
+        const barColor = vt.completed ? '#00ff88' : vt.color;
+        ctx.fillStyle = barColor;
+        ctx.fillRect(startX, y, barWidth * progress, barHeight);
+
+        // Border
+        ctx.strokeStyle = vt.completed ? '#00ff88' : '#444';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(startX, y, barWidth, barHeight);
+
+        // Progress text
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(
+          vt.completed ? 'COMPLETE!' : `${(progress * 100).toFixed(0)}%`,
+          startX + barWidth / 2,
+          y + barHeight / 2 + 4
+        );
+
+        // Repeat indicator
+        if (vt.repeats) {
+          ctx.fillStyle = '#888';
+          ctx.font = '11px monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(`${vt.repeatCount}/${vt.repeats}`, startX + barWidth, y - 8);
+        }
+      });
+
+      // Draw time scale indicator
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = '14px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`Time Scale: ${timer.timeScale}x`, width/2, height - 40);
+
+      // Draw legend
+      ctx.font = '11px monospace';
+      ctx.fillStyle = '#888';
+      ctx.fillText('Real-time visualization of active timers', width/2, height - 20);
+    };
+
+    // One-shot timer with tracking
+    const vt1 = { label: 'One-shot Timer (500ms)', color: '#ff6b6b', progress: 0, completed: false };
+    visualTimers.push(vt1);
+    timer.after(500, () => {
+      vt1.completed = true;
+      this.log('info', '  [500ms] One-shot fired!');
+    });
+    this.log('info', 'Created one-shot timer (500ms)');
+
+    // Repeating timer with tracking
     let count = 0;
-    const id2 = timer.every(200, () => {
+    const vt2 = { label: 'Repeating Timer (200ms x3)', color: '#6b9fff', progress: 0, completed: false, repeats: 3, repeatCount: 0 };
+    visualTimers.push(vt2);
+    timer.every(200, () => {
       count++;
+      vt2.repeatCount = count;
+      vt2.progress = 0; // Reset for next repeat
+      if (count >= 3) vt2.completed = true;
       this.log('info', `  [200ms x${count}] Repeat fired`);
     }, null, 3);
-    this.log('info', `Created repeating timer, 3 times (id: ${id2})`);
+    this.log('info', 'Created repeating timer, 3 times');
 
-    // Sequence
-    const seq = timer.sequence([
-      { delay: 100, callback: () => this.log('info', '  [Seq 1] First step') },
-      { delay: 150, callback: () => this.log('info', '  [Seq 2] Second step') },
-      { delay: 200, callback: () => this.log('info', '  [Seq 3] Third step') }
+    // Sequence timer with tracking
+    const vt3 = { label: 'Sequence Timer (3 steps)', color: '#ffd700', progress: 0, completed: false };
+    visualTimers.push(vt3);
+    let seqStep = 0;
+    timer.sequence([
+      { delay: 300, callback: () => { seqStep = 1; this.log('info', '  [Seq 1] First step'); } },
+      { delay: 300, callback: () => { seqStep = 2; this.log('info', '  [Seq 2] Second step'); } },
+      { delay: 300, callback: () => { seqStep = 3; vt3.completed = true; this.log('info', '  [Seq 3] Third step'); } }
     ]);
-    this.log('info', `Created sequence (id: ${seq.id})`);
+    this.log('info', 'Created sequence (3 steps, 300ms each)');
 
-    // Simulate time passing
-    this.log('info', '\nSimulating 1 second of time...');
-    for (let i = 0; i < 20; i++) {
-      timer.update(50);
-    }
+    // Progress timer
+    const vt4 = { label: 'Progress Timer (1000ms)', color: '#00ff88', progress: 0, completed: false };
+    visualTimers.push(vt4);
 
-    // Stats
-    const stats = timer.getStats();
-    this.log('info', `\nStats: elapsed=${stats.elapsed.toFixed(0)}ms, active=${stats.active}`);
+    // Initial draw
+    drawTimers();
 
-    // Time scaling demo
-    this.log('info', '\nTime scaling:');
-    timer.timeScale = 2;
-    this.log('info', `  Set timeScale to 2x (slow-mo = 0.5, fast = 2)`);
-    timer.timeScale = 1;
+    // Animate with real time
+    const startTime = performance.now();
+    const totalDuration = 2000;
 
-    this.log('success', '\nTimer system complete! Features:');
-    this.log('info', '  - One-shot (after) timers');
-    this.log('info', '  - Repeating (every) timers');
-    this.log('info', '  - Limited repeat (times)');
-    this.log('info', '  - Sequences with callbacks');
-    this.log('info', '  - Time scaling (slow-mo/fast-forward)');
-    this.log('info', '  - Tween-style progress timers');
+    const animate = () => {
+      const now = performance.now();
+      elapsed = now - startTime;
+      const dt = 16.67; // ~60fps
+
+      // Update timer system
+      timer.update(dt);
+
+      // Update visual progress
+      vt1.progress = Math.min(elapsed / 500, 1);
+      vt2.progress = (elapsed % 200) / 200;
+      vt3.progress = seqStep / 3;
+      vt4.progress = Math.min(elapsed / 1000, 1);
+      if (vt4.progress >= 1) vt4.completed = true;
+
+      // Redraw
+      drawTimers();
+
+      // Continue animation
+      if (elapsed < totalDuration) {
+        requestAnimationFrame(animate);
+      } else {
+        this.log('success', '\nTimer visualization complete!');
+        this.log('info', '  - One-shot (after) timers');
+        this.log('info', '  - Repeating (every) timers');
+        this.log('info', '  - Sequences with callbacks');
+        this.log('info', '  - Time scaling support');
+      }
+    };
+
+    this.log('info', '\nAnimating timers...');
+    requestAnimationFrame(animate);
   },
 
   demoSave() {
@@ -11057,6 +11427,15 @@ const KonomiApp = {
   demoScene() {
     this.log('info', '── Scene Manager Demo (v9) ──');
 
+    // Auto-switch to 2D canvas
+    this.switchTab('2d');
+    const renderer = this.components.renderer2d;
+    if (!renderer) {
+      this.log('error', '2D canvas not found');
+      return;
+    }
+    const { ctx, width, height } = renderer;
+
     // Create scene manager
     const scenes = KonomiScene.create({
       transitionDuration: 300,
@@ -11064,68 +11443,212 @@ const KonomiApp = {
     });
     this.log('success', 'Created scene manager');
 
-    // Define scenes
+    // Scene colors and content
+    const sceneStyles = {
+      menu: { bg: '#1a3a5c', icon: '◉', title: 'MAIN MENU', subtitle: 'Press Start' },
+      game: { bg: '#2d5a27', icon: '⚔', title: 'GAME', subtitle: 'Level 1' },
+      pause: { bg: '#5a4a3a', icon: '❚❚', title: 'PAUSED', subtitle: 'Press to Resume' },
+      gameover: { bg: '#5a1a1a', icon: '✖', title: 'GAME OVER', subtitle: 'Score: 15000' }
+    };
+
+    // Visual state
+    let currentScene = 'menu';
+    let nextScene = null;
+    let transitionProgress = 0;
+    let transitionType = 'fade';
+    let transitioning = false;
+
+    // Draw a scene
+    const drawScene = (sceneName, alpha = 1, offsetX = 0) => {
+      const style = sceneStyles[sceneName];
+      if (!style) return;
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(offsetX, 0);
+
+      // Background
+      ctx.fillStyle = style.bg;
+      ctx.fillRect(50, 60, width - 100, height - 120);
+
+      // Border
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(50, 60, width - 100, height - 120);
+
+      // Icon
+      ctx.fillStyle = '#fff';
+      ctx.font = '48px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(style.icon, width/2, height/2 - 20);
+
+      // Title
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText(style.title, width/2, height/2 + 30);
+
+      // Subtitle
+      ctx.fillStyle = '#888';
+      ctx.font = '14px monospace';
+      ctx.fillText(style.subtitle, width/2, height/2 + 55);
+
+      ctx.restore();
+    };
+
+    // Draw transition effects
+    const drawTransition = () => {
+      ctx.fillStyle = '#0a0a0f';
+      ctx.fillRect(0, 0, width, height);
+
+      // Title
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = 'bold 16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Scene Manager Visualization', width/2, 30);
+
+      // Transition info
+      ctx.fillStyle = '#888';
+      ctx.font = '12px monospace';
+      ctx.fillText(`Transition: ${transitionType.toUpperCase()}`, width/2, 50);
+
+      if (transitioning && nextScene) {
+        const t = transitionProgress;
+
+        if (transitionType === 'fade') {
+          // Fade out old, fade in new
+          drawScene(currentScene, 1 - t);
+          drawScene(nextScene, t);
+        } else if (transitionType === 'slide') {
+          // Slide left
+          drawScene(currentScene, 1, -width * t);
+          drawScene(nextScene, 1, width * (1 - t));
+        } else if (transitionType === 'circle') {
+          // Circle wipe
+          drawScene(currentScene, 1);
+          ctx.save();
+          ctx.beginPath();
+          const maxRadius = Math.sqrt(width*width + height*height) / 2;
+          ctx.arc(width/2, height/2, maxRadius * t, 0, Math.PI * 2);
+          ctx.clip();
+          drawScene(nextScene, 1);
+          ctx.restore();
+        }
+      } else {
+        drawScene(currentScene);
+      }
+
+      // Scene flow diagram at bottom
+      const sceneOrder = ['menu', 'game', 'pause', 'gameover'];
+      const boxW = 70, boxH = 25;
+      const startX = (width - (sceneOrder.length * boxW + (sceneOrder.length - 1) * 20)) / 2;
+      const flowY = height - 35;
+
+      sceneOrder.forEach((name, i) => {
+        const x = startX + i * (boxW + 20);
+        const isActive = name === (transitioning ? nextScene : currentScene);
+
+        ctx.fillStyle = isActive ? '#00d4ff' : '#1a1a25';
+        ctx.fillRect(x, flowY, boxW, boxH);
+        ctx.strokeStyle = isActive ? '#fff' : '#444';
+        ctx.lineWidth = isActive ? 2 : 1;
+        ctx.strokeRect(x, flowY, boxW, boxH);
+
+        ctx.fillStyle = isActive ? '#000' : '#888';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(name.toUpperCase(), x + boxW/2, flowY + boxH/2 + 3);
+
+        // Arrow to next
+        if (i < sceneOrder.length - 1) {
+          ctx.strokeStyle = '#444';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(x + boxW + 5, flowY + boxH/2);
+          ctx.lineTo(x + boxW + 15, flowY + boxH/2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(x + boxW + 12, flowY + boxH/2 - 3);
+          ctx.lineTo(x + boxW + 15, flowY + boxH/2);
+          ctx.lineTo(x + boxW + 12, flowY + boxH/2 + 3);
+          ctx.stroke();
+        }
+      });
+    };
+
+    // Transition animation
+    const transition = (to, type, duration = 500) => {
+      if (transitioning) return;
+      nextScene = to;
+      transitionType = type;
+      transitioning = true;
+      transitionProgress = 0;
+
+      this.log('info', `Transitioning: ${currentScene} -> ${to} (${type})`);
+
+      const startTime = performance.now();
+      const animate = () => {
+        const elapsed = performance.now() - startTime;
+        transitionProgress = Math.min(elapsed / duration, 1);
+        drawTransition();
+
+        if (transitionProgress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          currentScene = nextScene;
+          nextScene = null;
+          transitioning = false;
+          drawTransition();
+        }
+      };
+      requestAnimationFrame(animate);
+    };
+
+    // Define scene callbacks
     scenes.add('menu', {
-      init: () => this.log('info', '  [menu] Initialized'),
       enter: () => this.log('info', '  [menu] Entered'),
-      exit: () => this.log('info', '  [menu] Exited'),
-      update: () => {},
-      draw: () => {}
+      exit: () => this.log('info', '  [menu] Exited')
     });
-
     scenes.add('game', {
-      init: () => this.log('info', '  [game] Initialized'),
-      enter: (data) => this.log('info', `  [game] Entered with level=${data.level || 1}`),
-      exit: () => this.log('info', '  [game] Exited'),
-      pause: () => this.log('info', '  [game] Paused'),
-      resume: () => this.log('info', '  [game] Resumed')
+      enter: () => this.log('info', '  [game] Entered'),
+      exit: () => this.log('info', '  [game] Exited')
     });
-
     scenes.add('pause', {
-      enter: () => this.log('info', '  [pause] Opened'),
-      exit: () => this.log('info', '  [pause] Closed')
+      enter: () => this.log('info', '  [pause] Entered'),
+      exit: () => this.log('info', '  [pause] Exited')
     });
-
     scenes.add('gameover', {
-      enter: (data) => this.log('info', `  [gameover] Score: ${data.score || 0}`)
+      enter: () => this.log('info', '  [gameover] Entered')
     });
 
     this.log('info', 'Registered 4 scenes: menu, game, pause, gameover');
 
-    // Simulate game flow
-    this.log('info', '\n--- Simulating game flow ---');
+    // Initial draw
+    drawTransition();
 
-    this.log('info', '\n1. Starting at menu:');
-    scenes.switchTo('menu', {}, false);
+    // Animate through scene flow
+    this.log('info', '\n--- Animating scene flow ---');
 
-    this.log('info', '\n2. Starting game (level 1):');
-    scenes.switchTo('game', { level: 1 }, false);
+    const sequence = [
+      { scene: 'game', type: 'fade', delay: 1000 },
+      { scene: 'pause', type: 'slide', delay: 2500 },
+      { scene: 'game', type: 'slide', delay: 4000 },
+      { scene: 'gameover', type: 'circle', delay: 5500 },
+      { scene: 'menu', type: 'fade', delay: 7500 }
+    ];
 
-    this.log('info', '\n3. Opening pause menu (push):');
-    scenes.push('pause');
-    this.log('info', `   Stack depth: ${scenes.getStackDepth()}`);
+    sequence.forEach(({ scene, type, delay }) => {
+      setTimeout(() => {
+        transition(scene, type);
+      }, delay);
+    });
 
-    this.log('info', '\n4. Closing pause (pop):');
-    scenes.pop();
-    this.log('info', `   Stack depth: ${scenes.getStackDepth()}`);
-
-    this.log('info', '\n5. Game over:');
-    scenes.switchTo('gameover', { score: 15000 }, false);
-
-    // List scenes
-    this.log('info', `\nAvailable scenes: ${scenes.listScenes().join(', ')}`);
-    this.log('info', `Current scene: ${scenes.getCurrent()?.name}`);
-
-    // Transition types
-    this.log('info', '\nTransition types: fade, slide, circle');
-    scenes.setTransition('circle', 500);
-
-    this.log('success', '\nScene manager complete! Features:');
-    this.log('info', '  - Scene lifecycle (init, enter, exit, pause, resume)');
-    this.log('info', '  - Push/pop scene stack');
-    this.log('info', '  - Smooth transitions (fade, slide, circle)');
-    this.log('info', '  - Scene data passing');
-    this.log('info', '  - Stack management');
+    setTimeout(() => {
+      this.log('success', '\nScene visualization complete!');
+      this.log('info', '  - Fade transitions');
+      this.log('info', '  - Slide transitions');
+      this.log('info', '  - Circle wipe transitions');
+      this.log('info', '  - Scene lifecycle management');
+    }, 9000);
   },
 
   demoCompression() {
