@@ -66,6 +66,14 @@
       "description": "Adds Input, Camera, Sprites, Pooling",
       "features": ["Input Manager", "2D Camera", "Sprite Animation", "Object Pool", "Action Mapping"],
       "tests": 36
+    },
+    {
+      "file": "v9-complete.html",
+      "version": "v9",
+      "title": "Complete System",
+      "description": "Adds Tilemap, Timer, Save, Scenes",
+      "features": ["Tilemap System", "Timer/Scheduler", "Save System", "Scene Manager", "Auto-tile"],
+      "tests": 40
     }
   ]
 }
