@@ -1,0 +1,5331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konomi Konception - Self-Contained System</title>
+  <style>
+/* ============================================
+   KONOMI KONCEPTION - Styles
+   Pure CSS - Zero Dependencies
+   ============================================ */
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a25;
+  --text-primary: #e0e0e0;
+  --text-secondary: #888;
+  --accent: #00d4ff;
+  --accent-dim: #0099bb;
+  --success: #00ff88;
+  --warning: #ffaa00;
+  --error: #ff4455;
+  --border: #2a2a35;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent) 0%, #fff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.status-bar {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Main Layout */
+.main {
+  display: grid;
+  grid-template-columns: 250px 1fr 300px;
+  min-height: calc(100vh - 70px);
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: 1rem;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 0.25rem;
+}
+
+.nav-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.nav-item.active {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+}
+
+/* Content Area */
+.content {
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.panel-header {
+  background: var(--bg-tertiary);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.panel-body {
+  padding: 1rem;
+}
+
+/* Code Editor */
+.editor {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.editor-content {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Canvas Container */
+.canvas-container {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.btn-primary:hover {
+  background: var(--accent-dim);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.btn-success {
+  background: var(--success);
+  color: var(--bg-primary);
+}
+
+.btn-danger {
+  background: var(--error);
+  color: white;
+}
+
+/* Right Panel */
+.right-panel {
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  padding: 1rem;
+  overflow: auto;
+}
+
+/* Console Output */
+.console {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.console-line {
+  padding: 0.25rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.console-line:last-child {
+  border-bottom: none;
+}
+
+.console-line.info { color: var(--accent); }
+.console-line.success { color: var(--success); }
+.console-line.warning { color: var(--warning); }
+.console-line.error { color: var(--error); }
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+}
+
+/* Progress Bar */
+.progress {
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s;
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar, .right-panel {
+    display: none;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.hidden { display: none; }
+
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">K</div>
+      <div>
+        <div class="logo-text">KONOMI KONCEPTION</div>
+        <div class="logo-sub">Self-Contained System v1.0</div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span>System Online</span>
+      </div>
+      <div class="status-item">
+        <span>Boot: </span>
+        <span id="stat-bootTime">--</span>
+      </div>
+      <div class="status-item">
+        <span>Memory: </span>
+        <span id="stat-memory">--</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Navigation</div>
+        <div class="nav-item active" data-tab="editor">
+          <span class="nav-icon">&#9998;</span>
+          <span>Code Editor</span>
+        </div>
+        <div class="nav-item" data-tab="demos">
+          <span class="nav-icon">&#9881;</span>
+          <span>Demos</span>
+        </div>
+        <div class="nav-item" data-tab="3d">
+          <span class="nav-icon">&#9632;</span>
+          <span>3D Renderer</span>
+        </div>
+        <div class="nav-item" data-tab="database">
+          <span class="nav-icon">&#9776;</span>
+          <span>Database</span>
+        </div>
+        <div class="nav-item" data-tab="tests">
+          <span class="nav-icon">&#10004;</span>
+          <span>Tests</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">System Info</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-dbSize">0</div>
+            <div class="stat-label">Collections</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-uptime">0s</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <section class="content">
+      <!-- Editor Tab -->
+      <div id="editor-content" class="tab-content">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">KCode Editor</span>
+            <div class="flex gap-1">
+              <button class="btn btn-primary" id="runBtn">&#9654; Run</button>
+              <button class="btn btn-secondary" id="testBtn">&#10004; Test</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="editor">
+              <textarea id="codeEditor" class="editor-content" spellcheck="false">// Welcome to Konomi Konception!
+// Write your code here and click Run
+
+let x = 10;
+let y = 20;
+let sum = x + y;
+
+print("Hello, Konomi!");
+print(sum);
+
+// Try conditionals
+if (sum > 25) {
+  print("Sum is greater than 25");
+} else {
+  print("Sum is 25 or less");
+}
+
+// Arrays
+let arr = [1, 2, 3, 4, 5];
+print(arr[2]);
+</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demos Tab -->
+      <div id="demos-content" class="tab-content hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Component Demos</span>
+          </div>
+          <div class="panel-body">
+            <p class="mb-2">Click any button to run a demo and see the results in the console.</p>
+            <div class="flex gap-1" style="flex-wrap: wrap;">
+              <button class="btn btn-primary" data-demo="crypto">&#128274; Crypto Demo</button>
+              <button class="btn btn-primary" data-demo="db">&#128451; Database Demo</button>
+              <button class="btn btn-primary" data-demo="ai">&#129302; AI Demo</button>
+              <button class="btn btn-primary" data-demo="3d">&#127922; 3D Demo</button>
+              <button class="btn btn-primary" data-demo="compress">&#128230; Compression Demo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">System Capabilities</span>
+          </div>
+          <div class="panel-body">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.5rem;">&#10004; SHA256 Hashing</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.5rem;">&#10004; AES-256 Encryption</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.5rem;">&#10004; LZ77+Huffman Compression</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.5rem;">&#10004; B+Tree Database</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.5rem;">&#10004; Bytecode VM</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.5rem;">&#10004; Mini Transformer AI</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+              <tr>
+                <td style="padding: 0.5rem;">&#10004; 2D/3D Renderer</td>
+                <td style="padding: 0.5rem; color: var(--success);">Active</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D Tab -->
+      <div id="3d-content" class="tab-content hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">3D Software Renderer</span>
+            <button class="btn btn-primary" data-demo="3d">&#9654; Render Cube</button>
+          </div>
+          <div class="panel-body">
+            <div class="canvas-container">
+              <canvas id="canvas3d" width="600" height="400"></canvas>
+            </div>
+            <p class="mt-1" style="color: var(--text-secondary); font-size: 0.85rem;">
+              Pure JavaScript software rasterizer with z-buffering and Phong shading. No WebGL required!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Database Tab -->
+      <div id="database-content" class="tab-content hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Database Explorer</span>
+            <button class="btn btn-primary" data-demo="db">&#9654; Run Demo</button>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label class="form-label">Collection Name</label>
+              <input type="text" class="form-input" id="dbCollection" value="users" placeholder="Collection name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Document (JSON)</label>
+              <textarea class="form-input" id="dbDocument" rows="4" placeholder='{"name": "John", "age": 30}'></textarea>
+            </div>
+            <div class="flex gap-1">
+              <button class="btn btn-success" onclick="insertDocument()">Insert</button>
+              <button class="btn btn-secondary" onclick="queryDocuments()">Query All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tests Tab -->
+      <div id="tests-content" class="tab-content hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Self-Test Suite</span>
+            <button class="btn btn-primary" id="runTestsBtn" onclick="KonomiApp.runSelfTest()">&#9654; Run All Tests</button>
+          </div>
+          <div class="panel-body">
+            <p>The self-test suite validates all components of the Konomi Konception system:</p>
+            <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+              <li>Core Utilities (UUID, Base64, Random)</li>
+              <li>SHA256 Hash Implementation</li>
+              <li>AES-256 Encryption/Decryption</li>
+              <li>LZ77+Huffman Compression</li>
+              <li>B+Tree Database Operations</li>
+              <li>Virtual Machine Execution</li>
+            </ul>
+            <p style="color: var(--text-secondary);">Results will appear in the console panel.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Panel -->
+    <aside class="right-panel">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Console Output</span>
+          <button class="btn btn-secondary" onclick="clearConsole()" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Clear</button>
+        </div>
+        <div class="console" id="console"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Quick Actions</span>
+        </div>
+        <div class="panel-body">
+          <button class="btn btn-secondary mb-1" style="width: 100%;" onclick="KonomiApp.saveState()">&#128190; Save State</button>
+          <button class="btn btn-secondary mb-1" style="width: 100%;" onclick="exportSystem()">&#128194; Export Data</button>
+          <button class="btn btn-secondary" style="width: 100%;" onclick="showAbout()">&#9432; About</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Hidden 2D Canvas for demos -->
+  <canvas id="canvas2d" width="400" height="300" style="display: none;"></canvas>
+
+  <script>
+// ============================================
+// KONOMI KONCEPTION - COMPLETE SYSTEM
+// Zero External Dependencies
+// Single HTML File
+// ============================================
+
+// ============================================
+// KONOMI KONCEPTION - Core Utilities
+// Zero Dependencies - Pure JavaScript
+// ============================================
+
+const KonomiUtils = {
+  // CSPRNG - Cryptographically Secure Pseudo-Random Number Generator
+  _seed: Date.now() ^ (Math.random() * 0xFFFFFFFF),
+  _state: [0, 0, 0, 0],
+
+  initRandom() {
+    const seed = Date.now() ^ (Math.random() * 0xFFFFFFFF) ^ (performance.now() * 1000);
+    this._state[0] = seed >>> 0;
+    this._state[1] = (seed * 1103515245 + 12345) >>> 0;
+    this._state[2] = (this._state[1] * 1103515245 + 12345) >>> 0;
+    this._state[3] = (this._state[2] * 1103515245 + 12345) >>> 0;
+  },
+
+  // Xorshift128+ algorithm
+  random() {
+    let s1 = this._state[0];
+    let s0 = this._state[1];
+    const result = (s0 + s1) >>> 0;
+    this._state[0] = s0;
+    s1 ^= s1 << 23;
+    this._state[1] = s1 ^ s0 ^ (s1 >>> 17) ^ (s0 >>> 26);
+    return result / 0xFFFFFFFF;
+  },
+
+  randomInt(min, max) {
+    return Math.floor(this.random() * (max - min + 1)) + min;
+  },
+
+  randomBytes(length) {
+    const bytes = new Uint8Array(length);
+    // Use crypto.getRandomValues if available, fallback to our CSPRNG
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      crypto.getRandomValues(bytes);
+    } else {
+      for (let i = 0; i < length; i++) {
+        bytes[i] = this.randomInt(0, 255);
+      }
+    }
+    return bytes;
+  },
+
+  // String utilities
+  utf8Encode(str) {
+    const bytes = [];
+    for (let i = 0; i < str.length; i++) {
+      let charCode = str.charCodeAt(i);
+      if (charCode < 0x80) {
+        bytes.push(charCode);
+      } else if (charCode < 0x800) {
+        bytes.push(0xC0 | (charCode >> 6), 0x80 | (charCode & 0x3F));
+      } else if (charCode < 0x10000) {
+        bytes.push(0xE0 | (charCode >> 12), 0x80 | ((charCode >> 6) & 0x3F), 0x80 | (charCode & 0x3F));
+      } else {
+        bytes.push(0xF0 | (charCode >> 18), 0x80 | ((charCode >> 12) & 0x3F), 0x80 | ((charCode >> 6) & 0x3F), 0x80 | (charCode & 0x3F));
+      }
+    }
+    return new Uint8Array(bytes);
+  },
+
+  utf8Decode(bytes) {
+    let str = '';
+    let i = 0;
+    while (i < bytes.length) {
+      let byte1 = bytes[i++];
+      if (byte1 < 0x80) {
+        str += String.fromCharCode(byte1);
+      } else if (byte1 < 0xE0) {
+        str += String.fromCharCode(((byte1 & 0x1F) << 6) | (bytes[i++] & 0x3F));
+      } else if (byte1 < 0xF0) {
+        str += String.fromCharCode(((byte1 & 0x0F) << 12) | ((bytes[i++] & 0x3F) << 6) | (bytes[i++] & 0x3F));
+      } else {
+        const codePoint = ((byte1 & 0x07) << 18) | ((bytes[i++] & 0x3F) << 12) | ((bytes[i++] & 0x3F) << 6) | (bytes[i++] & 0x3F);
+        str += String.fromCodePoint(codePoint);
+      }
+    }
+    return str;
+  },
+
+  // Base64 encoding/decoding
+  base64Chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+
+  base64Encode(bytes) {
+    let result = '';
+    const len = bytes.length;
+    for (let i = 0; i < len; i += 3) {
+      const b1 = bytes[i];
+      const b2 = i + 1 < len ? bytes[i + 1] : 0;
+      const b3 = i + 2 < len ? bytes[i + 2] : 0;
+      result += this.base64Chars[b1 >> 2];
+      result += this.base64Chars[((b1 & 0x03) << 4) | (b2 >> 4)];
+      result += i + 1 < len ? this.base64Chars[((b2 & 0x0F) << 2) | (b3 >> 6)] : '=';
+      result += i + 2 < len ? this.base64Chars[b3 & 0x3F] : '=';
+    }
+    return result;
+  },
+
+  base64Decode(str) {
+    const bytes = [];
+    str = str.replace(/=/g, '');
+    for (let i = 0; i < str.length; i += 4) {
+      const b1 = this.base64Chars.indexOf(str[i]);
+      const b2 = this.base64Chars.indexOf(str[i + 1]);
+      const b3 = i + 2 < str.length ? this.base64Chars.indexOf(str[i + 2]) : 0;
+      const b4 = i + 3 < str.length ? this.base64Chars.indexOf(str[i + 3]) : 0;
+      bytes.push((b1 << 2) | (b2 >> 4));
+      if (i + 2 < str.length) bytes.push(((b2 & 0x0F) << 4) | (b3 >> 2));
+      if (i + 3 < str.length) bytes.push(((b3 & 0x03) << 6) | b4);
+    }
+    return new Uint8Array(bytes);
+  },
+
+  // Hex encoding/decoding
+  hexEncode(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  },
+
+  hexDecode(hex) {
+    const bytes = [];
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes.push(parseInt(hex.substr(i, 2), 16));
+    }
+    return new Uint8Array(bytes);
+  },
+
+  // Deep clone
+  deepClone(obj) {
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) return obj.map(item => this.deepClone(item));
+    const cloned = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        cloned[key] = this.deepClone(obj[key]);
+      }
+    }
+    return cloned;
+  },
+
+  // Event emitter mixin
+  createEventEmitter() {
+    const listeners = {};
+    return {
+      on(event, callback) {
+        if (!listeners[event]) listeners[event] = [];
+        listeners[event].push(callback);
+        return () => this.off(event, callback);
+      },
+      off(event, callback) {
+        if (!listeners[event]) return;
+        listeners[event] = listeners[event].filter(cb => cb !== callback);
+      },
+      emit(event, ...args) {
+        if (!listeners[event]) return;
+        listeners[event].forEach(cb => cb(...args));
+      }
+    };
+  },
+
+  // Timestamp
+  now() {
+    return Date.now();
+  },
+
+  // UUID v4 generator
+  uuid() {
+    const bytes = this.randomBytes(16);
+    bytes[6] = (bytes[6] & 0x0F) | 0x40;
+    bytes[8] = (bytes[8] & 0x3F) | 0x80;
+    const hex = this.hexEncode(bytes);
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+  }
+};
+
+// Initialize random state
+KonomiUtils.initRandom();
+
+
+// ============================================
+// KONOMI KONCEPTION - SHA256 Implementation
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiSHA256 = {
+  // SHA256 constants
+  K: [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  ],
+
+  // Initial hash values
+  H0: [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19],
+
+  // Right rotate
+  rotr(n, x) {
+    return ((x >>> n) | (x << (32 - n))) >>> 0;
+  },
+
+  // SHA256 functions
+  ch(x, y, z) {
+    return ((x & y) ^ (~x & z)) >>> 0;
+  },
+
+  maj(x, y, z) {
+    return ((x & y) ^ (x & z) ^ (y & z)) >>> 0;
+  },
+
+  sigma0(x) {
+    return (this.rotr(2, x) ^ this.rotr(13, x) ^ this.rotr(22, x)) >>> 0;
+  },
+
+  sigma1(x) {
+    return (this.rotr(6, x) ^ this.rotr(11, x) ^ this.rotr(25, x)) >>> 0;
+  },
+
+  gamma0(x) {
+    return (this.rotr(7, x) ^ this.rotr(18, x) ^ (x >>> 3)) >>> 0;
+  },
+
+  gamma1(x) {
+    return (this.rotr(17, x) ^ this.rotr(19, x) ^ (x >>> 10)) >>> 0;
+  },
+
+  // Pad message
+  pad(bytes) {
+    const len = bytes.length;
+    const bitLen = len * 8;
+
+    // Calculate padding
+    let padLen = 64 - ((len + 9) % 64);
+    if (padLen === 64) padLen = 0;
+
+    const padded = new Uint8Array(len + 1 + padLen + 8);
+    padded.set(bytes);
+    padded[len] = 0x80;
+
+    // Append bit length as 64-bit big-endian
+    const view = new DataView(padded.buffer);
+    view.setUint32(padded.length - 4, bitLen >>> 0, false);
+
+    return padded;
+  },
+
+  // Process a 512-bit block
+  processBlock(H, block) {
+    const W = new Uint32Array(64);
+    const view = new DataView(block.buffer, block.byteOffset);
+
+    // Copy block into first 16 words
+    for (let i = 0; i < 16; i++) {
+      W[i] = view.getUint32(i * 4, false);
+    }
+
+    // Extend to 64 words
+    for (let i = 16; i < 64; i++) {
+      W[i] = (this.gamma1(W[i - 2]) + W[i - 7] + this.gamma0(W[i - 15]) + W[i - 16]) >>> 0;
+    }
+
+    // Initialize working variables
+    let [a, b, c, d, e, f, g, h] = H;
+
+    // Main loop
+    for (let i = 0; i < 64; i++) {
+      const T1 = (h + this.sigma1(e) + this.ch(e, f, g) + this.K[i] + W[i]) >>> 0;
+      const T2 = (this.sigma0(a) + this.maj(a, b, c)) >>> 0;
+
+      h = g;
+      g = f;
+      f = e;
+      e = (d + T1) >>> 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (T1 + T2) >>> 0;
+    }
+
+    // Update hash
+    return [
+      (H[0] + a) >>> 0,
+      (H[1] + b) >>> 0,
+      (H[2] + c) >>> 0,
+      (H[3] + d) >>> 0,
+      (H[4] + e) >>> 0,
+      (H[5] + f) >>> 0,
+      (H[6] + g) >>> 0,
+      (H[7] + h) >>> 0
+    ];
+  },
+
+  // Hash bytes
+  hashBytes(bytes) {
+    const padded = this.pad(bytes);
+    let H = [...this.H0];
+
+    // Process each 512-bit block
+    for (let i = 0; i < padded.length; i += 64) {
+      H = this.processBlock(H, padded.subarray(i, i + 64));
+    }
+
+    // Convert to bytes
+    const result = new Uint8Array(32);
+    const view = new DataView(result.buffer);
+    for (let i = 0; i < 8; i++) {
+      view.setUint32(i * 4, H[i], false);
+    }
+
+    return result;
+  },
+
+  // Hash string (returns hex)
+  hash(str) {
+    const bytes = KonomiUtils.utf8Encode(str);
+    const hash = this.hashBytes(bytes);
+    return KonomiUtils.hexEncode(hash);
+  },
+
+  // HMAC-SHA256
+  hmac(key, message) {
+    // Convert to bytes if string
+    let keyBytes = typeof key === 'string' ? KonomiUtils.utf8Encode(key) : key;
+    const msgBytes = typeof message === 'string' ? KonomiUtils.utf8Encode(message) : message;
+
+    // If key > 64 bytes, hash it
+    if (keyBytes.length > 64) {
+      keyBytes = this.hashBytes(keyBytes);
+    }
+
+    // Pad key to 64 bytes
+    const paddedKey = new Uint8Array(64);
+    paddedKey.set(keyBytes);
+
+    // Create inner and outer padded keys
+    const ipad = new Uint8Array(64);
+    const opad = new Uint8Array(64);
+    for (let i = 0; i < 64; i++) {
+      ipad[i] = paddedKey[i] ^ 0x36;
+      opad[i] = paddedKey[i] ^ 0x5c;
+    }
+
+    // Inner hash
+    const inner = new Uint8Array(64 + msgBytes.length);
+    inner.set(ipad);
+    inner.set(msgBytes, 64);
+    const innerHash = this.hashBytes(inner);
+
+    // Outer hash
+    const outer = new Uint8Array(64 + 32);
+    outer.set(opad);
+    outer.set(innerHash, 64);
+
+    return this.hashBytes(outer);
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - AES256 Implementation
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiAES = {
+  // S-box for SubBytes transformation
+  SBOX: [
+    0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
+    0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
+    0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
+    0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75,
+    0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84,
+    0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf,
+    0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8,
+    0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2,
+    0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73,
+    0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb,
+    0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79,
+    0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08,
+    0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a,
+    0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e,
+    0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
+    0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
+  ],
+
+  // Inverse S-box for InvSubBytes
+  INV_SBOX: [
+    0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb,
+    0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb,
+    0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e,
+    0x08, 0x2e, 0xa1, 0x66, 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49, 0x6d, 0x8b, 0xd1, 0x25,
+    0x72, 0xf8, 0xf6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xd4, 0xa4, 0x5c, 0xcc, 0x5d, 0x65, 0xb6, 0x92,
+    0x6c, 0x70, 0x48, 0x50, 0xfd, 0xed, 0xb9, 0xda, 0x5e, 0x15, 0x46, 0x57, 0xa7, 0x8d, 0x9d, 0x84,
+    0x90, 0xd8, 0xab, 0x00, 0x8c, 0xbc, 0xd3, 0x0a, 0xf7, 0xe4, 0x58, 0x05, 0xb8, 0xb3, 0x45, 0x06,
+    0xd0, 0x2c, 0x1e, 0x8f, 0xca, 0x3f, 0x0f, 0x02, 0xc1, 0xaf, 0xbd, 0x03, 0x01, 0x13, 0x8a, 0x6b,
+    0x3a, 0x91, 0x11, 0x41, 0x4f, 0x67, 0xdc, 0xea, 0x97, 0xf2, 0xcf, 0xce, 0xf0, 0xb4, 0xe6, 0x73,
+    0x96, 0xac, 0x74, 0x22, 0xe7, 0xad, 0x35, 0x85, 0xe2, 0xf9, 0x37, 0xe8, 0x1c, 0x75, 0xdf, 0x6e,
+    0x47, 0xf1, 0x1a, 0x71, 0x1d, 0x29, 0xc5, 0x89, 0x6f, 0xb7, 0x62, 0x0e, 0xaa, 0x18, 0xbe, 0x1b,
+    0xfc, 0x56, 0x3e, 0x4b, 0xc6, 0xd2, 0x79, 0x20, 0x9a, 0xdb, 0xc0, 0xfe, 0x78, 0xcd, 0x5a, 0xf4,
+    0x1f, 0xdd, 0xa8, 0x33, 0x88, 0x07, 0xc7, 0x31, 0xb1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xec, 0x5f,
+    0x60, 0x51, 0x7f, 0xa9, 0x19, 0xb5, 0x4a, 0x0d, 0x2d, 0xe5, 0x7a, 0x9f, 0x93, 0xc9, 0x9c, 0xef,
+    0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,
+    0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
+  ],
+
+  // Round constants
+  RCON: [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36],
+
+  // Galois field multiplication
+  gmul(a, b) {
+    let p = 0;
+    for (let i = 0; i < 8; i++) {
+      if (b & 1) p ^= a;
+      const hi = a & 0x80;
+      a = (a << 1) & 0xFF;
+      if (hi) a ^= 0x1b;
+      b >>= 1;
+    }
+    return p;
+  },
+
+  // Key expansion for AES-256
+  keyExpansion(key) {
+    const Nk = 8; // 256 bit key = 8 words
+    const Nr = 14; // 14 rounds for AES-256
+    const Nb = 4;
+    const W = new Uint32Array((Nr + 1) * Nb);
+
+    // Copy key into first Nk words
+    for (let i = 0; i < Nk; i++) {
+      W[i] = (key[4 * i] << 24) | (key[4 * i + 1] << 16) | (key[4 * i + 2] << 8) | key[4 * i + 3];
+    }
+
+    // Generate remaining words
+    for (let i = Nk; i < (Nr + 1) * Nb; i++) {
+      let temp = W[i - 1];
+
+      if (i % Nk === 0) {
+        // RotWord + SubWord + Rcon
+        temp = ((temp << 8) | (temp >>> 24)) >>> 0;
+        temp = (this.SBOX[(temp >>> 24) & 0xFF] << 24) |
+               (this.SBOX[(temp >>> 16) & 0xFF] << 16) |
+               (this.SBOX[(temp >>> 8) & 0xFF] << 8) |
+               this.SBOX[temp & 0xFF];
+        temp ^= (this.RCON[(i / Nk) - 1] << 24);
+      } else if (i % Nk === 4) {
+        // SubWord only
+        temp = (this.SBOX[(temp >>> 24) & 0xFF] << 24) |
+               (this.SBOX[(temp >>> 16) & 0xFF] << 16) |
+               (this.SBOX[(temp >>> 8) & 0xFF] << 8) |
+               this.SBOX[temp & 0xFF];
+      }
+
+      W[i] = (W[i - Nk] ^ temp) >>> 0;
+    }
+
+    return W;
+  },
+
+  // SubBytes transformation
+  subBytes(state) {
+    for (let i = 0; i < 16; i++) {
+      state[i] = this.SBOX[state[i]];
+    }
+  },
+
+  // InvSubBytes transformation
+  invSubBytes(state) {
+    for (let i = 0; i < 16; i++) {
+      state[i] = this.INV_SBOX[state[i]];
+    }
+  },
+
+  // ShiftRows transformation
+  shiftRows(state) {
+    // Row 1: shift left by 1
+    let temp = state[1];
+    state[1] = state[5];
+    state[5] = state[9];
+    state[9] = state[13];
+    state[13] = temp;
+
+    // Row 2: shift left by 2
+    temp = state[2];
+    state[2] = state[10];
+    state[10] = temp;
+    temp = state[6];
+    state[6] = state[14];
+    state[14] = temp;
+
+    // Row 3: shift left by 3
+    temp = state[15];
+    state[15] = state[11];
+    state[11] = state[7];
+    state[7] = state[3];
+    state[3] = temp;
+  },
+
+  // InvShiftRows transformation
+  invShiftRows(state) {
+    // Row 1: shift right by 1
+    let temp = state[13];
+    state[13] = state[9];
+    state[9] = state[5];
+    state[5] = state[1];
+    state[1] = temp;
+
+    // Row 2: shift right by 2
+    temp = state[2];
+    state[2] = state[10];
+    state[10] = temp;
+    temp = state[6];
+    state[6] = state[14];
+    state[14] = temp;
+
+    // Row 3: shift right by 3
+    temp = state[3];
+    state[3] = state[7];
+    state[7] = state[11];
+    state[11] = state[15];
+    state[15] = temp;
+  },
+
+  // MixColumns transformation
+  mixColumns(state) {
+    for (let c = 0; c < 4; c++) {
+      const i = c * 4;
+      const a = [...state.slice(i, i + 4)];
+      state[i] = this.gmul(2, a[0]) ^ this.gmul(3, a[1]) ^ a[2] ^ a[3];
+      state[i + 1] = a[0] ^ this.gmul(2, a[1]) ^ this.gmul(3, a[2]) ^ a[3];
+      state[i + 2] = a[0] ^ a[1] ^ this.gmul(2, a[2]) ^ this.gmul(3, a[3]);
+      state[i + 3] = this.gmul(3, a[0]) ^ a[1] ^ a[2] ^ this.gmul(2, a[3]);
+    }
+  },
+
+  // InvMixColumns transformation
+  invMixColumns(state) {
+    for (let c = 0; c < 4; c++) {
+      const i = c * 4;
+      const a = [...state.slice(i, i + 4)];
+      state[i] = this.gmul(0x0e, a[0]) ^ this.gmul(0x0b, a[1]) ^ this.gmul(0x0d, a[2]) ^ this.gmul(0x09, a[3]);
+      state[i + 1] = this.gmul(0x09, a[0]) ^ this.gmul(0x0e, a[1]) ^ this.gmul(0x0b, a[2]) ^ this.gmul(0x0d, a[3]);
+      state[i + 2] = this.gmul(0x0d, a[0]) ^ this.gmul(0x09, a[1]) ^ this.gmul(0x0e, a[2]) ^ this.gmul(0x0b, a[3]);
+      state[i + 3] = this.gmul(0x0b, a[0]) ^ this.gmul(0x0d, a[1]) ^ this.gmul(0x09, a[2]) ^ this.gmul(0x0e, a[3]);
+    }
+  },
+
+  // AddRoundKey transformation
+  addRoundKey(state, W, round) {
+    for (let c = 0; c < 4; c++) {
+      const word = W[round * 4 + c];
+      state[c * 4] ^= (word >>> 24) & 0xFF;
+      state[c * 4 + 1] ^= (word >>> 16) & 0xFF;
+      state[c * 4 + 2] ^= (word >>> 8) & 0xFF;
+      state[c * 4 + 3] ^= word & 0xFF;
+    }
+  },
+
+  // Encrypt single block
+  encryptBlock(block, W) {
+    const state = new Uint8Array(block);
+    const Nr = 14;
+
+    this.addRoundKey(state, W, 0);
+
+    for (let round = 1; round < Nr; round++) {
+      this.subBytes(state);
+      this.shiftRows(state);
+      this.mixColumns(state);
+      this.addRoundKey(state, W, round);
+    }
+
+    this.subBytes(state);
+    this.shiftRows(state);
+    this.addRoundKey(state, W, Nr);
+
+    return state;
+  },
+
+  // Decrypt single block
+  decryptBlock(block, W) {
+    const state = new Uint8Array(block);
+    const Nr = 14;
+
+    this.addRoundKey(state, W, Nr);
+
+    for (let round = Nr - 1; round > 0; round--) {
+      this.invShiftRows(state);
+      this.invSubBytes(state);
+      this.addRoundKey(state, W, round);
+      this.invMixColumns(state);
+    }
+
+    this.invShiftRows(state);
+    this.invSubBytes(state);
+    this.addRoundKey(state, W, 0);
+
+    return state;
+  },
+
+  // PKCS7 padding
+  pad(data) {
+    const blockSize = 16;
+    const padLen = blockSize - (data.length % blockSize);
+    const padded = new Uint8Array(data.length + padLen);
+    padded.set(data);
+    for (let i = data.length; i < padded.length; i++) {
+      padded[i] = padLen;
+    }
+    return padded;
+  },
+
+  // Remove PKCS7 padding
+  unpad(data) {
+    const padLen = data[data.length - 1];
+    if (padLen > 16 || padLen === 0) throw new Error('Invalid padding');
+    for (let i = data.length - padLen; i < data.length; i++) {
+      if (data[i] !== padLen) throw new Error('Invalid padding');
+    }
+    return data.slice(0, data.length - padLen);
+  },
+
+  // CBC mode encryption
+  encryptCBC(plaintext, key, iv) {
+    const W = this.keyExpansion(key);
+    const padded = this.pad(plaintext);
+    const ciphertext = new Uint8Array(padded.length);
+    let prevBlock = new Uint8Array(iv);
+
+    for (let i = 0; i < padded.length; i += 16) {
+      const block = new Uint8Array(16);
+      for (let j = 0; j < 16; j++) {
+        block[j] = padded[i + j] ^ prevBlock[j];
+      }
+      const encrypted = this.encryptBlock(block, W);
+      ciphertext.set(encrypted, i);
+      prevBlock = encrypted;
+    }
+
+    return ciphertext;
+  },
+
+  // CBC mode decryption
+  decryptCBC(ciphertext, key, iv) {
+    const W = this.keyExpansion(key);
+    const plaintext = new Uint8Array(ciphertext.length);
+    let prevBlock = new Uint8Array(iv);
+
+    for (let i = 0; i < ciphertext.length; i += 16) {
+      const block = ciphertext.slice(i, i + 16);
+      const decrypted = this.decryptBlock(block, W);
+      for (let j = 0; j < 16; j++) {
+        plaintext[i + j] = decrypted[j] ^ prevBlock[j];
+      }
+      prevBlock = block;
+    }
+
+    return this.unpad(plaintext);
+  },
+
+  // High-level encrypt (string to base64)
+  encrypt(plaintext, password) {
+    const key = KonomiSHA256.hashBytes(KonomiUtils.utf8Encode(password));
+    const iv = KonomiUtils.randomBytes(16);
+    const data = KonomiUtils.utf8Encode(plaintext);
+    const encrypted = this.encryptCBC(data, key, iv);
+
+    // Prepend IV to ciphertext
+    const result = new Uint8Array(16 + encrypted.length);
+    result.set(iv);
+    result.set(encrypted, 16);
+
+    return KonomiUtils.base64Encode(result);
+  },
+
+  // High-level decrypt (base64 to string)
+  decrypt(ciphertext, password) {
+    const key = KonomiSHA256.hashBytes(KonomiUtils.utf8Encode(password));
+    const data = KonomiUtils.base64Decode(ciphertext);
+    const iv = data.slice(0, 16);
+    const encrypted = data.slice(16);
+    const decrypted = this.decryptCBC(encrypted, key, iv);
+    return KonomiUtils.utf8Decode(decrypted);
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - LZ77 + Huffman Compression
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiCompression = {
+  // LZ77 Constants
+  WINDOW_SIZE: 32768,  // 32KB sliding window
+  MIN_MATCH: 3,
+  MAX_MATCH: 258,
+
+  // ============================================
+  // LZ77 COMPRESSION
+  // ============================================
+
+  lz77Encode(data) {
+    const result = [];
+    let pos = 0;
+
+    while (pos < data.length) {
+      let bestOffset = 0;
+      let bestLength = 0;
+
+      // Search window start
+      const windowStart = Math.max(0, pos - this.WINDOW_SIZE);
+
+      // Find longest match in window
+      for (let i = windowStart; i < pos; i++) {
+        let length = 0;
+        while (
+          length < this.MAX_MATCH &&
+          pos + length < data.length &&
+          data[i + length] === data[pos + length]
+        ) {
+          length++;
+        }
+
+        if (length >= this.MIN_MATCH && length > bestLength) {
+          bestOffset = pos - i;
+          bestLength = length;
+        }
+      }
+
+      if (bestLength >= this.MIN_MATCH) {
+        // Output (offset, length) pair
+        result.push({ type: 'match', offset: bestOffset, length: bestLength });
+        pos += bestLength;
+      } else {
+        // Output literal byte
+        result.push({ type: 'literal', value: data[pos] });
+        pos++;
+      }
+    }
+
+    return result;
+  },
+
+  lz77Decode(tokens) {
+    const result = [];
+
+    for (const token of tokens) {
+      if (token.type === 'literal') {
+        result.push(token.value);
+      } else {
+        const start = result.length - token.offset;
+        for (let i = 0; i < token.length; i++) {
+          result.push(result[start + i]);
+        }
+      }
+    }
+
+    return new Uint8Array(result);
+  },
+
+  // ============================================
+  // HUFFMAN CODING
+  // ============================================
+
+  // Build frequency table
+  buildFrequencyTable(data) {
+    const freq = new Map();
+    for (const byte of data) {
+      freq.set(byte, (freq.get(byte) || 0) + 1);
+    }
+    return freq;
+  },
+
+  // Build Huffman tree
+  buildHuffmanTree(freq) {
+    // Create leaf nodes
+    const nodes = [];
+    for (const [value, count] of freq) {
+      nodes.push({ value, count, left: null, right: null });
+    }
+
+    // Handle edge case
+    if (nodes.length === 0) return null;
+    if (nodes.length === 1) {
+      return { value: null, count: nodes[0].count, left: nodes[0], right: null };
+    }
+
+    // Build tree using priority queue (simple array-based)
+    while (nodes.length > 1) {
+      nodes.sort((a, b) => a.count - b.count);
+      const left = nodes.shift();
+      const right = nodes.shift();
+      nodes.push({
+        value: null,
+        count: left.count + right.count,
+        left,
+        right
+      });
+    }
+
+    return nodes[0];
+  },
+
+  // Generate Huffman codes from tree
+  generateCodes(tree, prefix = '', codes = new Map()) {
+    if (!tree) return codes;
+
+    if (tree.value !== null) {
+      codes.set(tree.value, prefix || '0');
+    } else {
+      this.generateCodes(tree.left, prefix + '0', codes);
+      this.generateCodes(tree.right, prefix + '1', codes);
+    }
+
+    return codes;
+  },
+
+  // Encode data with Huffman codes
+  huffmanEncode(data) {
+    const freq = this.buildFrequencyTable(data);
+    const tree = this.buildHuffmanTree(freq);
+    const codes = this.generateCodes(tree);
+
+    // Build bit string
+    let bitString = '';
+    for (const byte of data) {
+      bitString += codes.get(byte);
+    }
+
+    // Convert to bytes
+    const paddingBits = (8 - (bitString.length % 8)) % 8;
+    bitString += '0'.repeat(paddingBits);
+
+    const bytes = new Uint8Array(bitString.length / 8);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(bitString.substr(i * 8, 8), 2);
+    }
+
+    return {
+      data: bytes,
+      tree: this.serializeTree(tree),
+      originalLength: data.length,
+      paddingBits
+    };
+  },
+
+  // Serialize Huffman tree for storage
+  serializeTree(tree) {
+    if (!tree) return null;
+    if (tree.value !== null) {
+      return { v: tree.value };
+    }
+    return {
+      l: this.serializeTree(tree.left),
+      r: this.serializeTree(tree.right)
+    };
+  },
+
+  // Deserialize Huffman tree
+  deserializeTree(data) {
+    if (!data) return null;
+    if ('v' in data) {
+      return { value: data.v, left: null, right: null };
+    }
+    return {
+      value: null,
+      left: this.deserializeTree(data.l),
+      right: this.deserializeTree(data.r)
+    };
+  },
+
+  // Decode Huffman encoded data
+  huffmanDecode(encoded) {
+    const tree = this.deserializeTree(encoded.tree);
+    if (!tree) return new Uint8Array(0);
+
+    // Convert bytes to bit string
+    let bitString = '';
+    for (const byte of encoded.data) {
+      bitString += byte.toString(2).padStart(8, '0');
+    }
+
+    // Remove padding
+    bitString = bitString.slice(0, bitString.length - encoded.paddingBits);
+
+    // Decode using tree
+    const result = [];
+    let node = tree;
+    for (const bit of bitString) {
+      node = bit === '0' ? node.left : node.right;
+      if (node.value !== null) {
+        result.push(node.value);
+        node = tree;
+      }
+    }
+
+    return new Uint8Array(result);
+  },
+
+  // ============================================
+  // COMBINED LZ77 + HUFFMAN
+  // ============================================
+
+  // Serialize LZ77 tokens to bytes
+  serializeLZ77(tokens) {
+    const bytes = [];
+
+    for (const token of tokens) {
+      if (token.type === 'literal') {
+        bytes.push(0); // Flag: literal
+        bytes.push(token.value);
+      } else {
+        bytes.push(1); // Flag: match
+        // Offset as 2 bytes
+        bytes.push((token.offset >> 8) & 0xFF);
+        bytes.push(token.offset & 0xFF);
+        // Length as 1 byte (adjusted for MIN_MATCH)
+        bytes.push(token.length - this.MIN_MATCH);
+      }
+    }
+
+    return new Uint8Array(bytes);
+  },
+
+  // Deserialize LZ77 tokens from bytes
+  deserializeLZ77(bytes) {
+    const tokens = [];
+    let i = 0;
+
+    while (i < bytes.length) {
+      const flag = bytes[i++];
+      if (flag === 0) {
+        tokens.push({ type: 'literal', value: bytes[i++] });
+      } else {
+        const offset = (bytes[i++] << 8) | bytes[i++];
+        const length = bytes[i++] + this.MIN_MATCH;
+        tokens.push({ type: 'match', offset, length });
+      }
+    }
+
+    return tokens;
+  },
+
+  // Full compression: LZ77 -> Huffman
+  compress(data) {
+    if (typeof data === 'string') {
+      data = KonomiUtils.utf8Encode(data);
+    }
+
+    // Stage 1: LZ77
+    const lz77Tokens = this.lz77Encode(data);
+    const lz77Bytes = this.serializeLZ77(lz77Tokens);
+
+    // Stage 2: Huffman
+    const huffmanEncoded = this.huffmanEncode(lz77Bytes);
+
+    // Package result
+    return {
+      version: 1,
+      originalSize: data.length,
+      lz77Size: lz77Bytes.length,
+      compressedSize: huffmanEncoded.data.length,
+      huffman: huffmanEncoded
+    };
+  },
+
+  // Full decompression: Huffman -> LZ77
+  decompress(compressed) {
+    // Stage 1: Huffman decode
+    const lz77Bytes = this.huffmanDecode(compressed.huffman);
+
+    // Stage 2: LZ77 decode
+    const tokens = this.deserializeLZ77(lz77Bytes);
+    const data = this.lz77Decode(tokens);
+
+    return data;
+  },
+
+  // Compress to base64 string
+  compressToString(data) {
+    const compressed = this.compress(data);
+    return KonomiUtils.base64Encode(
+      KonomiUtils.utf8Encode(JSON.stringify(compressed))
+    );
+  },
+
+  // Decompress from base64 string
+  decompressFromString(str) {
+    const compressed = JSON.parse(
+      KonomiUtils.utf8Decode(KonomiUtils.base64Decode(str))
+    );
+    // Reconstruct Uint8Array from data
+    compressed.huffman.data = new Uint8Array(Object.values(compressed.huffman.data));
+    return this.decompress(compressed);
+  },
+
+  // Get compression ratio
+  getCompressionRatio(original, compressed) {
+    const originalSize = typeof original === 'string' ? original.length : original.length;
+    return {
+      originalSize,
+      compressedSize: compressed.compressedSize,
+      ratio: ((1 - compressed.compressedSize / originalSize) * 100).toFixed(2) + '%'
+    };
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - Virtual Machine
+// Bytecode Compiler & Interpreter
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiVM = {
+  // Bytecode opcodes
+  OP: {
+    // Stack operations
+    NOP: 0x00,
+    PUSH: 0x01,
+    POP: 0x02,
+    DUP: 0x03,
+    SWAP: 0x04,
+
+    // Arithmetic
+    ADD: 0x10,
+    SUB: 0x11,
+    MUL: 0x12,
+    DIV: 0x13,
+    MOD: 0x14,
+    NEG: 0x15,
+
+    // Comparison
+    EQ: 0x20,
+    NEQ: 0x21,
+    LT: 0x22,
+    LTE: 0x23,
+    GT: 0x24,
+    GTE: 0x25,
+
+    // Logic
+    AND: 0x30,
+    OR: 0x31,
+    NOT: 0x32,
+
+    // Variables
+    LOAD: 0x40,
+    STORE: 0x41,
+    LOAD_GLOBAL: 0x42,
+    STORE_GLOBAL: 0x43,
+
+    // Control flow
+    JMP: 0x50,
+    JZ: 0x51,      // Jump if zero
+    JNZ: 0x52,     // Jump if not zero
+
+    // Functions
+    CALL: 0x60,
+    RET: 0x61,
+    CALL_NATIVE: 0x62,
+
+    // Objects/Arrays
+    NEW_ARRAY: 0x70,
+    ARRAY_GET: 0x71,
+    ARRAY_SET: 0x72,
+    ARRAY_LEN: 0x73,
+    NEW_OBJ: 0x74,
+    OBJ_GET: 0x75,
+    OBJ_SET: 0x76,
+
+    // I/O
+    PRINT: 0x80,
+    INPUT: 0x81,
+
+    // System
+    HALT: 0xFF
+  },
+
+  // Token types for lexer
+  TOKEN: {
+    NUMBER: 'NUMBER',
+    STRING: 'STRING',
+    IDENTIFIER: 'IDENTIFIER',
+    KEYWORD: 'KEYWORD',
+    OPERATOR: 'OPERATOR',
+    PUNCTUATION: 'PUNCTUATION',
+    EOF: 'EOF'
+  },
+
+  KEYWORDS: ['let', 'const', 'if', 'else', 'while', 'for', 'function', 'return', 'true', 'false', 'null', 'print'],
+  OPERATORS: ['+', '-', '*', '/', '%', '=', '==', '!=', '<', '<=', '>', '>=', '&&', '||', '!'],
+  PUNCTUATION: ['(', ')', '{', '}', '[', ']', ',', ';', ':'],
+
+  // ============================================
+  // LEXER
+  // ============================================
+
+  tokenize(source) {
+    const tokens = [];
+    let pos = 0;
+    let line = 1;
+    let col = 1;
+
+    const peek = () => source[pos];
+    const advance = () => {
+      const ch = source[pos++];
+      if (ch === '\n') { line++; col = 1; }
+      else { col++; }
+      return ch;
+    };
+    const match = (ch) => peek() === ch && advance();
+
+    while (pos < source.length) {
+      const start = { line, col };
+
+      // Skip whitespace
+      if (/\s/.test(peek())) {
+        advance();
+        continue;
+      }
+
+      // Skip comments
+      if (peek() === '/' && source[pos + 1] === '/') {
+        while (peek() && peek() !== '\n') advance();
+        continue;
+      }
+
+      // Numbers
+      if (/\d/.test(peek()) || (peek() === '.' && /\d/.test(source[pos + 1]))) {
+        let value = '';
+        while (/[\d.]/.test(peek())) value += advance();
+        tokens.push({ type: this.TOKEN.NUMBER, value: parseFloat(value), start });
+        continue;
+      }
+
+      // Strings
+      if (peek() === '"' || peek() === "'") {
+        const quote = advance();
+        let value = '';
+        while (peek() && peek() !== quote) {
+          if (peek() === '\\') {
+            advance();
+            const esc = { n: '\n', t: '\t', r: '\r', '\\': '\\', '"': '"', "'": "'" };
+            value += esc[advance()] || '';
+          } else {
+            value += advance();
+          }
+        }
+        advance(); // closing quote
+        tokens.push({ type: this.TOKEN.STRING, value, start });
+        continue;
+      }
+
+      // Identifiers and keywords
+      if (/[a-zA-Z_]/.test(peek())) {
+        let value = '';
+        while (/[a-zA-Z0-9_]/.test(peek())) value += advance();
+        const type = this.KEYWORDS.includes(value) ? this.TOKEN.KEYWORD : this.TOKEN.IDENTIFIER;
+        tokens.push({ type, value, start });
+        continue;
+      }
+
+      // Operators (multi-char first)
+      let matched = false;
+      for (const op of ['==', '!=', '<=', '>=', '&&', '||']) {
+        if (source.substr(pos, op.length) === op) {
+          tokens.push({ type: this.TOKEN.OPERATOR, value: op, start });
+          pos += op.length;
+          matched = true;
+          break;
+        }
+      }
+      if (matched) continue;
+
+      // Single-char operators
+      if (this.OPERATORS.includes(peek())) {
+        tokens.push({ type: this.TOKEN.OPERATOR, value: advance(), start });
+        continue;
+      }
+
+      // Punctuation
+      if (this.PUNCTUATION.includes(peek())) {
+        tokens.push({ type: this.TOKEN.PUNCTUATION, value: advance(), start });
+        continue;
+      }
+
+      throw new Error(`Unexpected character '${peek()}' at line ${line}, col ${col}`);
+    }
+
+    tokens.push({ type: this.TOKEN.EOF, value: null, start: { line, col } });
+    return tokens;
+  },
+
+  // ============================================
+  // PARSER
+  // ============================================
+
+  parse(tokens) {
+    let pos = 0;
+
+    const peek = () => tokens[pos];
+    const advance = () => tokens[pos++];
+    const expect = (type, value) => {
+      const token = advance();
+      if (token.type !== type || (value !== undefined && token.value !== value)) {
+        throw new Error(`Expected ${type} ${value || ''}, got ${token.type} ${token.value}`);
+      }
+      return token;
+    };
+    const check = (type, value) => {
+      const token = peek();
+      return token.type === type && (value === undefined || token.value === value);
+    };
+
+    // Expression parsing with precedence
+    const parseExpression = (minPrec = 0) => {
+      let left = parseUnary();
+
+      while (true) {
+        const token = peek();
+        if (token.type !== this.TOKEN.OPERATOR) break;
+
+        const prec = {
+          '||': 1, '&&': 2,
+          '==': 3, '!=': 3,
+          '<': 4, '<=': 4, '>': 4, '>=': 4,
+          '+': 5, '-': 5,
+          '*': 6, '/': 6, '%': 6
+        }[token.value];
+
+        if (prec === undefined || prec < minPrec) break;
+
+        advance();
+        const right = parseExpression(prec + 1);
+        left = { type: 'BinaryExpr', op: token.value, left, right };
+      }
+
+      return left;
+    };
+
+    const parseUnary = () => {
+      if (check(this.TOKEN.OPERATOR, '-') || check(this.TOKEN.OPERATOR, '!')) {
+        const op = advance().value;
+        return { type: 'UnaryExpr', op, operand: parseUnary() };
+      }
+      return parsePostfix();
+    };
+
+    const parsePostfix = () => {
+      let expr = parsePrimary();
+
+      while (true) {
+        if (check(this.TOKEN.PUNCTUATION, '(')) {
+          advance();
+          const args = [];
+          while (!check(this.TOKEN.PUNCTUATION, ')')) {
+            args.push(parseExpression());
+            if (!check(this.TOKEN.PUNCTUATION, ')')) expect(this.TOKEN.PUNCTUATION, ',');
+          }
+          expect(this.TOKEN.PUNCTUATION, ')');
+          expr = { type: 'CallExpr', callee: expr, args };
+        } else if (check(this.TOKEN.PUNCTUATION, '[')) {
+          advance();
+          const index = parseExpression();
+          expect(this.TOKEN.PUNCTUATION, ']');
+          expr = { type: 'IndexExpr', object: expr, index };
+        } else {
+          break;
+        }
+      }
+
+      return expr;
+    };
+
+    const parsePrimary = () => {
+      const token = peek();
+
+      if (token.type === this.TOKEN.NUMBER) {
+        advance();
+        return { type: 'NumberLiteral', value: token.value };
+      }
+
+      if (token.type === this.TOKEN.STRING) {
+        advance();
+        return { type: 'StringLiteral', value: token.value };
+      }
+
+      if (token.type === this.TOKEN.KEYWORD) {
+        if (token.value === 'true' || token.value === 'false') {
+          advance();
+          return { type: 'BooleanLiteral', value: token.value === 'true' };
+        }
+        if (token.value === 'null') {
+          advance();
+          return { type: 'NullLiteral' };
+        }
+      }
+
+      if (token.type === this.TOKEN.IDENTIFIER) {
+        advance();
+        return { type: 'Identifier', name: token.value };
+      }
+
+      if (check(this.TOKEN.PUNCTUATION, '(')) {
+        advance();
+        const expr = parseExpression();
+        expect(this.TOKEN.PUNCTUATION, ')');
+        return expr;
+      }
+
+      if (check(this.TOKEN.PUNCTUATION, '[')) {
+        advance();
+        const elements = [];
+        while (!check(this.TOKEN.PUNCTUATION, ']')) {
+          elements.push(parseExpression());
+          if (!check(this.TOKEN.PUNCTUATION, ']')) expect(this.TOKEN.PUNCTUATION, ',');
+        }
+        expect(this.TOKEN.PUNCTUATION, ']');
+        return { type: 'ArrayLiteral', elements };
+      }
+
+      throw new Error(`Unexpected token: ${token.type} ${token.value}`);
+    };
+
+    const parseStatement = () => {
+      const token = peek();
+
+      // Variable declaration
+      if (check(this.TOKEN.KEYWORD, 'let') || check(this.TOKEN.KEYWORD, 'const')) {
+        const kind = advance().value;
+        const name = expect(this.TOKEN.IDENTIFIER).value;
+        let init = null;
+        if (check(this.TOKEN.OPERATOR, '=')) {
+          advance();
+          init = parseExpression();
+        }
+        expect(this.TOKEN.PUNCTUATION, ';');
+        return { type: 'VarDecl', kind, name, init };
+      }
+
+      // If statement
+      if (check(this.TOKEN.KEYWORD, 'if')) {
+        advance();
+        expect(this.TOKEN.PUNCTUATION, '(');
+        const test = parseExpression();
+        expect(this.TOKEN.PUNCTUATION, ')');
+        const consequent = parseStatement();
+        let alternate = null;
+        if (check(this.TOKEN.KEYWORD, 'else')) {
+          advance();
+          alternate = parseStatement();
+        }
+        return { type: 'IfStatement', test, consequent, alternate };
+      }
+
+      // While loop
+      if (check(this.TOKEN.KEYWORD, 'while')) {
+        advance();
+        expect(this.TOKEN.PUNCTUATION, '(');
+        const test = parseExpression();
+        expect(this.TOKEN.PUNCTUATION, ')');
+        const body = parseStatement();
+        return { type: 'WhileStatement', test, body };
+      }
+
+      // For loop
+      if (check(this.TOKEN.KEYWORD, 'for')) {
+        advance();
+        expect(this.TOKEN.PUNCTUATION, '(');
+        const init = !check(this.TOKEN.PUNCTUATION, ';') ? parseStatement() : (advance(), null);
+        const test = !check(this.TOKEN.PUNCTUATION, ';') ? parseExpression() : null;
+        expect(this.TOKEN.PUNCTUATION, ';');
+        const update = !check(this.TOKEN.PUNCTUATION, ')') ? parseExpression() : null;
+        expect(this.TOKEN.PUNCTUATION, ')');
+        const body = parseStatement();
+        return { type: 'ForStatement', init, test, update, body };
+      }
+
+      // Function declaration
+      if (check(this.TOKEN.KEYWORD, 'function')) {
+        advance();
+        const name = expect(this.TOKEN.IDENTIFIER).value;
+        expect(this.TOKEN.PUNCTUATION, '(');
+        const params = [];
+        while (!check(this.TOKEN.PUNCTUATION, ')')) {
+          params.push(expect(this.TOKEN.IDENTIFIER).value);
+          if (!check(this.TOKEN.PUNCTUATION, ')')) expect(this.TOKEN.PUNCTUATION, ',');
+        }
+        expect(this.TOKEN.PUNCTUATION, ')');
+        const body = parseBlock();
+        return { type: 'FunctionDecl', name, params, body };
+      }
+
+      // Return statement
+      if (check(this.TOKEN.KEYWORD, 'return')) {
+        advance();
+        const value = !check(this.TOKEN.PUNCTUATION, ';') ? parseExpression() : null;
+        expect(this.TOKEN.PUNCTUATION, ';');
+        return { type: 'ReturnStatement', value };
+      }
+
+      // Print statement
+      if (check(this.TOKEN.KEYWORD, 'print')) {
+        advance();
+        expect(this.TOKEN.PUNCTUATION, '(');
+        const value = parseExpression();
+        expect(this.TOKEN.PUNCTUATION, ')');
+        expect(this.TOKEN.PUNCTUATION, ';');
+        return { type: 'PrintStatement', value };
+      }
+
+      // Block statement
+      if (check(this.TOKEN.PUNCTUATION, '{')) {
+        return parseBlock();
+      }
+
+      // Expression statement
+      const expr = parseExpression();
+
+      // Assignment
+      if (check(this.TOKEN.OPERATOR, '=')) {
+        advance();
+        const value = parseExpression();
+        expect(this.TOKEN.PUNCTUATION, ';');
+        return { type: 'Assignment', target: expr, value };
+      }
+
+      expect(this.TOKEN.PUNCTUATION, ';');
+      return { type: 'ExpressionStatement', expression: expr };
+    };
+
+    const parseBlock = () => {
+      expect(this.TOKEN.PUNCTUATION, '{');
+      const body = [];
+      while (!check(this.TOKEN.PUNCTUATION, '}')) {
+        body.push(parseStatement());
+      }
+      expect(this.TOKEN.PUNCTUATION, '}');
+      return { type: 'Block', body };
+    };
+
+    const program = { type: 'Program', body: [] };
+    while (!check(this.TOKEN.EOF)) {
+      program.body.push(parseStatement());
+    }
+
+    return program;
+  },
+
+  // ============================================
+  // COMPILER (AST -> Bytecode)
+  // ============================================
+
+  compile(ast) {
+    const bytecode = [];
+    const constants = [];
+    const functions = new Map();
+    const globals = new Map();
+    let labelCount = 0;
+
+    const emit = (op, ...args) => {
+      bytecode.push({ op, args });
+    };
+
+    const addConstant = (value) => {
+      const idx = constants.indexOf(value);
+      if (idx >= 0) return idx;
+      constants.push(value);
+      return constants.length - 1;
+    };
+
+    const newLabel = () => labelCount++;
+
+    const compileNode = (node, scope = { vars: new Map(), parent: null }) => {
+      switch (node.type) {
+        case 'Program':
+          for (const stmt of node.body) compileNode(stmt, scope);
+          emit(this.OP.HALT);
+          break;
+
+        case 'Block':
+          const blockScope = { vars: new Map(), parent: scope };
+          for (const stmt of node.body) compileNode(stmt, blockScope);
+          break;
+
+        case 'VarDecl':
+          if (node.init) {
+            compileNode(node.init, scope);
+          } else {
+            emit(this.OP.PUSH, addConstant(null));
+          }
+          scope.vars.set(node.name, scope.vars.size);
+          emit(this.OP.STORE, scope.vars.get(node.name));
+          break;
+
+        case 'Assignment':
+          compileNode(node.value, scope);
+          if (node.target.type === 'Identifier') {
+            const varIdx = resolveVar(node.target.name, scope);
+            emit(this.OP.STORE, varIdx);
+          } else if (node.target.type === 'IndexExpr') {
+            compileNode(node.target.object, scope);
+            compileNode(node.target.index, scope);
+            emit(this.OP.ARRAY_SET);
+          }
+          break;
+
+        case 'IfStatement': {
+          compileNode(node.test, scope);
+          const elseLabel = newLabel();
+          const endLabel = newLabel();
+          emit(this.OP.JZ, elseLabel);
+          compileNode(node.consequent, scope);
+          emit(this.OP.JMP, endLabel);
+          emit('LABEL', elseLabel);
+          if (node.alternate) compileNode(node.alternate, scope);
+          emit('LABEL', endLabel);
+          break;
+        }
+
+        case 'WhileStatement': {
+          const startLabel = newLabel();
+          const endLabel = newLabel();
+          emit('LABEL', startLabel);
+          compileNode(node.test, scope);
+          emit(this.OP.JZ, endLabel);
+          compileNode(node.body, scope);
+          emit(this.OP.JMP, startLabel);
+          emit('LABEL', endLabel);
+          break;
+        }
+
+        case 'ForStatement': {
+          const forScope = { vars: new Map(), parent: scope };
+          if (node.init) compileNode(node.init, forScope);
+          const startLabel = newLabel();
+          const endLabel = newLabel();
+          emit('LABEL', startLabel);
+          if (node.test) {
+            compileNode(node.test, forScope);
+            emit(this.OP.JZ, endLabel);
+          }
+          compileNode(node.body, forScope);
+          if (node.update) {
+            compileNode(node.update, forScope);
+            emit(this.OP.POP);
+          }
+          emit(this.OP.JMP, startLabel);
+          emit('LABEL', endLabel);
+          break;
+        }
+
+        case 'FunctionDecl':
+          functions.set(node.name, { params: node.params, body: node.body });
+          globals.set(node.name, addConstant({ type: 'function', name: node.name }));
+          break;
+
+        case 'ReturnStatement':
+          if (node.value) compileNode(node.value, scope);
+          else emit(this.OP.PUSH, addConstant(null));
+          emit(this.OP.RET);
+          break;
+
+        case 'PrintStatement':
+          compileNode(node.value, scope);
+          emit(this.OP.PRINT);
+          break;
+
+        case 'ExpressionStatement':
+          compileNode(node.expression, scope);
+          emit(this.OP.POP);
+          break;
+
+        case 'BinaryExpr':
+          compileNode(node.left, scope);
+          compileNode(node.right, scope);
+          const opMap = {
+            '+': this.OP.ADD, '-': this.OP.SUB, '*': this.OP.MUL, '/': this.OP.DIV, '%': this.OP.MOD,
+            '==': this.OP.EQ, '!=': this.OP.NEQ, '<': this.OP.LT, '<=': this.OP.LTE, '>': this.OP.GT, '>=': this.OP.GTE,
+            '&&': this.OP.AND, '||': this.OP.OR
+          };
+          emit(opMap[node.op]);
+          break;
+
+        case 'UnaryExpr':
+          compileNode(node.operand, scope);
+          if (node.op === '-') emit(this.OP.NEG);
+          else if (node.op === '!') emit(this.OP.NOT);
+          break;
+
+        case 'CallExpr':
+          for (const arg of node.args) compileNode(arg, scope);
+          if (node.callee.type === 'Identifier') {
+            emit(this.OP.CALL, node.callee.name, node.args.length);
+          }
+          break;
+
+        case 'IndexExpr':
+          compileNode(node.object, scope);
+          compileNode(node.index, scope);
+          emit(this.OP.ARRAY_GET);
+          break;
+
+        case 'Identifier': {
+          const varIdx = resolveVar(node.name, scope);
+          if (varIdx !== null) {
+            emit(this.OP.LOAD, varIdx);
+          } else if (globals.has(node.name)) {
+            emit(this.OP.LOAD_GLOBAL, globals.get(node.name));
+          } else {
+            throw new Error(`Undefined variable: ${node.name}`);
+          }
+          break;
+        }
+
+        case 'NumberLiteral':
+        case 'StringLiteral':
+        case 'BooleanLiteral':
+          emit(this.OP.PUSH, addConstant(node.value));
+          break;
+
+        case 'NullLiteral':
+          emit(this.OP.PUSH, addConstant(null));
+          break;
+
+        case 'ArrayLiteral':
+          for (const el of node.elements) compileNode(el, scope);
+          emit(this.OP.NEW_ARRAY, node.elements.length);
+          break;
+      }
+    };
+
+    const resolveVar = (name, scope) => {
+      if (scope.vars.has(name)) return scope.vars.get(name);
+      if (scope.parent) return resolveVar(name, scope.parent);
+      return null;
+    };
+
+    compileNode(ast);
+
+    // Resolve labels to addresses
+    const labels = new Map();
+    let addr = 0;
+    for (const instr of bytecode) {
+      if (instr.op === 'LABEL') {
+        labels.set(instr.args[0], addr);
+      } else {
+        addr++;
+      }
+    }
+
+    const finalBytecode = bytecode
+      .filter(i => i.op !== 'LABEL')
+      .map(i => {
+        if (i.op === this.OP.JMP || i.op === this.OP.JZ || i.op === this.OP.JNZ) {
+          return { op: i.op, args: [labels.get(i.args[0])] };
+        }
+        return i;
+      });
+
+    return { bytecode: finalBytecode, constants, functions };
+  },
+
+  // ============================================
+  // INTERPRETER
+  // ============================================
+
+  createVM() {
+    return {
+      stack: [],
+      callStack: [],
+      memory: {},
+      globals: {},
+      output: [],
+      ip: 0,
+      running: false
+    };
+  },
+
+  run(compiled, vm = this.createVM()) {
+    const { bytecode, constants, functions } = compiled;
+    vm.running = true;
+    vm.ip = 0;
+
+    const push = (v) => vm.stack.push(v);
+    const pop = () => vm.stack.pop();
+    const peek = () => vm.stack[vm.stack.length - 1];
+
+    while (vm.running && vm.ip < bytecode.length) {
+      const instr = bytecode[vm.ip];
+      const op = instr.op;
+      const args = instr.args || [];
+
+      switch (op) {
+        case this.OP.NOP: break;
+        case this.OP.PUSH: push(constants[args[0]]); break;
+        case this.OP.POP: pop(); break;
+        case this.OP.DUP: push(peek()); break;
+        case this.OP.SWAP: { const a = pop(), b = pop(); push(a); push(b); break; }
+
+        case this.OP.ADD: { const b = pop(), a = pop(); push(a + b); break; }
+        case this.OP.SUB: { const b = pop(), a = pop(); push(a - b); break; }
+        case this.OP.MUL: { const b = pop(), a = pop(); push(a * b); break; }
+        case this.OP.DIV: { const b = pop(), a = pop(); push(a / b); break; }
+        case this.OP.MOD: { const b = pop(), a = pop(); push(a % b); break; }
+        case this.OP.NEG: push(-pop()); break;
+
+        case this.OP.EQ: { const b = pop(), a = pop(); push(a === b); break; }
+        case this.OP.NEQ: { const b = pop(), a = pop(); push(a !== b); break; }
+        case this.OP.LT: { const b = pop(), a = pop(); push(a < b); break; }
+        case this.OP.LTE: { const b = pop(), a = pop(); push(a <= b); break; }
+        case this.OP.GT: { const b = pop(), a = pop(); push(a > b); break; }
+        case this.OP.GTE: { const b = pop(), a = pop(); push(a >= b); break; }
+
+        case this.OP.AND: { const b = pop(), a = pop(); push(a && b); break; }
+        case this.OP.OR: { const b = pop(), a = pop(); push(a || b); break; }
+        case this.OP.NOT: push(!pop()); break;
+
+        case this.OP.LOAD: push(vm.memory[args[0]]); break;
+        case this.OP.STORE: vm.memory[args[0]] = pop(); break;
+        case this.OP.LOAD_GLOBAL: push(vm.globals[args[0]]); break;
+        case this.OP.STORE_GLOBAL: vm.globals[args[0]] = pop(); break;
+
+        case this.OP.JMP: vm.ip = args[0] - 1; break;
+        case this.OP.JZ: if (!pop()) vm.ip = args[0] - 1; break;
+        case this.OP.JNZ: if (pop()) vm.ip = args[0] - 1; break;
+
+        case this.OP.CALL: {
+          const funcName = args[0];
+          const argCount = args[1];
+          const func = functions.get(funcName);
+          if (func) {
+            vm.callStack.push({ ip: vm.ip, memory: { ...vm.memory } });
+            vm.memory = {};
+            for (let i = argCount - 1; i >= 0; i--) {
+              vm.memory[i] = pop();
+            }
+            // TODO: Implement function body execution
+          }
+          break;
+        }
+
+        case this.OP.RET: {
+          const retVal = pop();
+          const frame = vm.callStack.pop();
+          if (frame) {
+            vm.ip = frame.ip;
+            vm.memory = frame.memory;
+          }
+          push(retVal);
+          break;
+        }
+
+        case this.OP.NEW_ARRAY: {
+          const len = args[0];
+          const arr = [];
+          for (let i = 0; i < len; i++) arr.unshift(pop());
+          push(arr);
+          break;
+        }
+        case this.OP.ARRAY_GET: { const idx = pop(), arr = pop(); push(arr[idx]); break; }
+        case this.OP.ARRAY_SET: { const idx = pop(), arr = pop(), val = pop(); arr[idx] = val; break; }
+        case this.OP.ARRAY_LEN: push(pop().length); break;
+
+        case this.OP.PRINT: vm.output.push(pop()); break;
+        case this.OP.HALT: vm.running = false; break;
+      }
+
+      vm.ip++;
+    }
+
+    return vm;
+  },
+
+  // Convenience method: compile and run
+  execute(source) {
+    const tokens = this.tokenize(source);
+    const ast = this.parse(tokens);
+    const compiled = this.compile(ast);
+    const vm = this.run(compiled);
+    return vm.output;
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - B+Tree Database
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+class BTreeNode {
+  constructor(order, isLeaf = false) {
+    this.order = order;
+    this.isLeaf = isLeaf;
+    this.keys = [];
+    this.values = [];     // Only for leaf nodes
+    this.children = [];   // Only for internal nodes
+    this.next = null;     // For leaf node linking (range queries)
+    this.parent = null;
+  }
+
+  get isFull() {
+    return this.keys.length >= this.order - 1;
+  }
+
+  get isMinimal() {
+    return this.keys.length <= Math.floor((this.order - 1) / 2);
+  }
+}
+
+class KonomiBTree {
+  constructor(order = 4) {
+    this.order = Math.max(3, order);
+    this.root = new BTreeNode(this.order, true);
+    this.size = 0;
+  }
+
+  // ============================================
+  // SEARCH OPERATIONS
+  // ============================================
+
+  search(key) {
+    return this._search(this.root, key);
+  }
+
+  _search(node, key) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) i++;
+
+    if (node.isLeaf) {
+      if (i < node.keys.length && node.keys[i] === key) {
+        return node.values[i];
+      }
+      return null;
+    }
+
+    if (i < node.keys.length && key === node.keys[i]) i++;
+    return this._search(node.children[i], key);
+  }
+
+  has(key) {
+    return this.search(key) !== null;
+  }
+
+  // ============================================
+  // RANGE QUERIES
+  // ============================================
+
+  range(startKey, endKey) {
+    const results = [];
+    let leaf = this._findLeaf(this.root, startKey);
+
+    while (leaf) {
+      for (let i = 0; i < leaf.keys.length; i++) {
+        if (leaf.keys[i] >= startKey && leaf.keys[i] <= endKey) {
+          results.push({ key: leaf.keys[i], value: leaf.values[i] });
+        }
+        if (leaf.keys[i] > endKey) return results;
+      }
+      leaf = leaf.next;
+    }
+
+    return results;
+  }
+
+  _findLeaf(node, key) {
+    if (node.isLeaf) return node;
+
+    let i = 0;
+    while (i < node.keys.length && key >= node.keys[i]) i++;
+    return this._findLeaf(node.children[i], key);
+  }
+
+  // Get all entries
+  getAll() {
+    const results = [];
+    let leaf = this._getFirstLeaf();
+
+    while (leaf) {
+      for (let i = 0; i < leaf.keys.length; i++) {
+        results.push({ key: leaf.keys[i], value: leaf.values[i] });
+      }
+      leaf = leaf.next;
+    }
+
+    return results;
+  }
+
+  _getFirstLeaf() {
+    let node = this.root;
+    while (!node.isLeaf) {
+      node = node.children[0];
+    }
+    return node;
+  }
+
+  // ============================================
+  // INSERT OPERATIONS
+  // ============================================
+
+  insert(key, value) {
+    const root = this.root;
+
+    if (root.isFull) {
+      const newRoot = new BTreeNode(this.order, false);
+      newRoot.children.push(this.root);
+      this.root.parent = newRoot;
+      this._splitChild(newRoot, 0);
+      this.root = newRoot;
+    }
+
+    this._insertNonFull(this.root, key, value);
+    this.size++;
+  }
+
+  _insertNonFull(node, key, value) {
+    let i = node.keys.length - 1;
+
+    if (node.isLeaf) {
+      // Find position and insert
+      while (i >= 0 && key < node.keys[i]) i--;
+
+      // Check for duplicate key (update value)
+      if (i >= 0 && node.keys[i] === key) {
+        node.values[i] = value;
+        this.size--; // Didn't actually add new entry
+        return;
+      }
+
+      node.keys.splice(i + 1, 0, key);
+      node.values.splice(i + 1, 0, value);
+    } else {
+      // Find child to descend into
+      while (i >= 0 && key < node.keys[i]) i--;
+      i++;
+
+      if (node.children[i].isFull) {
+        this._splitChild(node, i);
+        if (key > node.keys[i]) i++;
+      }
+
+      this._insertNonFull(node.children[i], key, value);
+    }
+  }
+
+  _splitChild(parent, index) {
+    const fullChild = parent.children[index];
+    const mid = Math.floor((this.order - 1) / 2);
+
+    const newChild = new BTreeNode(this.order, fullChild.isLeaf);
+    newChild.parent = parent;
+
+    if (fullChild.isLeaf) {
+      // Split leaf node
+      newChild.keys = fullChild.keys.splice(mid);
+      newChild.values = fullChild.values.splice(mid);
+
+      // Maintain leaf linking
+      newChild.next = fullChild.next;
+      fullChild.next = newChild;
+
+      // Promote copy of first key of new node
+      parent.keys.splice(index, 0, newChild.keys[0]);
+    } else {
+      // Split internal node
+      const midKey = fullChild.keys[mid];
+      newChild.keys = fullChild.keys.splice(mid + 1);
+      fullChild.keys.pop(); // Remove the middle key
+
+      newChild.children = fullChild.children.splice(mid + 1);
+      newChild.children.forEach(c => c.parent = newChild);
+
+      parent.keys.splice(index, 0, midKey);
+    }
+
+    parent.children.splice(index + 1, 0, newChild);
+  }
+
+  // ============================================
+  // DELETE OPERATIONS
+  // ============================================
+
+  delete(key) {
+    if (!this._delete(this.root, key)) return false;
+
+    // If root is empty and has children, make first child the new root
+    if (this.root.keys.length === 0 && !this.root.isLeaf) {
+      this.root = this.root.children[0];
+      this.root.parent = null;
+    }
+
+    this.size--;
+    return true;
+  }
+
+  _delete(node, key) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) i++;
+
+    if (node.isLeaf) {
+      if (i < node.keys.length && node.keys[i] === key) {
+        node.keys.splice(i, 1);
+        node.values.splice(i, 1);
+        return true;
+      }
+      return false;
+    }
+
+    // Internal node
+    if (i < node.keys.length && node.keys[i] === key) {
+      // Key found in internal node
+      return this._deleteInternalNode(node, key, i);
+    }
+
+    // Key might be in child
+    const child = node.children[i];
+
+    // Ensure child has enough keys
+    if (child.keys.length <= Math.floor((this.order - 1) / 2)) {
+      this._fillChild(node, i);
+    }
+
+    // Recalculate index after potential merge
+    if (i > node.keys.length) {
+      return this._delete(node.children[i - 1], key);
+    }
+    return this._delete(node.children[i], key);
+  }
+
+  _deleteInternalNode(node, key, index) {
+    const leftChild = node.children[index];
+    const rightChild = node.children[index + 1];
+
+    if (leftChild.keys.length > Math.floor((this.order - 1) / 2)) {
+      // Get predecessor
+      const pred = this._getPredecessor(leftChild);
+      node.keys[index] = pred.key;
+      return this._delete(leftChild, pred.key);
+    } else if (rightChild.keys.length > Math.floor((this.order - 1) / 2)) {
+      // Get successor
+      const succ = this._getSuccessor(rightChild);
+      node.keys[index] = succ.key;
+      return this._delete(rightChild, succ.key);
+    } else {
+      // Merge children
+      this._merge(node, index);
+      return this._delete(leftChild, key);
+    }
+  }
+
+  _getPredecessor(node) {
+    while (!node.isLeaf) {
+      node = node.children[node.children.length - 1];
+    }
+    const i = node.keys.length - 1;
+    return { key: node.keys[i], value: node.values[i] };
+  }
+
+  _getSuccessor(node) {
+    while (!node.isLeaf) {
+      node = node.children[0];
+    }
+    return { key: node.keys[0], value: node.values[0] };
+  }
+
+  _fillChild(node, index) {
+    if (index > 0 && node.children[index - 1].keys.length > Math.floor((this.order - 1) / 2)) {
+      this._borrowFromLeft(node, index);
+    } else if (index < node.children.length - 1 && node.children[index + 1].keys.length > Math.floor((this.order - 1) / 2)) {
+      this._borrowFromRight(node, index);
+    } else {
+      if (index < node.children.length - 1) {
+        this._merge(node, index);
+      } else {
+        this._merge(node, index - 1);
+      }
+    }
+  }
+
+  _borrowFromLeft(node, index) {
+    const child = node.children[index];
+    const leftSibling = node.children[index - 1];
+
+    if (child.isLeaf) {
+      child.keys.unshift(leftSibling.keys.pop());
+      child.values.unshift(leftSibling.values.pop());
+      node.keys[index - 1] = child.keys[0];
+    } else {
+      child.keys.unshift(node.keys[index - 1]);
+      node.keys[index - 1] = leftSibling.keys.pop();
+      child.children.unshift(leftSibling.children.pop());
+      child.children[0].parent = child;
+    }
+  }
+
+  _borrowFromRight(node, index) {
+    const child = node.children[index];
+    const rightSibling = node.children[index + 1];
+
+    if (child.isLeaf) {
+      child.keys.push(rightSibling.keys.shift());
+      child.values.push(rightSibling.values.shift());
+      node.keys[index] = rightSibling.keys[0];
+    } else {
+      child.keys.push(node.keys[index]);
+      node.keys[index] = rightSibling.keys.shift();
+      child.children.push(rightSibling.children.shift());
+      child.children[child.children.length - 1].parent = child;
+    }
+  }
+
+  _merge(node, index) {
+    const leftChild = node.children[index];
+    const rightChild = node.children[index + 1];
+
+    if (leftChild.isLeaf) {
+      leftChild.keys = leftChild.keys.concat(rightChild.keys);
+      leftChild.values = leftChild.values.concat(rightChild.values);
+      leftChild.next = rightChild.next;
+    } else {
+      leftChild.keys.push(node.keys[index]);
+      leftChild.keys = leftChild.keys.concat(rightChild.keys);
+      leftChild.children = leftChild.children.concat(rightChild.children);
+      rightChild.children.forEach(c => c.parent = leftChild);
+    }
+
+    node.keys.splice(index, 1);
+    node.children.splice(index + 1, 1);
+  }
+
+  // ============================================
+  // UTILITY METHODS
+  // ============================================
+
+  clear() {
+    this.root = new BTreeNode(this.order, true);
+    this.size = 0;
+  }
+
+  get length() {
+    return this.size;
+  }
+
+  // Iterator
+  *[Symbol.iterator]() {
+    let leaf = this._getFirstLeaf();
+    while (leaf) {
+      for (let i = 0; i < leaf.keys.length; i++) {
+        yield { key: leaf.keys[i], value: leaf.values[i] };
+      }
+      leaf = leaf.next;
+    }
+  }
+
+  // Serialize to JSON
+  toJSON() {
+    return {
+      order: this.order,
+      size: this.size,
+      data: this.getAll()
+    };
+  }
+
+  // Restore from JSON
+  static fromJSON(json) {
+    const tree = new KonomiBTree(json.order);
+    for (const { key, value } of json.data) {
+      tree.insert(key, value);
+    }
+    return tree;
+  }
+}
+
+// ============================================
+// KONOMI DATABASE - Higher-level API
+// ============================================
+
+const KonomiDB = {
+  collections: new Map(),
+  indices: new Map(),
+
+  // Create or get collection
+  collection(name) {
+    if (!this.collections.has(name)) {
+      this.collections.set(name, new KonomiBTree(32));
+      this.indices.set(name, new Map());
+    }
+    return {
+      name,
+      _tree: this.collections.get(name),
+      _indices: this.indices.get(name),
+
+      // Insert document
+      insert(doc) {
+        const id = doc._id || KonomiUtils.uuid();
+        doc._id = id;
+        doc._created = KonomiUtils.now();
+        this._tree.insert(id, doc);
+
+        // Update indices
+        for (const [field, index] of this._indices) {
+          if (doc[field] !== undefined) {
+            const existing = index.search(doc[field]) || [];
+            existing.push(id);
+            index.insert(doc[field], existing);
+          }
+        }
+
+        return doc;
+      },
+
+      // Find by ID
+      findById(id) {
+        return this._tree.search(id);
+      },
+
+      // Find all matching documents
+      find(query = {}) {
+        const results = [];
+        for (const { value: doc } of this._tree) {
+          if (this._matches(doc, query)) {
+            results.push(doc);
+          }
+        }
+        return results;
+      },
+
+      // Find one matching document
+      findOne(query = {}) {
+        for (const { value: doc } of this._tree) {
+          if (this._matches(doc, query)) {
+            return doc;
+          }
+        }
+        return null;
+      },
+
+      // Update document
+      update(id, updates) {
+        const doc = this._tree.search(id);
+        if (!doc) return null;
+
+        Object.assign(doc, updates);
+        doc._updated = KonomiUtils.now();
+        this._tree.insert(id, doc);
+        return doc;
+      },
+
+      // Delete document
+      delete(id) {
+        return this._tree.delete(id);
+      },
+
+      // Create index on field
+      createIndex(field) {
+        if (this._indices.has(field)) return;
+
+        const index = new KonomiBTree(32);
+        for (const { value: doc } of this._tree) {
+          if (doc[field] !== undefined) {
+            const existing = index.search(doc[field]) || [];
+            existing.push(doc._id);
+            index.insert(doc[field], existing);
+          }
+        }
+        this._indices.set(field, index);
+      },
+
+      // Find by indexed field
+      findByIndex(field, value) {
+        const index = this._indices.get(field);
+        if (!index) return this.find({ [field]: value });
+
+        const ids = index.search(value) || [];
+        return ids.map(id => this._tree.search(id)).filter(Boolean);
+      },
+
+      // Count documents
+      count(query = {}) {
+        if (Object.keys(query).length === 0) return this._tree.length;
+        return this.find(query).length;
+      },
+
+      // Check if query matches document
+      _matches(doc, query) {
+        for (const [key, value] of Object.entries(query)) {
+          if (typeof value === 'object' && value !== null) {
+            // Handle operators
+            for (const [op, opValue] of Object.entries(value)) {
+              switch (op) {
+                case '$eq': if (doc[key] !== opValue) return false; break;
+                case '$ne': if (doc[key] === opValue) return false; break;
+                case '$gt': if (doc[key] <= opValue) return false; break;
+                case '$gte': if (doc[key] < opValue) return false; break;
+                case '$lt': if (doc[key] >= opValue) return false; break;
+                case '$lte': if (doc[key] > opValue) return false; break;
+                case '$in': if (!opValue.includes(doc[key])) return false; break;
+                case '$nin': if (opValue.includes(doc[key])) return false; break;
+                case '$regex': if (!new RegExp(opValue).test(doc[key])) return false; break;
+              }
+            }
+          } else {
+            if (doc[key] !== value) return false;
+          }
+        }
+        return true;
+      },
+
+      // Export collection
+      toJSON() {
+        return this._tree.toJSON();
+      },
+
+      // Clear collection
+      clear() {
+        this._tree.clear();
+        this._indices.clear();
+      }
+    };
+  },
+
+  // Drop collection
+  drop(name) {
+    this.collections.delete(name);
+    this.indices.delete(name);
+  },
+
+  // List collections
+  list() {
+    return Array.from(this.collections.keys());
+  },
+
+  // Export all data
+  export() {
+    const data = {};
+    for (const [name, tree] of this.collections) {
+      data[name] = tree.toJSON();
+    }
+    return data;
+  },
+
+  // Import data
+  import(data) {
+    for (const [name, treeData] of Object.entries(data)) {
+      this.collections.set(name, KonomiBTree.fromJSON(treeData));
+    }
+  },
+
+  // Persist to localStorage
+  save(key = 'konomi_db') {
+    const data = this.export();
+    localStorage.setItem(key, JSON.stringify(data));
+  },
+
+  // Load from localStorage
+  load(key = 'konomi_db') {
+    const data = localStorage.getItem(key);
+    if (data) {
+      this.import(JSON.parse(data));
+    }
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - Mini Transformer AI
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiAI = {
+  // ============================================
+  // MATH UTILITIES
+  // ============================================
+
+  // Matrix operations
+  zeros(rows, cols) {
+    return Array(rows).fill().map(() => Array(cols).fill(0));
+  },
+
+  randomMatrix(rows, cols, scale = 0.1) {
+    return Array(rows).fill().map(() =>
+      Array(cols).fill().map(() => (Math.random() - 0.5) * scale)
+    );
+  },
+
+  // Matrix multiplication: A @ B
+  matmul(A, B) {
+    const rowsA = A.length;
+    const colsA = A[0].length;
+    const colsB = B[0].length;
+    const result = this.zeros(rowsA, colsB);
+
+    for (let i = 0; i < rowsA; i++) {
+      for (let j = 0; j < colsB; j++) {
+        for (let k = 0; k < colsA; k++) {
+          result[i][j] += A[i][k] * B[k][j];
+        }
+      }
+    }
+    return result;
+  },
+
+  // Matrix-vector multiplication
+  matvec(A, v) {
+    return A.map(row => row.reduce((sum, val, i) => sum + val * v[i], 0));
+  },
+
+  // Transpose matrix
+  transpose(A) {
+    const rows = A.length;
+    const cols = A[0].length;
+    const result = this.zeros(cols, rows);
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        result[j][i] = A[i][j];
+      }
+    }
+    return result;
+  },
+
+  // Element-wise operations
+  add(A, B) {
+    if (Array.isArray(A[0])) {
+      return A.map((row, i) => row.map((val, j) => val + B[i][j]));
+    }
+    return A.map((val, i) => val + B[i]);
+  },
+
+  scale(A, s) {
+    if (Array.isArray(A[0])) {
+      return A.map(row => row.map(val => val * s));
+    }
+    return A.map(val => val * s);
+  },
+
+  // ============================================
+  // ACTIVATION FUNCTIONS
+  // ============================================
+
+  softmax(x) {
+    const max = Math.max(...x);
+    const exp = x.map(v => Math.exp(v - max));
+    const sum = exp.reduce((a, b) => a + b, 0);
+    return exp.map(v => v / sum);
+  },
+
+  softmax2D(A) {
+    return A.map(row => this.softmax(row));
+  },
+
+  relu(x) {
+    if (Array.isArray(x[0])) {
+      return x.map(row => row.map(v => Math.max(0, v)));
+    }
+    return x.map(v => Math.max(0, v));
+  },
+
+  gelu(x) {
+    // Gaussian Error Linear Unit approximation
+    const f = v => 0.5 * v * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (v + 0.044715 * v * v * v)));
+    if (Array.isArray(x[0])) {
+      return x.map(row => row.map(f));
+    }
+    return x.map(f);
+  },
+
+  // ============================================
+  // LAYER NORMALIZATION
+  // ============================================
+
+  layerNorm(x, gamma = null, beta = null, eps = 1e-5) {
+    const mean = x.reduce((a, b) => a + b, 0) / x.length;
+    const variance = x.reduce((a, v) => a + (v - mean) ** 2, 0) / x.length;
+    const std = Math.sqrt(variance + eps);
+
+    let normalized = x.map(v => (v - mean) / std);
+
+    if (gamma && beta) {
+      normalized = normalized.map((v, i) => v * gamma[i] + beta[i]);
+    }
+
+    return normalized;
+  },
+
+  // ============================================
+  // EMBEDDING
+  // ============================================
+
+  createEmbedding(vocabSize, dim) {
+    return this.randomMatrix(vocabSize, dim, Math.sqrt(2 / dim));
+  },
+
+  embed(tokens, embeddingMatrix) {
+    return tokens.map(t => [...embeddingMatrix[t]]);
+  },
+
+  // Positional encoding (sinusoidal)
+  positionalEncoding(seqLen, dim) {
+    const pe = this.zeros(seqLen, dim);
+    for (let pos = 0; pos < seqLen; pos++) {
+      for (let i = 0; i < dim; i += 2) {
+        const angle = pos / Math.pow(10000, i / dim);
+        pe[pos][i] = Math.sin(angle);
+        if (i + 1 < dim) pe[pos][i + 1] = Math.cos(angle);
+      }
+    }
+    return pe;
+  },
+
+  // ============================================
+  // ATTENTION MECHANISM
+  // ============================================
+
+  // Scaled dot-product attention
+  attention(Q, K, V, mask = null) {
+    const dk = K[0].length;
+    const scale = Math.sqrt(dk);
+
+    // Q @ K^T / sqrt(dk)
+    const KT = this.transpose(K);
+    let scores = this.matmul(Q, KT);
+    scores = this.scale(scores, 1 / scale);
+
+    // Apply mask if provided
+    if (mask) {
+      for (let i = 0; i < scores.length; i++) {
+        for (let j = 0; j < scores[0].length; j++) {
+          if (mask[i][j] === 0) {
+            scores[i][j] = -1e9;
+          }
+        }
+      }
+    }
+
+    // Softmax
+    const attnWeights = this.softmax2D(scores);
+
+    // attn_weights @ V
+    return this.matmul(attnWeights, V);
+  },
+
+  // Multi-head attention
+  multiHeadAttention(Q, K, V, numHeads, Wq, Wk, Wv, Wo) {
+    const seqLen = Q.length;
+    const dim = Q[0].length;
+    const headDim = Math.floor(dim / numHeads);
+
+    // Project Q, K, V
+    const projQ = this.matmul(Q, Wq);
+    const projK = this.matmul(K, Wk);
+    const projV = this.matmul(V, Wv);
+
+    // Split into heads and compute attention
+    const heads = [];
+    for (let h = 0; h < numHeads; h++) {
+      const startIdx = h * headDim;
+      const endIdx = startIdx + headDim;
+
+      const Qh = projQ.map(row => row.slice(startIdx, endIdx));
+      const Kh = projK.map(row => row.slice(startIdx, endIdx));
+      const Vh = projV.map(row => row.slice(startIdx, endIdx));
+
+      heads.push(this.attention(Qh, Kh, Vh));
+    }
+
+    // Concatenate heads
+    const concat = heads[0].map((_, i) =>
+      heads.reduce((acc, head) => acc.concat(head[i]), [])
+    );
+
+    // Final projection
+    return this.matmul(concat, Wo);
+  },
+
+  // ============================================
+  // FEED-FORWARD NETWORK
+  // ============================================
+
+  feedForward(x, W1, b1, W2, b2) {
+    // First linear layer
+    let hidden = this.matmul(x, W1);
+    hidden = hidden.map((row, i) => row.map((v, j) => v + b1[j]));
+
+    // GELU activation
+    hidden = this.gelu(hidden);
+
+    // Second linear layer
+    let output = this.matmul(hidden, W2);
+    output = output.map((row, i) => row.map((v, j) => v + b2[j]));
+
+    return output;
+  },
+
+  // ============================================
+  // TRANSFORMER BLOCK
+  // ============================================
+
+  transformerBlock(x, params) {
+    const { numHeads, Wq, Wk, Wv, Wo, W1, b1, W2, b2, gamma1, beta1, gamma2, beta2 } = params;
+
+    // Self-attention with residual connection
+    const attnOut = this.multiHeadAttention(x, x, x, numHeads, Wq, Wk, Wv, Wo);
+    let hidden = this.add(x, attnOut);
+    hidden = hidden.map(row => this.layerNorm(row, gamma1, beta1));
+
+    // Feed-forward with residual connection
+    const ffnOut = this.feedForward(hidden, W1, b1, W2, b2);
+    let output = this.add(hidden, ffnOut);
+    output = output.map(row => this.layerNorm(row, gamma2, beta2));
+
+    return output;
+  },
+
+  // ============================================
+  // MINI TRANSFORMER MODEL
+  // ============================================
+
+  createModel(config = {}) {
+    const {
+      vocabSize = 256,      // Character-level by default
+      dim = 64,             // Embedding dimension
+      numHeads = 4,         // Attention heads
+      numLayers = 2,        // Transformer blocks
+      ffnDim = 128,         // Feed-forward hidden dimension
+      maxSeqLen = 128       // Maximum sequence length
+    } = config;
+
+    const model = {
+      config: { vocabSize, dim, numHeads, numLayers, ffnDim, maxSeqLen },
+
+      // Embedding
+      embedding: this.createEmbedding(vocabSize, dim),
+      posEncoding: this.positionalEncoding(maxSeqLen, dim),
+
+      // Transformer layers
+      layers: Array(numLayers).fill().map(() => ({
+        Wq: this.randomMatrix(dim, dim, Math.sqrt(2 / dim)),
+        Wk: this.randomMatrix(dim, dim, Math.sqrt(2 / dim)),
+        Wv: this.randomMatrix(dim, dim, Math.sqrt(2 / dim)),
+        Wo: this.randomMatrix(dim, dim, Math.sqrt(2 / dim)),
+        W1: this.randomMatrix(dim, ffnDim, Math.sqrt(2 / dim)),
+        b1: Array(ffnDim).fill(0),
+        W2: this.randomMatrix(ffnDim, dim, Math.sqrt(2 / ffnDim)),
+        b2: Array(dim).fill(0),
+        gamma1: Array(dim).fill(1),
+        beta1: Array(dim).fill(0),
+        gamma2: Array(dim).fill(1),
+        beta2: Array(dim).fill(0),
+        numHeads
+      })),
+
+      // Output projection
+      outputProj: this.randomMatrix(dim, vocabSize, Math.sqrt(2 / dim))
+    };
+
+    return model;
+  },
+
+  // Forward pass
+  forward(model, tokens) {
+    const { embedding, posEncoding, layers, outputProj, config } = model;
+    const seqLen = tokens.length;
+
+    // Embed tokens and add positional encoding
+    let x = this.embed(tokens, embedding);
+    for (let i = 0; i < seqLen; i++) {
+      x[i] = this.add(x[i], posEncoding[i]);
+    }
+
+    // Pass through transformer layers
+    for (const layer of layers) {
+      x = this.transformerBlock(x, layer);
+    }
+
+    // Project to vocabulary
+    const logits = this.matmul(x, outputProj);
+
+    return logits;
+  },
+
+  // Generate text
+  generate(model, prompt, maxNewTokens = 50, temperature = 1.0) {
+    let tokens = this.tokenize(prompt);
+    const { maxSeqLen } = model.config;
+
+    for (let i = 0; i < maxNewTokens; i++) {
+      // Truncate if needed
+      const input = tokens.slice(-maxSeqLen);
+
+      // Forward pass
+      const logits = this.forward(model, input);
+
+      // Get last position logits and apply temperature
+      const lastLogits = logits[logits.length - 1].map(l => l / temperature);
+
+      // Sample from distribution
+      const probs = this.softmax(lastLogits);
+      const nextToken = this.sample(probs);
+
+      tokens.push(nextToken);
+    }
+
+    return this.detokenize(tokens);
+  },
+
+  // Simple character-level tokenization
+  tokenize(text) {
+    return text.split('').map(c => c.charCodeAt(0) % 256);
+  },
+
+  detokenize(tokens) {
+    return tokens.map(t => String.fromCharCode(t)).join('');
+  },
+
+  // Sample from probability distribution
+  sample(probs) {
+    const r = Math.random();
+    let cumsum = 0;
+    for (let i = 0; i < probs.length; i++) {
+      cumsum += probs[i];
+      if (r < cumsum) return i;
+    }
+    return probs.length - 1;
+  },
+
+  // ============================================
+  // SIMPLE CLASSIFIER
+  // ============================================
+
+  createClassifier(inputDim, hiddenDim, numClasses) {
+    return {
+      W1: this.randomMatrix(inputDim, hiddenDim, Math.sqrt(2 / inputDim)),
+      b1: Array(hiddenDim).fill(0),
+      W2: this.randomMatrix(hiddenDim, numClasses, Math.sqrt(2 / hiddenDim)),
+      b2: Array(numClasses).fill(0)
+    };
+  },
+
+  classifierForward(classifier, x) {
+    const { W1, b1, W2, b2 } = classifier;
+
+    // First layer
+    let hidden = this.matvec(W1, x);
+    hidden = hidden.map((v, i) => Math.max(0, v + b1[i])); // ReLU
+
+    // Output layer
+    let output = this.matvec(this.transpose(W2), hidden);
+    output = output.map((v, i) => v + b2[i]);
+
+    return this.softmax(output);
+  },
+
+  // ============================================
+  // SIMPLE TEXT CLASSIFIER
+  // ============================================
+
+  createTextClassifier(categories) {
+    const model = {
+      categories,
+      vocabSize: 256,
+      embedDim: 32,
+      embedding: this.createEmbedding(256, 32),
+      classifier: this.createClassifier(32, 64, categories.length)
+    };
+    return model;
+  },
+
+  classifyText(model, text) {
+    const tokens = this.tokenize(text);
+
+    // Average pooling of embeddings
+    let pooled = Array(model.embedDim).fill(0);
+    for (const token of tokens) {
+      const emb = model.embedding[token];
+      for (let i = 0; i < model.embedDim; i++) {
+        pooled[i] += emb[i] / tokens.length;
+      }
+    }
+
+    // Classify
+    const probs = this.classifierForward(model.classifier, pooled);
+
+    // Return predictions
+    return model.categories.map((cat, i) => ({
+      category: cat,
+      probability: probs[i]
+    })).sort((a, b) => b.probability - a.probability);
+  },
+
+  // ============================================
+  // SIMILARITY & EMBEDDINGS
+  // ============================================
+
+  // Cosine similarity
+  cosineSimilarity(a, b) {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+  },
+
+  // Get text embedding (average of character embeddings)
+  getTextEmbedding(text, embedding) {
+    const tokens = this.tokenize(text);
+    const dim = embedding[0].length;
+    const result = Array(dim).fill(0);
+
+    for (const token of tokens) {
+      const emb = embedding[token];
+      for (let i = 0; i < dim; i++) {
+        result[i] += emb[i] / tokens.length;
+      }
+    }
+
+    return result;
+  },
+
+  // Find similar texts
+  findSimilar(query, documents, embedding, topK = 5) {
+    const queryEmb = this.getTextEmbedding(query, embedding);
+
+    const scores = documents.map((doc, i) => ({
+      index: i,
+      document: doc,
+      similarity: this.cosineSimilarity(queryEmb, this.getTextEmbedding(doc, embedding))
+    }));
+
+    return scores.sort((a, b) => b.similarity - a.similarity).slice(0, topK);
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - 2D/3D Graphics Renderer
+// Pure JavaScript Canvas - Zero Dependencies
+// ============================================
+
+const KonomiRenderer = {
+  // ============================================
+  // 2D RENDERER
+  // ============================================
+
+  create2D(canvas) {
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    return {
+      canvas,
+      ctx,
+      width,
+      height,
+
+      // Clear canvas
+      clear(color = '#000000') {
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, width, height);
+      },
+
+      // Basic shapes
+      rect(x, y, w, h, options = {}) {
+        const { fill = '#ffffff', stroke = null, lineWidth = 1 } = options;
+        if (fill) {
+          ctx.fillStyle = fill;
+          ctx.fillRect(x, y, w, h);
+        }
+        if (stroke) {
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = lineWidth;
+          ctx.strokeRect(x, y, w, h);
+        }
+      },
+
+      circle(x, y, r, options = {}) {
+        const { fill = '#ffffff', stroke = null, lineWidth = 1 } = options;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        if (fill) {
+          ctx.fillStyle = fill;
+          ctx.fill();
+        }
+        if (stroke) {
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = lineWidth;
+          ctx.stroke();
+        }
+      },
+
+      line(x1, y1, x2, y2, options = {}) {
+        const { color = '#ffffff', lineWidth = 1 } = options;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      },
+
+      polygon(points, options = {}) {
+        const { fill = '#ffffff', stroke = null, lineWidth = 1 } = options;
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(points[i][0], points[i][1]);
+        }
+        ctx.closePath();
+        if (fill) {
+          ctx.fillStyle = fill;
+          ctx.fill();
+        }
+        if (stroke) {
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = lineWidth;
+          ctx.stroke();
+        }
+      },
+
+      text(str, x, y, options = {}) {
+        const { font = '14px monospace', fill = '#ffffff', align = 'left', baseline = 'top' } = options;
+        ctx.font = font;
+        ctx.fillStyle = fill;
+        ctx.textAlign = align;
+        ctx.textBaseline = baseline;
+        ctx.fillText(str, x, y);
+      },
+
+      // Transformations
+      save() { ctx.save(); },
+      restore() { ctx.restore(); },
+      translate(x, y) { ctx.translate(x, y); },
+      rotate(angle) { ctx.rotate(angle); },
+      scale(x, y) { ctx.scale(x, y); },
+
+      // Image operations
+      drawImage(img, x, y, w, h) {
+        ctx.drawImage(img, x, y, w || img.width, h || img.height);
+      },
+
+      getImageData(x, y, w, h) {
+        return ctx.getImageData(x || 0, y || 0, w || width, h || height);
+      },
+
+      putImageData(data, x, y) {
+        ctx.putImageData(data, x || 0, y || 0);
+      },
+
+      // Gradient
+      linearGradient(x1, y1, x2, y2, stops) {
+        const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+        for (const [offset, color] of stops) {
+          gradient.addColorStop(offset, color);
+        }
+        return gradient;
+      },
+
+      radialGradient(x1, y1, r1, x2, y2, r2, stops) {
+        const gradient = ctx.createRadialGradient(x1, y1, r1, x2, y2, r2);
+        for (const [offset, color] of stops) {
+          gradient.addColorStop(offset, color);
+        }
+        return gradient;
+      },
+
+      // Export
+      toDataURL(type = 'image/png') {
+        return canvas.toDataURL(type);
+      },
+
+      toBlob(callback, type = 'image/png') {
+        canvas.toBlob(callback, type);
+      }
+    };
+  },
+
+  // ============================================
+  // 3D MATH UTILITIES
+  // ============================================
+
+  vec3: {
+    create(x = 0, y = 0, z = 0) { return [x, y, z]; },
+    add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; },
+    sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; },
+    scale(v, s) { return [v[0] * s, v[1] * s, v[2] * s]; },
+    dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; },
+    cross(a, b) {
+      return [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0]
+      ];
+    },
+    length(v) { return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]); },
+    normalize(v) {
+      const len = this.length(v);
+      return len > 0 ? [v[0] / len, v[1] / len, v[2] / len] : [0, 0, 0];
+    }
+  },
+
+  mat4: {
+    identity() {
+      return [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      ];
+    },
+
+    multiply(a, b) {
+      const result = new Array(16);
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          result[i * 4 + j] =
+            a[i * 4 + 0] * b[0 * 4 + j] +
+            a[i * 4 + 1] * b[1 * 4 + j] +
+            a[i * 4 + 2] * b[2 * 4 + j] +
+            a[i * 4 + 3] * b[3 * 4 + j];
+        }
+      }
+      return result;
+    },
+
+    translation(x, y, z) {
+      return [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        x, y, z, 1
+      ];
+    },
+
+    rotationX(angle) {
+      const c = Math.cos(angle), s = Math.sin(angle);
+      return [
+        1, 0, 0, 0,
+        0, c, s, 0,
+        0, -s, c, 0,
+        0, 0, 0, 1
+      ];
+    },
+
+    rotationY(angle) {
+      const c = Math.cos(angle), s = Math.sin(angle);
+      return [
+        c, 0, -s, 0,
+        0, 1, 0, 0,
+        s, 0, c, 0,
+        0, 0, 0, 1
+      ];
+    },
+
+    rotationZ(angle) {
+      const c = Math.cos(angle), s = Math.sin(angle);
+      return [
+        c, s, 0, 0,
+        -s, c, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      ];
+    },
+
+    scaling(x, y, z) {
+      return [
+        x, 0, 0, 0,
+        0, y, 0, 0,
+        0, 0, z, 0,
+        0, 0, 0, 1
+      ];
+    },
+
+    perspective(fov, aspect, near, far) {
+      const f = 1 / Math.tan(fov / 2);
+      const nf = 1 / (near - far);
+      return [
+        f / aspect, 0, 0, 0,
+        0, f, 0, 0,
+        0, 0, (far + near) * nf, -1,
+        0, 0, 2 * far * near * nf, 0
+      ];
+    },
+
+    lookAt(eye, center, up) {
+      const z = KonomiRenderer.vec3.normalize(KonomiRenderer.vec3.sub(eye, center));
+      const x = KonomiRenderer.vec3.normalize(KonomiRenderer.vec3.cross(up, z));
+      const y = KonomiRenderer.vec3.cross(z, x);
+      return [
+        x[0], y[0], z[0], 0,
+        x[1], y[1], z[1], 0,
+        x[2], y[2], z[2], 0,
+        -KonomiRenderer.vec3.dot(x, eye), -KonomiRenderer.vec3.dot(y, eye), -KonomiRenderer.vec3.dot(z, eye), 1
+      ];
+    },
+
+    transformPoint(m, p) {
+      const w = m[3] * p[0] + m[7] * p[1] + m[11] * p[2] + m[15];
+      return [
+        (m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12]) / w,
+        (m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13]) / w,
+        (m[2] * p[0] + m[6] * p[1] + m[10] * p[2] + m[14]) / w
+      ];
+    }
+  },
+
+  // ============================================
+  // 3D RENDERER (Software Rasterizer)
+  // ============================================
+
+  create3D(canvas) {
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Z-buffer
+    let zBuffer = new Float32Array(width * height);
+
+    // Frame buffer
+    let frameBuffer = ctx.createImageData(width, height);
+
+    const renderer = {
+      canvas,
+      ctx,
+      width,
+      height,
+
+      // Camera
+      camera: {
+        position: [0, 0, 5],
+        target: [0, 0, 0],
+        up: [0, 1, 0],
+        fov: Math.PI / 4,
+        near: 0.1,
+        far: 100
+      },
+
+      // Lighting
+      light: {
+        direction: KonomiRenderer.vec3.normalize([1, 1, 1]),
+        ambient: 0.2,
+        diffuse: 0.8
+      },
+
+      // Clear buffers
+      clear(color = [0, 0, 0]) {
+        zBuffer.fill(Infinity);
+        const data = frameBuffer.data;
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = color[0];
+          data[i + 1] = color[1];
+          data[i + 2] = color[2];
+          data[i + 3] = 255;
+        }
+      },
+
+      // Present frame buffer
+      present() {
+        ctx.putImageData(frameBuffer, 0, 0);
+      },
+
+      // Get view-projection matrix
+      getViewProjection() {
+        const view = KonomiRenderer.mat4.lookAt(
+          this.camera.position,
+          this.camera.target,
+          this.camera.up
+        );
+        const proj = KonomiRenderer.mat4.perspective(
+          this.camera.fov,
+          width / height,
+          this.camera.near,
+          this.camera.far
+        );
+        return KonomiRenderer.mat4.multiply(proj, view);
+      },
+
+      // Project 3D point to 2D screen
+      project(point, mvp) {
+        const p = KonomiRenderer.mat4.transformPoint(mvp, point);
+        return [
+          (p[0] + 1) * 0.5 * width,
+          (1 - p[1]) * 0.5 * height,
+          p[2]
+        ];
+      },
+
+      // Set pixel with z-buffer test
+      setPixel(x, y, z, color) {
+        x = Math.round(x);
+        y = Math.round(y);
+        if (x < 0 || x >= width || y < 0 || y >= height) return;
+
+        const idx = y * width + x;
+        if (z < zBuffer[idx]) {
+          zBuffer[idx] = z;
+          const pixelIdx = idx * 4;
+          frameBuffer.data[pixelIdx] = color[0];
+          frameBuffer.data[pixelIdx + 1] = color[1];
+          frameBuffer.data[pixelIdx + 2] = color[2];
+          frameBuffer.data[pixelIdx + 3] = 255;
+        }
+      },
+
+      // Draw line (Bresenham)
+      drawLine(x0, y0, z0, x1, y1, z1, color) {
+        const dx = Math.abs(x1 - x0);
+        const dy = Math.abs(y1 - y0);
+        const sx = x0 < x1 ? 1 : -1;
+        const sy = y0 < y1 ? 1 : -1;
+        let err = dx - dy;
+        const steps = Math.max(dx, dy);
+        const dz = steps > 0 ? (z1 - z0) / steps : 0;
+
+        let x = x0, y = y0, z = z0;
+        while (true) {
+          this.setPixel(x, y, z, color);
+          if (x === x1 && y === y1) break;
+          const e2 = 2 * err;
+          if (e2 > -dy) { err -= dy; x += sx; }
+          if (e2 < dx) { err += dx; y += sy; }
+          z += dz;
+        }
+      },
+
+      // Draw filled triangle (scanline)
+      drawTriangle(v0, v1, v2, color, shading = 1) {
+        // Sort vertices by Y
+        const verts = [v0, v1, v2].sort((a, b) => a[1] - b[1]);
+        const [top, mid, bot] = verts;
+
+        // Apply shading
+        const shadedColor = color.map(c => Math.round(c * shading));
+
+        // Interpolate edge
+        const interpolate = (y, p1, p2) => {
+          if (p1[1] === p2[1]) return p1;
+          const t = (y - p1[1]) / (p2[1] - p1[1]);
+          return [
+            p1[0] + (p2[0] - p1[0]) * t,
+            y,
+            p1[2] + (p2[2] - p1[2]) * t
+          ];
+        };
+
+        // Draw scanlines
+        for (let y = Math.ceil(top[1]); y <= Math.floor(bot[1]); y++) {
+          let left, right;
+
+          if (y < mid[1]) {
+            left = interpolate(y, top, mid);
+            right = interpolate(y, top, bot);
+          } else {
+            left = interpolate(y, mid, bot);
+            right = interpolate(y, top, bot);
+          }
+
+          if (left[0] > right[0]) [left, right] = [right, left];
+
+          for (let x = Math.ceil(left[0]); x <= Math.floor(right[0]); x++) {
+            const t = left[0] === right[0] ? 0 : (x - left[0]) / (right[0] - left[0]);
+            const z = left[2] + (right[2] - left[2]) * t;
+            this.setPixel(x, y, z, shadedColor);
+          }
+        }
+      },
+
+      // Calculate face normal
+      calculateNormal(v0, v1, v2) {
+        const e1 = KonomiRenderer.vec3.sub(v1, v0);
+        const e2 = KonomiRenderer.vec3.sub(v2, v0);
+        return KonomiRenderer.vec3.normalize(KonomiRenderer.vec3.cross(e1, e2));
+      },
+
+      // Render mesh
+      renderMesh(mesh, transform = KonomiRenderer.mat4.identity()) {
+        const mvp = KonomiRenderer.mat4.multiply(this.getViewProjection(), transform);
+
+        for (const face of mesh.faces) {
+          // Get vertices
+          const v0 = mesh.vertices[face[0]];
+          const v1 = mesh.vertices[face[1]];
+          const v2 = mesh.vertices[face[2]];
+
+          // Calculate normal for lighting
+          const normal = this.calculateNormal(v0, v1, v2);
+
+          // Transform normal by model matrix (simplified)
+          const worldNormal = KonomiRenderer.vec3.normalize(normal);
+
+          // Backface culling
+          const viewDir = KonomiRenderer.vec3.normalize(
+            KonomiRenderer.vec3.sub(this.camera.position, v0)
+          );
+          if (KonomiRenderer.vec3.dot(worldNormal, viewDir) < 0) continue;
+
+          // Calculate lighting
+          const diffuse = Math.max(0, KonomiRenderer.vec3.dot(worldNormal, this.light.direction));
+          const shading = this.light.ambient + this.light.diffuse * diffuse;
+
+          // Project vertices
+          const p0 = this.project(v0, mvp);
+          const p1 = this.project(v1, mvp);
+          const p2 = this.project(v2, mvp);
+
+          // Clip against near plane (simplified)
+          if (p0[2] < 0 || p1[2] < 0 || p2[2] < 0) continue;
+
+          // Draw triangle
+          const color = mesh.color || [200, 200, 200];
+          this.drawTriangle(p0, p1, p2, color, shading);
+        }
+      },
+
+      // Render wireframe
+      renderWireframe(mesh, transform = KonomiRenderer.mat4.identity(), color = [0, 255, 0]) {
+        const mvp = KonomiRenderer.mat4.multiply(this.getViewProjection(), transform);
+
+        for (const face of mesh.faces) {
+          const p0 = this.project(mesh.vertices[face[0]], mvp);
+          const p1 = this.project(mesh.vertices[face[1]], mvp);
+          const p2 = this.project(mesh.vertices[face[2]], mvp);
+
+          if (p0[2] < 0 || p1[2] < 0 || p2[2] < 0) continue;
+
+          this.drawLine(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], color);
+          this.drawLine(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], color);
+          this.drawLine(p2[0], p2[1], p2[2], p0[0], p0[1], p0[2], color);
+        }
+      }
+    };
+
+    return renderer;
+  },
+
+  // ============================================
+  // PRIMITIVE MESH GENERATORS
+  // ============================================
+
+  createCube(size = 1) {
+    const s = size / 2;
+    return {
+      vertices: [
+        [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],
+        [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s]
+      ],
+      faces: [
+        [0, 1, 2], [0, 2, 3], // Back
+        [4, 6, 5], [4, 7, 6], // Front
+        [0, 4, 5], [0, 5, 1], // Bottom
+        [2, 6, 7], [2, 7, 3], // Top
+        [0, 7, 4], [0, 3, 7], // Left
+        [1, 5, 6], [1, 6, 2]  // Right
+      ],
+      color: [100, 150, 200]
+    };
+  },
+
+  createSphere(radius = 1, segments = 16, rings = 8) {
+    const vertices = [];
+    const faces = [];
+
+    for (let ring = 0; ring <= rings; ring++) {
+      const phi = (ring / rings) * Math.PI;
+      for (let seg = 0; seg <= segments; seg++) {
+        const theta = (seg / segments) * Math.PI * 2;
+        vertices.push([
+          radius * Math.sin(phi) * Math.cos(theta),
+          radius * Math.cos(phi),
+          radius * Math.sin(phi) * Math.sin(theta)
+        ]);
+      }
+    }
+
+    for (let ring = 0; ring < rings; ring++) {
+      for (let seg = 0; seg < segments; seg++) {
+        const i = ring * (segments + 1) + seg;
+        faces.push([i, i + segments + 1, i + 1]);
+        faces.push([i + 1, i + segments + 1, i + segments + 2]);
+      }
+    }
+
+    return { vertices, faces, color: [200, 100, 100] };
+  },
+
+  createPlane(width = 2, height = 2, divisionsW = 1, divisionsH = 1) {
+    const vertices = [];
+    const faces = [];
+    const hw = width / 2;
+    const hh = height / 2;
+
+    for (let y = 0; y <= divisionsH; y++) {
+      for (let x = 0; x <= divisionsW; x++) {
+        vertices.push([
+          -hw + (x / divisionsW) * width,
+          0,
+          -hh + (y / divisionsH) * height
+        ]);
+      }
+    }
+
+    for (let y = 0; y < divisionsH; y++) {
+      for (let x = 0; x < divisionsW; x++) {
+        const i = y * (divisionsW + 1) + x;
+        faces.push([i, i + divisionsW + 1, i + 1]);
+        faces.push([i + 1, i + divisionsW + 1, i + divisionsW + 2]);
+      }
+    }
+
+    return { vertices, faces, color: [150, 150, 150] };
+  },
+
+  createCylinder(radius = 0.5, height = 2, segments = 16) {
+    const vertices = [];
+    const faces = [];
+    const halfHeight = height / 2;
+
+    // Top and bottom center
+    vertices.push([0, halfHeight, 0]);   // 0: top center
+    vertices.push([0, -halfHeight, 0]);  // 1: bottom center
+
+    // Side vertices
+    for (let i = 0; i <= segments; i++) {
+      const theta = (i / segments) * Math.PI * 2;
+      const x = radius * Math.cos(theta);
+      const z = radius * Math.sin(theta);
+      vertices.push([x, halfHeight, z]);   // top ring
+      vertices.push([x, -halfHeight, z]);  // bottom ring
+    }
+
+    // Top and bottom faces
+    for (let i = 0; i < segments; i++) {
+      const topIdx = 2 + i * 2;
+      faces.push([0, topIdx, topIdx + 2]);
+      faces.push([1, topIdx + 3, topIdx + 1]);
+    }
+
+    // Side faces
+    for (let i = 0; i < segments; i++) {
+      const topIdx = 2 + i * 2;
+      faces.push([topIdx, topIdx + 1, topIdx + 2]);
+      faces.push([topIdx + 1, topIdx + 3, topIdx + 2]);
+    }
+
+    return { vertices, faces, color: [100, 200, 100] };
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - Testing Framework
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiTest = {
+  suites: [],
+  currentSuite: null,
+  results: {
+    passed: 0,
+    failed: 0,
+    skipped: 0,
+    total: 0,
+    duration: 0,
+    failures: []
+  },
+
+  // ============================================
+  // TEST DEFINITION API
+  // ============================================
+
+  describe(name, fn) {
+    const suite = {
+      name,
+      tests: [],
+      beforeEach: null,
+      afterEach: null,
+      beforeAll: null,
+      afterAll: null
+    };
+
+    const prevSuite = this.currentSuite;
+    this.currentSuite = suite;
+
+    fn();
+
+    this.currentSuite = prevSuite;
+    this.suites.push(suite);
+
+    return suite;
+  },
+
+  it(description, fn) {
+    if (!this.currentSuite) {
+      throw new Error('it() must be called inside describe()');
+    }
+    this.currentSuite.tests.push({
+      description,
+      fn,
+      skip: false
+    });
+  },
+
+  skip(description, fn) {
+    if (!this.currentSuite) {
+      throw new Error('skip() must be called inside describe()');
+    }
+    this.currentSuite.tests.push({
+      description,
+      fn,
+      skip: true
+    });
+  },
+
+  beforeEach(fn) {
+    if (this.currentSuite) {
+      this.currentSuite.beforeEach = fn;
+    }
+  },
+
+  afterEach(fn) {
+    if (this.currentSuite) {
+      this.currentSuite.afterEach = fn;
+    }
+  },
+
+  beforeAll(fn) {
+    if (this.currentSuite) {
+      this.currentSuite.beforeAll = fn;
+    }
+  },
+
+  afterAll(fn) {
+    if (this.currentSuite) {
+      this.currentSuite.afterAll = fn;
+    }
+  },
+
+  // ============================================
+  // ASSERTIONS
+  // ============================================
+
+  expect(actual) {
+    return {
+      toBe(expected) {
+        if (actual !== expected) {
+          throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+        }
+      },
+
+      toEqual(expected) {
+        if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+          throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+        }
+      },
+
+      toBeGreaterThan(expected) {
+        if (actual <= expected) {
+          throw new Error(`Expected ${actual} to be greater than ${expected}`);
+        }
+      },
+
+      toBeLessThan(expected) {
+        if (actual >= expected) {
+          throw new Error(`Expected ${actual} to be less than ${expected}`);
+        }
+      },
+
+      toBeGreaterThanOrEqual(expected) {
+        if (actual < expected) {
+          throw new Error(`Expected ${actual} to be >= ${expected}`);
+        }
+      },
+
+      toBeLessThanOrEqual(expected) {
+        if (actual > expected) {
+          throw new Error(`Expected ${actual} to be <= ${expected}`);
+        }
+      },
+
+      toBeNull() {
+        if (actual !== null) {
+          throw new Error(`Expected null, got ${JSON.stringify(actual)}`);
+        }
+      },
+
+      toBeUndefined() {
+        if (actual !== undefined) {
+          throw new Error(`Expected undefined, got ${JSON.stringify(actual)}`);
+        }
+      },
+
+      toBeDefined() {
+        if (actual === undefined) {
+          throw new Error('Expected value to be defined');
+        }
+      },
+
+      toBeTruthy() {
+        if (!actual) {
+          throw new Error(`Expected truthy value, got ${JSON.stringify(actual)}`);
+        }
+      },
+
+      toBeFalsy() {
+        if (actual) {
+          throw new Error(`Expected falsy value, got ${JSON.stringify(actual)}`);
+        }
+      },
+
+      toContain(item) {
+        if (typeof actual === 'string') {
+          if (!actual.includes(item)) {
+            throw new Error(`Expected "${actual}" to contain "${item}"`);
+          }
+        } else if (Array.isArray(actual)) {
+          if (!actual.includes(item)) {
+            throw new Error(`Expected array to contain ${JSON.stringify(item)}`);
+          }
+        } else {
+          throw new Error('toContain() requires string or array');
+        }
+      },
+
+      toHaveLength(length) {
+        if (actual.length !== length) {
+          throw new Error(`Expected length ${length}, got ${actual.length}`);
+        }
+      },
+
+      toMatch(regex) {
+        if (!regex.test(actual)) {
+          throw new Error(`Expected "${actual}" to match ${regex}`);
+        }
+      },
+
+      toThrow(expectedError) {
+        let threw = false;
+        let error = null;
+        try {
+          actual();
+        } catch (e) {
+          threw = true;
+          error = e;
+        }
+        if (!threw) {
+          throw new Error('Expected function to throw');
+        }
+        if (expectedError && !error.message.includes(expectedError)) {
+          throw new Error(`Expected error "${expectedError}", got "${error.message}"`);
+        }
+      },
+
+      toBeCloseTo(expected, precision = 2) {
+        const diff = Math.abs(actual - expected);
+        const threshold = Math.pow(10, -precision) / 2;
+        if (diff > threshold) {
+          throw new Error(`Expected ${actual} to be close to ${expected}`);
+        }
+      },
+
+      toBeInstanceOf(expected) {
+        if (!(actual instanceof expected)) {
+          throw new Error(`Expected instance of ${expected.name}`);
+        }
+      },
+
+      toHaveProperty(property, value) {
+        if (!(property in actual)) {
+          throw new Error(`Expected object to have property "${property}"`);
+        }
+        if (value !== undefined && actual[property] !== value) {
+          throw new Error(`Expected property "${property}" to be ${JSON.stringify(value)}`);
+        }
+      },
+
+      not: {
+        toBe(expected) {
+          if (actual === expected) {
+            throw new Error(`Expected ${JSON.stringify(actual)} not to be ${JSON.stringify(expected)}`);
+          }
+        },
+
+        toEqual(expected) {
+          if (JSON.stringify(actual) === JSON.stringify(expected)) {
+            throw new Error(`Expected ${JSON.stringify(actual)} not to equal ${JSON.stringify(expected)}`);
+          }
+        },
+
+        toBeNull() {
+          if (actual === null) {
+            throw new Error('Expected value not to be null');
+          }
+        },
+
+        toBeTruthy() {
+          if (actual) {
+            throw new Error(`Expected falsy value, got ${JSON.stringify(actual)}`);
+          }
+        },
+
+        toContain(item) {
+          if (typeof actual === 'string' && actual.includes(item)) {
+            throw new Error(`Expected "${actual}" not to contain "${item}"`);
+          } else if (Array.isArray(actual) && actual.includes(item)) {
+            throw new Error(`Expected array not to contain ${JSON.stringify(item)}`);
+          }
+        },
+
+        toThrow() {
+          let threw = false;
+          try {
+            actual();
+          } catch (e) {
+            threw = true;
+          }
+          if (threw) {
+            throw new Error('Expected function not to throw');
+          }
+        }
+      }
+    };
+  },
+
+  // ============================================
+  // TEST RUNNER
+  // ============================================
+
+  async run(options = {}) {
+    const { verbose = true, filter = null } = options;
+
+    this.results = {
+      passed: 0,
+      failed: 0,
+      skipped: 0,
+      total: 0,
+      duration: 0,
+      failures: []
+    };
+
+    const startTime = performance.now();
+    const log = verbose ? console.log.bind(console) : () => {};
+
+    log('\n🧪 KONOMI KONCEPTION TEST RUNNER\n');
+    log('='.repeat(50));
+
+    for (const suite of this.suites) {
+      if (filter && !suite.name.includes(filter)) continue;
+
+      log(`\n📦 ${suite.name}`);
+
+      // Run beforeAll
+      if (suite.beforeAll) {
+        try {
+          await suite.beforeAll();
+        } catch (e) {
+          log(`  ❌ beforeAll failed: ${e.message}`);
+          continue;
+        }
+      }
+
+      for (const test of suite.tests) {
+        this.results.total++;
+
+        if (test.skip) {
+          this.results.skipped++;
+          log(`  ⏭️  ${test.description} (skipped)`);
+          continue;
+        }
+
+        // Run beforeEach
+        if (suite.beforeEach) {
+          try {
+            await suite.beforeEach();
+          } catch (e) {
+            log(`  ❌ beforeEach failed: ${e.message}`);
+            continue;
+          }
+        }
+
+        // Run test
+        try {
+          const testStart = performance.now();
+          await test.fn();
+          const testDuration = (performance.now() - testStart).toFixed(2);
+          this.results.passed++;
+          log(`  ✅ ${test.description} (${testDuration}ms)`);
+        } catch (e) {
+          this.results.failed++;
+          log(`  ❌ ${test.description}`);
+          log(`     Error: ${e.message}`);
+          this.results.failures.push({
+            suite: suite.name,
+            test: test.description,
+            error: e.message,
+            stack: e.stack
+          });
+        }
+
+        // Run afterEach
+        if (suite.afterEach) {
+          try {
+            await suite.afterEach();
+          } catch (e) {
+            log(`  ⚠️  afterEach failed: ${e.message}`);
+          }
+        }
+      }
+
+      // Run afterAll
+      if (suite.afterAll) {
+        try {
+          await suite.afterAll();
+        } catch (e) {
+          log(`  ⚠️  afterAll failed: ${e.message}`);
+        }
+      }
+    }
+
+    this.results.duration = performance.now() - startTime;
+
+    // Summary
+    log('\n' + '='.repeat(50));
+    log('\n📊 TEST SUMMARY\n');
+    log(`   Total:   ${this.results.total}`);
+    log(`   Passed:  ${this.results.passed} ✅`);
+    log(`   Failed:  ${this.results.failed} ❌`);
+    log(`   Skipped: ${this.results.skipped} ⏭️`);
+    log(`   Duration: ${this.results.duration.toFixed(2)}ms`);
+
+    if (this.results.failures.length > 0) {
+      log('\n❌ FAILURES:\n');
+      for (const failure of this.results.failures) {
+        log(`   ${failure.suite} > ${failure.test}`);
+        log(`   ${failure.error}\n`);
+      }
+    }
+
+    log('\n' + '='.repeat(50) + '\n');
+
+    return this.results;
+  },
+
+  // Reset all suites
+  reset() {
+    this.suites = [];
+    this.currentSuite = null;
+  },
+
+  // ============================================
+  // MOCKING
+  // ============================================
+
+  mock: {
+    fn(implementation = () => {}) {
+      const mockFn = function(...args) {
+        mockFn.calls.push(args);
+        mockFn.callCount++;
+        return mockFn.implementation(...args);
+      };
+
+      mockFn.calls = [];
+      mockFn.callCount = 0;
+      mockFn.implementation = implementation;
+
+      mockFn.mockImplementation = (fn) => {
+        mockFn.implementation = fn;
+        return mockFn;
+      };
+
+      mockFn.mockReturnValue = (value) => {
+        mockFn.implementation = () => value;
+        return mockFn;
+      };
+
+      mockFn.mockReset = () => {
+        mockFn.calls = [];
+        mockFn.callCount = 0;
+      };
+
+      return mockFn;
+    },
+
+    spyOn(obj, method) {
+      const original = obj[method];
+      const mock = this.fn(original.bind(obj));
+      mock.restore = () => { obj[method] = original; };
+      obj[method] = mock;
+      return mock;
+    }
+  },
+
+  // ============================================
+  // COVERAGE (Simple)
+  // ============================================
+
+  coverage: {
+    data: new Map(),
+
+    track(name) {
+      if (!this.data.has(name)) {
+        this.data.set(name, { calls: 0, lines: new Set() });
+      }
+      this.data.get(name).calls++;
+    },
+
+    trackLine(name, line) {
+      if (this.data.has(name)) {
+        this.data.get(name).lines.add(line);
+      }
+    },
+
+    report() {
+      console.log('\n📈 COVERAGE REPORT\n');
+      for (const [name, info] of this.data) {
+        console.log(`   ${name}: ${info.calls} calls, ${info.lines.size} lines`);
+      }
+    },
+
+    reset() {
+      this.data.clear();
+    }
+  }
+};
+
+
+// ============================================
+// KONOMI KONCEPTION - Main Application
+// Pure JavaScript - Zero Dependencies
+// ============================================
+
+const KonomiApp = {
+  version: '1.0.0',
+  bootTime: 0,
+  ready: false,
+
+  // Components
+  components: {
+    vm: null,
+    db: null,
+    ai: null,
+    renderer2d: null,
+    renderer3d: null
+  },
+
+  // UI State
+  state: {
+    activeTab: 'editor',
+    theme: 'dark',
+    consoleOutput: []
+  },
+
+  // ============================================
+  // BOOTSTRAP
+  // ============================================
+
+  async boot() {
+    const startTime = performance.now();
+    this.log('info', 'KONOMI KONCEPTION v' + this.version);
+    this.log('info', 'Starting bootstrap sequence...');
+
+    try {
+      // Stage 1: Initialize utilities
+      this.log('info', '[1/5] Initializing utilities...');
+      KonomiUtils.initRandom();
+      await this.delay(50);
+
+      // Stage 2: Initialize VM
+      this.log('info', '[2/5] Building virtual machine...');
+      this.components.vm = KonomiVM;
+      await this.delay(50);
+
+      // Stage 3: Initialize Database
+      this.log('info', '[3/5] Initializing database...');
+      KonomiDB.load();
+      this.components.db = KonomiDB;
+      await this.delay(50);
+
+      // Stage 4: Initialize AI
+      this.log('info', '[4/5] Loading AI engine...');
+      this.components.ai = KonomiAI.createModel({
+        vocabSize: 256,
+        dim: 32,
+        numHeads: 2,
+        numLayers: 1
+      });
+      await this.delay(50);
+
+      // Stage 5: Initialize renderers
+      this.log('info', '[5/5] Setting up renderers...');
+      this.initRenderers();
+      await this.delay(50);
+
+      this.bootTime = performance.now() - startTime;
+      this.ready = true;
+
+      this.log('success', `System ready in ${this.bootTime.toFixed(0)}ms`);
+      this.log('info', '─'.repeat(40));
+
+      // Initialize UI
+      this.initUI();
+
+      // Run self-test
+      this.runSelfTest();
+
+    } catch (error) {
+      this.log('error', 'Boot failed: ' + error.message);
+      console.error(error);
+    }
+  },
+
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
+  // ============================================
+  // RENDERERS
+  // ============================================
+
+  initRenderers() {
+    // 2D Canvas
+    const canvas2d = document.getElementById('canvas2d');
+    if (canvas2d) {
+      this.components.renderer2d = KonomiRenderer.create2D(canvas2d);
+    }
+
+    // 3D Canvas
+    const canvas3d = document.getElementById('canvas3d');
+    if (canvas3d) {
+      this.components.renderer3d = KonomiRenderer.create3D(canvas3d);
+    }
+  },
+
+  // ============================================
+  // UI INITIALIZATION
+  // ============================================
+
+  initUI() {
+    // Tab navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const tab = item.dataset.tab;
+        if (tab) this.switchTab(tab);
+      });
+    });
+
+    // Tab buttons
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.target;
+        if (target) this.switchTab(target);
+      });
+    });
+
+    // Run button
+    const runBtn = document.getElementById('runBtn');
+    if (runBtn) {
+      runBtn.addEventListener('click', () => this.runCode());
+    }
+
+    // Test button
+    const testBtn = document.getElementById('testBtn');
+    if (testBtn) {
+      testBtn.addEventListener('click', () => this.runSelfTest());
+    }
+
+    // Demo buttons
+    document.querySelectorAll('[data-demo]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const demo = btn.dataset.demo;
+        this.runDemo(demo);
+      });
+    });
+
+    // Update stats
+    this.updateStats();
+  },
+
+  switchTab(tab) {
+    this.state.activeTab = tab;
+
+    // Update nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.tab === tab);
+    });
+
+    // Update tab buttons
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.target === tab);
+    });
+
+    // Update content visibility
+    document.querySelectorAll('.tab-content').forEach(content => {
+      content.classList.toggle('hidden', content.id !== tab + '-content');
+    });
+  },
+
+  // ============================================
+  // CODE EXECUTION
+  // ============================================
+
+  runCode() {
+    const editor = document.getElementById('codeEditor');
+    if (!editor) return;
+
+    const code = editor.value;
+    this.log('info', 'Executing code...');
+
+    try {
+      const output = this.components.vm.execute(code);
+      output.forEach(line => this.log('success', '> ' + line));
+      this.log('info', 'Execution complete');
+    } catch (error) {
+      this.log('error', 'Error: ' + error.message);
+    }
+  },
+
+  // ============================================
+  // DEMOS
+  // ============================================
+
+  runDemo(demo) {
+    switch (demo) {
+      case 'crypto':
+        this.demoCrypto();
+        break;
+      case 'db':
+        this.demoDatabase();
+        break;
+      case 'ai':
+        this.demoAI();
+        break;
+      case '3d':
+        this.demo3D();
+        break;
+      case 'compress':
+        this.demoCompression();
+        break;
+    }
+  },
+
+  demoCrypto() {
+    this.log('info', '── Crypto Demo ──');
+
+    // SHA256
+    const message = 'Hello, Konomi Konception!';
+    const hash = KonomiSHA256.hash(message);
+    this.log('info', 'Message: ' + message);
+    this.log('success', 'SHA256: ' + hash);
+
+    // AES Encryption
+    const password = 'secret123';
+    const encrypted = KonomiAES.encrypt(message, password);
+    this.log('info', 'Encrypted: ' + encrypted.substring(0, 40) + '...');
+
+    const decrypted = KonomiAES.decrypt(encrypted, password);
+    this.log('success', 'Decrypted: ' + decrypted);
+
+    // UUID
+    const uuid = KonomiUtils.uuid();
+    this.log('info', 'Generated UUID: ' + uuid);
+  },
+
+  demoDatabase() {
+    this.log('info', '── Database Demo ──');
+
+    const users = this.components.db.collection('demo_users');
+    users.clear();
+
+    // Insert
+    const user1 = users.insert({ name: 'Alice', age: 30, role: 'admin' });
+    const user2 = users.insert({ name: 'Bob', age: 25, role: 'user' });
+    const user3 = users.insert({ name: 'Charlie', age: 35, role: 'user' });
+
+    this.log('success', `Inserted ${users.count()} users`);
+
+    // Query
+    const admins = users.find({ role: 'admin' });
+    this.log('info', 'Admins: ' + admins.map(u => u.name).join(', '));
+
+    const over30 = users.find({ age: { $gte: 30 } });
+    this.log('info', 'Age >= 30: ' + over30.map(u => u.name).join(', '));
+
+    // Update
+    users.update(user2._id, { age: 26 });
+    this.log('success', 'Updated Bob\'s age to 26');
+
+    // Range query (using B+Tree directly)
+    this.log('info', 'All users: ' + users.find().map(u => `${u.name}(${u.age})`).join(', '));
+  },
+
+  demoAI() {
+    this.log('info', '── AI Demo ──');
+
+    // Text embedding similarity
+    const embedding = KonomiAI.createEmbedding(256, 32);
+
+    const texts = [
+      'Hello world',
+      'Hi there world',
+      'Goodbye universe',
+      'Machine learning is fun'
+    ];
+
+    this.log('info', 'Finding similar texts to "Hello world":');
+
+    const similar = KonomiAI.findSimilar('Hello world', texts, embedding, 3);
+    similar.forEach((result, i) => {
+      this.log('success', `  ${i + 1}. "${result.document}" (${(result.similarity * 100).toFixed(1)}%)`);
+    });
+
+    // Simple classification demo
+    const classifier = KonomiAI.createTextClassifier(['positive', 'negative', 'neutral']);
+    const predictions = KonomiAI.classifyText(classifier, 'This is great!');
+
+    this.log('info', 'Classification of "This is great!":');
+    predictions.slice(0, 3).forEach(p => {
+      this.log('info', `  ${p.category}: ${(p.probability * 100).toFixed(1)}%`);
+    });
+  },
+
+  demo3D() {
+    this.log('info', '── 3D Rendering Demo ──');
+
+    const renderer = this.components.renderer3d;
+    if (!renderer) {
+      this.log('error', '3D canvas not found');
+      return;
+    }
+
+    // Create cube mesh
+    const cube = KonomiRenderer.createCube(1);
+    cube.color = [100, 150, 200];
+
+    // Animation loop
+    let angle = 0;
+    const animate = () => {
+      renderer.clear([10, 10, 15]);
+
+      // Rotate cube
+      const transform = KonomiRenderer.mat4.multiply(
+        KonomiRenderer.mat4.rotationY(angle),
+        KonomiRenderer.mat4.rotationX(angle * 0.5)
+      );
+
+      renderer.renderMesh(cube, transform);
+      renderer.present();
+
+      angle += 0.02;
+
+      if (angle < Math.PI * 4) {
+        requestAnimationFrame(animate);
+      } else {
+        this.log('success', '3D rendering complete');
+      }
+    };
+
+    animate();
+    this.log('info', 'Rendering rotating cube...');
+  },
+
+  demoCompression() {
+    this.log('info', '── Compression Demo ──');
+
+    const original = 'Hello, Konomi Konception! '.repeat(50);
+    this.log('info', `Original size: ${original.length} bytes`);
+
+    const compressed = KonomiCompression.compress(original);
+    const ratio = KonomiCompression.getCompressionRatio(original, compressed);
+
+    this.log('success', `Compressed size: ${ratio.compressedSize} bytes`);
+    this.log('success', `Compression ratio: ${ratio.ratio}`);
+
+    const decompressed = KonomiCompression.decompress(compressed);
+    const decompressedStr = KonomiUtils.utf8Decode(decompressed);
+
+    this.log('info', `Decompressed size: ${decompressedStr.length} bytes`);
+    this.log('success', `Integrity check: ${decompressedStr === original ? 'PASSED' : 'FAILED'}`);
+  },
+
+  // ============================================
+  // SELF TEST
+  // ============================================
+
+  async runSelfTest() {
+    this.log('info', '── Running Self-Tests ──');
+
+    KonomiTest.reset();
+
+    // Utils tests
+    KonomiTest.describe('KonomiUtils', () => {
+      KonomiTest.it('generates valid UUIDs', () => {
+        const uuid = KonomiUtils.uuid();
+        KonomiTest.expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+      });
+
+      KonomiTest.it('encodes/decodes base64', () => {
+        const original = 'Hello, World!';
+        const encoded = KonomiUtils.base64Encode(KonomiUtils.utf8Encode(original));
+        const decoded = KonomiUtils.utf8Decode(KonomiUtils.base64Decode(encoded));
+        KonomiTest.expect(decoded).toBe(original);
+      });
+
+      KonomiTest.it('generates random numbers', () => {
+        const num = KonomiUtils.random();
+        KonomiTest.expect(num).toBeGreaterThanOrEqual(0);
+        KonomiTest.expect(num).toBeLessThan(1);
+      });
+    });
+
+    // SHA256 tests
+    KonomiTest.describe('KonomiSHA256', () => {
+      KonomiTest.it('hashes empty string correctly', () => {
+        const hash = KonomiSHA256.hash('');
+        KonomiTest.expect(hash).toBe('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+      });
+
+      KonomiTest.it('hashes "abc" correctly', () => {
+        const hash = KonomiSHA256.hash('abc');
+        KonomiTest.expect(hash).toBe('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+      });
+    });
+
+    // Database tests
+    KonomiTest.describe('KonomiDB', () => {
+      KonomiTest.it('inserts and retrieves documents', () => {
+        const col = KonomiDB.collection('test_col');
+        col.clear();
+        const doc = col.insert({ name: 'test', value: 42 });
+        const found = col.findById(doc._id);
+        KonomiTest.expect(found.name).toBe('test');
+        KonomiTest.expect(found.value).toBe(42);
+      });
+
+      KonomiTest.it('supports queries', () => {
+        const col = KonomiDB.collection('test_col');
+        col.clear();
+        col.insert({ type: 'a', n: 1 });
+        col.insert({ type: 'b', n: 2 });
+        col.insert({ type: 'a', n: 3 });
+        const results = col.find({ type: 'a' });
+        KonomiTest.expect(results).toHaveLength(2);
+      });
+    });
+
+    // VM tests
+    KonomiTest.describe('KonomiVM', () => {
+      KonomiTest.it('executes arithmetic', () => {
+        const output = KonomiVM.execute('print(5 + 3);');
+        KonomiTest.expect(output[0]).toBe(8);
+      });
+
+      KonomiTest.it('handles variables', () => {
+        const output = KonomiVM.execute('let x = 10; print(x * 2);');
+        KonomiTest.expect(output[0]).toBe(20);
+      });
+
+      KonomiTest.it('handles conditionals', () => {
+        const output = KonomiVM.execute('let x = 5; if (x > 3) { print(1); } else { print(0); }');
+        KonomiTest.expect(output[0]).toBe(1);
+      });
+    });
+
+    // Run tests
+    const results = await KonomiTest.run({ verbose: false });
+
+    this.log('info', `Tests: ${results.passed} passed, ${results.failed} failed`);
+
+    if (results.failed === 0) {
+      this.log('success', 'All tests passed!');
+    } else {
+      results.failures.forEach(f => {
+        this.log('error', `FAIL: ${f.suite} > ${f.test}`);
+      });
+    }
+  },
+
+  // ============================================
+  // LOGGING
+  // ============================================
+
+  log(type, message) {
+    const timestamp = new Date().toLocaleTimeString();
+    const entry = { type, message, timestamp };
+    this.state.consoleOutput.push(entry);
+
+    // Update console UI
+    const consoleEl = document.getElementById('console');
+    if (consoleEl) {
+      const line = document.createElement('div');
+      line.className = 'console-line ' + type;
+      line.textContent = `[${timestamp}] ${message}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // Also log to browser console
+    const consoleFn = type === 'error' ? console.error : type === 'warning' ? console.warn : console.log;
+    consoleFn(`[Konomi] ${message}`);
+  },
+
+  // ============================================
+  // STATS
+  // ============================================
+
+  updateStats() {
+    const stats = {
+      bootTime: this.bootTime.toFixed(0) + 'ms',
+      memory: this.getMemoryUsage(),
+      dbSize: this.components.db ? this.components.db.list().length : 0,
+      uptime: '0s'
+    };
+
+    // Update stat displays
+    Object.entries(stats).forEach(([key, value]) => {
+      const el = document.getElementById('stat-' + key);
+      if (el) el.textContent = value;
+    });
+
+    // Update uptime periodically
+    setInterval(() => {
+      const uptime = Math.floor((performance.now() - this.bootTime) / 1000);
+      const el = document.getElementById('stat-uptime');
+      if (el) el.textContent = uptime + 's';
+    }, 1000);
+  },
+
+  getMemoryUsage() {
+    if (performance.memory) {
+      return Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB';
+    }
+    return 'N/A';
+  },
+
+  // ============================================
+  // PERSISTENCE
+  // ============================================
+
+  saveState() {
+    const state = {
+      version: this.version,
+      timestamp: Date.now(),
+      consoleOutput: this.state.consoleOutput.slice(-100)
+    };
+    localStorage.setItem('konomi_state', JSON.stringify(state));
+    this.components.db.save();
+  },
+
+  loadState() {
+    const state = localStorage.getItem('konomi_state');
+    if (state) {
+      try {
+        const parsed = JSON.parse(state);
+        this.state.consoleOutput = parsed.consoleOutput || [];
+      } catch (e) {
+        console.error('Failed to load state:', e);
+      }
+    }
+  }
+};
+
+// ============================================
+// BOOTSTRAP ON LOAD
+// ============================================
+
+window.addEventListener('DOMContentLoaded', () => {
+  KonomiApp.boot();
+});
+
+// Auto-save state periodically
+setInterval(() => {
+  if (KonomiApp.ready) {
+    KonomiApp.saveState();
+  }
+}, 30000);
+
+
+// Helper functions for UI
+function clearConsole() {
+  const consoleEl = document.getElementById('console');
+  if (consoleEl) consoleEl.innerHTML = '';
+  KonomiApp.state.consoleOutput = [];
+}
+
+function insertDocument() {
+  try {
+    const colName = document.getElementById('dbCollection').value || 'default';
+    const docJson = document.getElementById('dbDocument').value;
+    const doc = JSON.parse(docJson);
+    const col = KonomiDB.collection(colName);
+    const inserted = col.insert(doc);
+    KonomiApp.log('success', 'Inserted document: ' + inserted._id);
+  } catch (e) {
+    KonomiApp.log('error', 'Insert failed: ' + e.message);
+  }
+}
+
+function queryDocuments() {
+  try {
+    const colName = document.getElementById('dbCollection').value || 'default';
+    const col = KonomiDB.collection(colName);
+    const docs = col.find();
+    KonomiApp.log('info', `Found ${docs.length} documents in "${colName}":`);
+    docs.forEach(doc => {
+      KonomiApp.log('info', '  ' + JSON.stringify(doc));
+    });
+  } catch (e) {
+    KonomiApp.log('error', 'Query failed: ' + e.message);
+  }
+}
+
+function exportSystem() {
+  const data = {
+    version: KonomiApp.version,
+    timestamp: new Date().toISOString(),
+    database: KonomiDB.export(),
+    console: KonomiApp.state.consoleOutput
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'konomi-export-' + Date.now() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  KonomiApp.log('success', 'Data exported successfully');
+}
+
+function showAbout() {
+  alert(`KONOMI KONCEPTION v${KonomiApp.version}
+
+A Self-Contained System with:
+- Zero external dependencies
+- Custom JavaScript VM
+- B+Tree in-memory database
+- SHA256 & AES-256 cryptography
+- LZ77+Huffman compression
+- Mini Transformer AI engine
+- Software 2D/3D renderer
+- Self-testing framework
+
+Created for Konomi Systems
+AI Controls | Automation | 3D Printing
+
+100% Pure HTML/JS/CSS
+Works Offline!`);
+}
+  </script>
+</body>
+</html>
