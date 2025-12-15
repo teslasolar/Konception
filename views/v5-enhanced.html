@@ -3128,6 +3128,10 @@ const KonomiDB = {
   import(data) {
     for (const [name, treeData] of Object.entries(data)) {
       this.collections.set(name, KonomiBTree.fromJSON(treeData));
+      // Ensure indices map exists for imported collections
+      if (!this.indices.has(name)) {
+        this.indices.set(name, new Map());
+      }
     }
   },
 
