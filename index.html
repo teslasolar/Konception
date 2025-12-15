@@ -356,11 +356,13 @@
             <th>v3</th>
             <th>v4</th>
             <th>v5</th>
+            <th>v6</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Core Utilities</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -374,10 +376,12 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Virtual Machine</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -390,11 +394,13 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>LZ77 Compression</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -406,12 +412,14 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>3D Renderer</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
           </tr>
@@ -422,6 +430,7 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Physics Engine</td>
@@ -430,9 +439,47 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Multi-Shape 3D</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Audio Synthesizer</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Tween Animations</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Entity Component System</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Node Graph System</td>
+            <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
@@ -496,6 +543,15 @@
         description: 'Enhanced with particle system, physics simulation, multiple 3D shapes (cube, pyramid, sphere, torus), and collision detection.',
         features: ['Particles', 'Physics', 'Multi-Shape', 'Collisions', 'Torus'],
         tests: 24
+      },
+      {
+        file: 'v6-advanced.html',
+        version: 'v6',
+        title: 'Advanced System',
+        size: '~220 KB',
+        description: 'Advanced features: Web Audio synthesizer, tween animations with easing, Entity Component System, and visual node graph.',
+        features: ['Audio Synth', 'Tweens', 'ECS', 'Node Graph', 'Sequencer'],
+        tests: 28
       }
     ];
 

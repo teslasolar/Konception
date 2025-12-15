@@ -42,6 +42,14 @@
       "description": "Adds Particles, Physics, Multi-shape 3D",
       "features": ["Particles", "Physics", "Pyramid", "Torus", "Collisions"],
       "tests": 24
+    },
+    {
+      "file": "v6-advanced.html",
+      "version": "v6",
+      "title": "Advanced System",
+      "description": "Adds Audio, Tweens, ECS, Node Graph",
+      "features": ["Audio Synth", "Tweens", "ECS", "Node Graph", "Sequencer"],
+      "tests": 28
     }
   ]
 }
