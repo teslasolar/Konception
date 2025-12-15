@@ -50,6 +50,14 @@
       "description": "Adds Audio, Tweens, ECS, Node Graph",
       "features": ["Audio Synth", "Tweens", "ECS", "Node Graph", "Sequencer"],
       "tests": 28
+    },
+    {
+      "file": "v7-gamedev.html",
+      "version": "v7",
+      "title": "Game Dev System",
+      "description": "Adds FSM, Pathfinding, Noise, Events",
+      "features": ["State Machine", "A* Pathfinding", "Perlin Noise", "Event Bus", "Procedural Gen"],
+      "tests": 32
     }
   ]
 }

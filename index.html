@@ -357,11 +357,13 @@
             <th>v4</th>
             <th>v5</th>
             <th>v6</th>
+            <th>v7</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Core Utilities</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -377,10 +379,12 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Virtual Machine</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -395,11 +399,13 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>LZ77 Compression</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -413,12 +419,14 @@
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>3D Renderer</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
@@ -431,6 +439,7 @@
             <td class="cross">-</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Physics Engine</td>
@@ -438,6 +447,7 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
           </tr>
@@ -449,6 +459,7 @@
             <td class="cross">-</td>
             <td class="check">✓</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Audio Synthesizer</td>
@@ -457,6 +468,7 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
+            <td class="check">✓</td>
             <td class="check">✓</td>
           </tr>
           <tr>
@@ -467,6 +479,7 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Entity Component System</td>
@@ -476,9 +489,51 @@
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="check">✓</td>
+            <td class="check">✓</td>
           </tr>
           <tr>
             <td>Node Graph System</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Finite State Machine</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>A* Pathfinding</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Perlin Noise</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Event Bus System</td>
+            <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
             <td class="cross">-</td>
@@ -552,6 +607,15 @@
         description: 'Advanced features: Web Audio synthesizer, tween animations with easing, Entity Component System, and visual node graph.',
         features: ['Audio Synth', 'Tweens', 'ECS', 'Node Graph', 'Sequencer'],
         tests: 28
+      },
+      {
+        file: 'v7-gamedev.html',
+        version: 'v7',
+        title: 'Game Dev System',
+        size: '~260 KB',
+        description: 'Game development toolkit: Finite State Machine, A* pathfinding, Perlin noise procedural generation, and event bus system.',
+        features: ['State Machine', 'A* Pathfinding', 'Perlin Noise', 'Event Bus', 'Procedural Gen'],
+        tests: 32
       }
     ];
 
