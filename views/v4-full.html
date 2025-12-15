@@ -4064,20 +4064,23 @@ const KonomiRenderer = {
           const v1 = mesh.vertices[face[1]];
           const v2 = mesh.vertices[face[2]];
 
-          // Calculate normal for lighting
-          const normal = this.calculateNormal(v0, v1, v2);
+          // Transform vertices to world space for culling
+          const w0 = KonomiRenderer.mat4.transformPoint(transform, v0);
+          const w1 = KonomiRenderer.mat4.transformPoint(transform, v1);
+          const w2 = KonomiRenderer.mat4.transformPoint(transform, v2);
 
-          // Transform normal by model matrix (simplified)
-          const worldNormal = KonomiRenderer.vec3.normalize(normal);
+          // Calculate normal in world space
+          const worldNormal = this.calculateNormal(w0, w1, w2);
 
-          // Backface culling
+          // Backface culling - check if face is facing camera
           const viewDir = KonomiRenderer.vec3.normalize(
-            KonomiRenderer.vec3.sub(this.camera.position, v0)
+            KonomiRenderer.vec3.sub(this.camera.position, w0)
           );
-          if (KonomiRenderer.vec3.dot(worldNormal, viewDir) < 0) continue;
+          // Flip comparison - cull when facing away (handles CCW winding)
+          if (KonomiRenderer.vec3.dot(worldNormal, viewDir) > 0) continue;
 
-          // Calculate lighting
-          const diffuse = Math.max(0, KonomiRenderer.vec3.dot(worldNormal, this.light.direction));
+          // Calculate lighting (use absolute dot for two-sided lighting)
+          const diffuse = Math.abs(KonomiRenderer.vec3.dot(worldNormal, this.light.direction));
           const shading = this.light.ambient + this.light.diffuse * diffuse;
 
           // Project vertices
@@ -4123,16 +4126,17 @@ const KonomiRenderer = {
     const s = size / 2;
     return {
       vertices: [
-        [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],
-        [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s]
+        [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],  // 0-3: back face
+        [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s]       // 4-7: front face
       ],
       faces: [
-        [0, 1, 2], [0, 2, 3], // Back
-        [4, 6, 5], [4, 7, 6], // Front
-        [0, 4, 5], [0, 5, 1], // Bottom
-        [2, 6, 7], [2, 7, 3], // Top
-        [0, 7, 4], [0, 3, 7], // Left
-        [1, 5, 6], [1, 6, 2]  // Right
+        // CCW winding when viewed from outside
+        [0, 2, 1], [0, 3, 2], // Back (facing -Z)
+        [4, 5, 6], [4, 6, 7], // Front (facing +Z)
+        [0, 1, 5], [0, 5, 4], // Bottom (facing -Y)
+        [3, 6, 2], [3, 7, 6], // Top (facing +Y)
+        [0, 4, 7], [0, 7, 3], // Left (facing -X)
+        [1, 2, 6], [1, 6, 5]  // Right (facing +X)
       ],
       color: [100, 150, 200]
     };
