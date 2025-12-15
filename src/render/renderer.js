@@ -174,15 +174,14 @@ const KonomiRenderer = {
       ];
     },
 
+    // Column-major matrix multiply: C = A * B
     multiply(a, b) {
-      const result = new Array(16);
-      for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-          result[i * 4 + j] =
-            a[i * 4 + 0] * b[0 * 4 + j] +
-            a[i * 4 + 1] * b[1 * 4 + j] +
-            a[i * 4 + 2] * b[2 * 4 + j] +
-            a[i * 4 + 3] * b[3 * 4 + j];
+      const result = new Array(16).fill(0);
+      for (let col = 0; col < 4; col++) {
+        for (let row = 0; row < 4; row++) {
+          for (let k = 0; k < 4; k++) {
+            result[col * 4 + row] += a[k * 4 + row] * b[col * 4 + k];
+          }
         }
       }
       return result;
@@ -251,10 +250,11 @@ const KonomiRenderer = {
       const z = KonomiRenderer.vec3.normalize(KonomiRenderer.vec3.sub(eye, center));
       const x = KonomiRenderer.vec3.normalize(KonomiRenderer.vec3.cross(up, z));
       const y = KonomiRenderer.vec3.cross(z, x);
+      // Column-major: col0=x-axis, col1=y-axis, col2=z-axis, col3=translation
       return [
-        x[0], y[0], z[0], 0,
-        x[1], y[1], z[1], 0,
-        x[2], y[2], z[2], 0,
+        x[0], x[1], x[2], 0,
+        y[0], y[1], y[2], 0,
+        z[0], z[1], z[2], 0,
         -KonomiRenderer.vec3.dot(x, eye), -KonomiRenderer.vec3.dot(y, eye), -KonomiRenderer.vec3.dot(z, eye), 1
       ];
     },
@@ -471,8 +471,9 @@ const KonomiRenderer = {
           const p1 = this.project(v1, mvp);
           const p2 = this.project(v2, mvp);
 
-          // Clip against near plane (simplified)
-          if (p0[2] < 0 || p1[2] < 0 || p2[2] < 0) continue;
+          // Skip if any vertex is behind far plane (z > 1 in NDC)
+          // Near plane clipping would need pre-divide check, skip for simplicity
+          if (p0[2] > 1 || p1[2] > 1 || p2[2] > 1) continue;
 
           // Draw triangle
           const color = mesh.color || [200, 200, 200];
@@ -489,7 +490,7 @@ const KonomiRenderer = {
           const p1 = this.project(mesh.vertices[face[1]], mvp);
           const p2 = this.project(mesh.vertices[face[2]], mvp);
 
-          if (p0[2] < 0 || p1[2] < 0 || p2[2] < 0) continue;
+          if (p0[2] > 1 || p1[2] > 1 || p2[2] > 1) continue;
 
           this.drawLine(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], color);
           this.drawLine(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], color);
