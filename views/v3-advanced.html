@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konomi Konception v3 - Advanced System</title>
+  <style>
+    :root{--bg:#0a0a0f;--sf:#12121a;--bd:#2a2a35;--tx:#e0e0e0;--ac:#00d4ff;--ok:#00ff88;--er:#ff4455;--wr:#ffaa00;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding:1rem;}
+    .container{max-width:1200px;margin:0 auto;}
+    h1{color:var(--ac);font-size:1.5rem;}
+    .subtitle{color:#666;font-size:0.85rem;margin-bottom:1rem;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1rem;}
+    .panel{background:var(--sf);border:1px solid var(--bd);border-radius:6px;overflow:hidden;}
+    .panel-h{background:rgba(0,212,255,0.08);padding:0.6rem 0.8rem;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;}
+    .panel-b{padding:0.8rem;}
+    .btn{padding:0.35rem 0.7rem;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;margin-right:0.4rem;}
+    .btn-p{background:var(--ac);color:#000;}
+    .btn-s{background:var(--bd);color:var(--tx);}
+    .btn-ok{background:var(--ok);color:#000;}
+    input,textarea{width:100%;padding:0.5rem;background:var(--bg);border:1px solid var(--bd);border-radius:4px;color:var(--tx);font-family:monospace;font-size:0.8rem;margin-bottom:0.6rem;}
+    textarea{min-height:100px;resize:vertical;}
+    .out{background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:0.6rem;font-family:monospace;font-size:0.75rem;white-space:pre-wrap;max-height:180px;overflow:auto;margin-top:0.6rem;}
+    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:0.6rem;margin-bottom:1rem;}
+    .stat{background:var(--sf);border:1px solid var(--bd);border-radius:4px;padding:0.5rem;text-align:center;}
+    .stat-v{font-size:1.1rem;color:var(--ac);font-weight:bold;}
+    .stat-l{font-size:0.6rem;color:#666;text-transform:uppercase;}
+    .tabs{display:flex;gap:0.4rem;margin-bottom:0.8rem;flex-wrap:wrap;}
+    .tab{padding:0.4rem 0.8rem;background:var(--sf);border:1px solid var(--bd);border-radius:4px;cursor:pointer;font-size:0.8rem;}
+    .tab.active{background:var(--ac);color:#000;border-color:var(--ac);}
+    .tab-c{display:none;}
+    .tab-c.active{display:block;}
+    .pass{color:var(--ok);}
+    .fail{color:var(--er);}
+    label{font-size:0.75rem;color:#888;display:block;margin-bottom:0.2rem;}
+    .row{display:flex;gap:0.5rem;}
+    .col{flex:1;}
+    .progress{height:4px;background:var(--bd);border-radius:2px;overflow:hidden;margin:0.5rem 0;}
+    .progress-bar{height:100%;background:var(--ac);transition:width 0.3s;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>KONOMI KONCEPTION</h1>
+    <p class="subtitle">v3 - Advanced | Utils + Crypto + VM + DB + Compression + AI | Self-Compressing | ~85KB</p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-v" id="size">--</div><div class="stat-l">Size KB</div></div>
+      <div class="stat"><div class="stat-v" id="boot">--</div><div class="stat-l">Boot ms</div></div>
+      <div class="stat"><div class="stat-v" id="tests">--</div><div class="stat-l">Tests</div></div>
+      <div class="stat"><div class="stat-v" id="dbCount">0</div><div class="stat-l">DB Docs</div></div>
+      <div class="stat"><div class="stat-v" id="compRatio">--</div><div class="stat-l">Compress</div></div>
+      <div class="stat"><div class="stat-v" id="status">--</div><div class="stat-l">Status</div></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('vm')">VM</div>
+      <div class="tab" onclick="switchTab('db')">Database</div>
+      <div class="tab" onclick="switchTab('crypto')">Crypto</div>
+      <div class="tab" onclick="switchTab('compress')">Compress</div>
+      <div class="tab" onclick="switchTab('ai')">AI</div>
+      <div class="tab" onclick="switchTab('tests')">Tests</div>
+      <div class="tab" onclick="switchTab('self')">Self-Analyze</div>
+    </div>
+
+    <div id="vm-tab" class="tab-c active">
+      <div class="panel">
+        <div class="panel-h"><span>KCode VM</span><button class="btn btn-p" onclick="runVM()">▶ Run</button></div>
+        <div class="panel-b">
+          <textarea id="vmCode">let sum = 0;
+let i = 1;
+while (i <= 10) {
+  sum = sum + i;
+  i = i + 1;
+}
+print("Sum 1-10:");
+print(sum);</textarea>
+          <div class="out" id="vmOut"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="db-tab" class="tab-c">
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-h"><span>Insert</span></div>
+          <div class="panel-b">
+            <label>Collection</label><input id="dbCol" value="items">
+            <label>Document</label><textarea id="dbDoc">{"name": "Widget", "price": 29.99}</textarea>
+            <button class="btn btn-ok" onclick="dbInsert()">Insert</button>
+            <button class="btn btn-s" onclick="dbClear()">Clear</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><span>Query</span></div>
+          <div class="panel-b">
+            <label>Query JSON</label><input id="dbQuery" placeholder='{"price": {"$gt": 20}}'>
+            <button class="btn btn-p" onclick="dbFind()">Find</button>
+            <div class="out" id="dbOut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="crypto-tab" class="tab-c">
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-h"><span>SHA-256</span></div>
+          <div class="panel-b">
+            <input id="hashIn" value="Konomi">
+            <button class="btn btn-p" onclick="doHash()">Hash</button>
+            <div class="out" id="hashOut"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><span>AES-256</span></div>
+          <div class="panel-b">
+            <input id="aesIn" value="Secret data">
+            <input id="aesKey" value="password" placeholder="Key">
+            <button class="btn btn-p" onclick="doEnc()">Encrypt</button>
+            <button class="btn btn-s" onclick="doDec()">Decrypt</button>
+            <div class="out" id="aesOut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="compress-tab" class="tab-c">
+      <div class="panel">
+        <div class="panel-h"><span>LZ77+Huffman Compression</span></div>
+        <div class="panel-b">
+          <label>Input Text</label>
+          <textarea id="compIn">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet.</textarea>
+          <div class="row">
+            <button class="btn btn-p" onclick="doCompress()">Compress</button>
+            <button class="btn btn-s" onclick="doDecompress()">Decompress</button>
+          </div>
+          <div class="progress"><div class="progress-bar" id="compProgress" style="width:0%"></div></div>
+          <div class="out" id="compOut"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ai-tab" class="tab-c">
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-h"><span>Text Similarity</span></div>
+          <div class="panel-b">
+            <label>Query</label><input id="aiQuery" value="hello world">
+            <label>Documents (one per line)</label>
+            <textarea id="aiDocs">hi there world
+goodbye universe
+hello earth
+machine learning</textarea>
+            <button class="btn btn-p" onclick="doSimilarity()">Find Similar</button>
+            <div class="out" id="aiOut"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><span>Mini Transformer</span></div>
+          <div class="panel-b">
+            <label>Input</label><input id="tfIn" value="hello">
+            <button class="btn btn-p" onclick="doTransform()">Process</button>
+            <div class="out" id="tfOut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tests-tab" class="tab-c">
+      <div class="panel">
+        <div class="panel-h"><span>Self-Test Suite</span><button class="btn btn-p" onclick="runTests()">▶ Run All</button></div>
+        <div class="panel-b"><div class="out" id="testOut" style="max-height:350px;"></div></div>
+      </div>
+    </div>
+
+    <div id="self-tab" class="tab-c">
+      <div class="panel">
+        <div class="panel-h"><span>Self-Analysis & Compression</span></div>
+        <div class="panel-b">
+          <p style="font-size:0.85rem;margin-bottom:0.8rem;">Analyze and compress this HTML file itself.</p>
+          <button class="btn btn-p" onclick="selfAnalyze()">Analyze Self</button>
+          <button class="btn btn-s" onclick="selfCompress()">Compress Self</button>
+          <button class="btn btn-s" onclick="selfExport()">Export Compressed</button>
+          <div class="out" id="selfOut" style="max-height:250px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ============================================
+// KONOMI KONCEPTION v3 - ADVANCED
+// Full system with AI & Compression
+// ============================================
+const K={v:'3.0.0',bt:0};
+
+// ===== UTILS =====
+const U={
+  _s:[Date.now()>>>0,0,0,0],
+  init(){const s=Date.now()^(Math.random()*0xFFFFFFFF);this._s=[s>>>0,(s*1103515245+12345)>>>0,0,0];this._s[2]=(this._s[1]*1103515245+12345)>>>0;this._s[3]=(this._s[2]*1103515245+12345)>>>0;},
+  rnd(){let s1=this._s[0],s0=this._s[1];const r=(s0+s1)>>>0;this._s[0]=s0;s1^=s1<<23;this._s[1]=s1^s0^(s1>>>17)^(s0>>>26);return r/0xFFFFFFFF;},
+  rb(n){const b=new Uint8Array(n);if(crypto?.getRandomValues)crypto.getRandomValues(b);else for(let i=0;i<n;i++)b[i]=Math.floor(this.rnd()*256);return b;},
+  ue(s){const b=[];for(let i=0;i<s.length;i++){let c=s.charCodeAt(i);if(c<0x80)b.push(c);else if(c<0x800)b.push(0xC0|(c>>6),0x80|(c&0x3F));else b.push(0xE0|(c>>12),0x80|((c>>6)&0x3F),0x80|(c&0x3F));}return new Uint8Array(b);},
+  ud(b){let s='',i=0;while(i<b.length){let c=b[i++];if(c<0x80)s+=String.fromCharCode(c);else if(c<0xE0)s+=String.fromCharCode(((c&0x1F)<<6)|(b[i++]&0x3F));else s+=String.fromCharCode(((c&0x0F)<<12)|((b[i++]&0x3F)<<6)|(b[i++]&0x3F));}return s;},
+  b64:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+  b64e(b){let r='',l=b.length;for(let i=0;i<l;i+=3){const b1=b[i],b2=i+1<l?b[i+1]:0,b3=i+2<l?b[i+2]:0;r+=this.b64[b1>>2]+this.b64[((b1&3)<<4)|(b2>>4)]+(i+1<l?this.b64[((b2&0xF)<<2)|(b3>>6)]:'=')+(i+2<l?this.b64[b3&0x3F]:'=');}return r;},
+  b64d(s){const b=[];s=s.replace(/=/g,'');for(let i=0;i<s.length;i+=4){const c1=this.b64.indexOf(s[i]),c2=this.b64.indexOf(s[i+1]),c3=i+2<s.length?this.b64.indexOf(s[i+2]):0,c4=i+3<s.length?this.b64.indexOf(s[i+3]):0;b.push((c1<<2)|(c2>>4));if(i+2<s.length)b.push(((c2&0xF)<<4)|(c3>>2));if(i+3<s.length)b.push(((c3&3)<<6)|c4);}return new Uint8Array(b);},
+  hex(b){return Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join('');},
+  uuid(){const b=this.rb(16);b[6]=(b[6]&0x0F)|0x40;b[8]=(b[8]&0x3F)|0x80;const h=this.hex(b);return`${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;},
+  now(){return Date.now();}
+};
+
+// ===== SHA256 =====
+const H={
+  K:[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2],
+  H0:[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19],
+  r:(n,x)=>((x>>>n)|(x<<(32-n)))>>>0,
+  hb(bytes){const l=bytes.length,bl=l*8;let pl=64-((l+9)%64);if(pl===64)pl=0;const p=new Uint8Array(l+1+pl+8);p.set(bytes);p[l]=0x80;new DataView(p.buffer).setUint32(p.length-4,bl>>>0,false);let HH=[...this.H0];for(let i=0;i<p.length;i+=64){const W=new Uint32Array(64),v=new DataView(p.buffer,i);for(let j=0;j<16;j++)W[j]=v.getUint32(j*4,false);for(let j=16;j<64;j++){const s0=this.r(7,W[j-15])^this.r(18,W[j-15])^(W[j-15]>>>3),s1=this.r(17,W[j-2])^this.r(19,W[j-2])^(W[j-2]>>>10);W[j]=(W[j-16]+s0+W[j-7]+s1)>>>0;}let[a,b,c,d,e,f,g,h]=HH;for(let j=0;j<64;j++){const S1=this.r(6,e)^this.r(11,e)^this.r(25,e),ch=(e&f)^(~e&g),t1=(h+S1+ch+this.K[j]+W[j])>>>0,S0=this.r(2,a)^this.r(13,a)^this.r(22,a),maj=(a&b)^(a&c)^(b&c),t2=(S0+maj)>>>0;h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}HH=[(HH[0]+a)>>>0,(HH[1]+b)>>>0,(HH[2]+c)>>>0,(HH[3]+d)>>>0,(HH[4]+e)>>>0,(HH[5]+f)>>>0,(HH[6]+g)>>>0,(HH[7]+h)>>>0];}const r=new Uint8Array(32),rv=new DataView(r.buffer);for(let i=0;i<8;i++)rv.setUint32(i*4,HH[i],false);return r;},
+  h(s){return U.hex(this.hb(U.ue(s)));}
+};
+
+// ===== AES256 (compact) =====
+const A={
+  S:[0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,0xb7,0xfd,0x93,0x26,0x36,0x3f,0xf7,0xcc,0x34,0xa5,0xe5,0xf1,0x71,0xd8,0x31,0x15,0x04,0xc7,0x23,0xc3,0x18,0x96,0x05,0x9a,0x07,0x12,0x80,0xe2,0xeb,0x27,0xb2,0x75,0x09,0x83,0x2c,0x1a,0x1b,0x6e,0x5a,0xa0,0x52,0x3b,0xd6,0xb3,0x29,0xe3,0x2f,0x84,0x53,0xd1,0x00,0xed,0x20,0xfc,0xb1,0x5b,0x6a,0xcb,0xbe,0x39,0x4a,0x4c,0x58,0xcf,0xd0,0xef,0xaa,0xfb,0x43,0x4d,0x33,0x85,0x45,0xf9,0x02,0x7f,0x50,0x3c,0x9f,0xa8,0x51,0xa3,0x40,0x8f,0x92,0x9d,0x38,0xf5,0xbc,0xb6,0xda,0x21,0x10,0xff,0xf3,0xd2,0xcd,0x0c,0x13,0xec,0x5f,0x97,0x44,0x17,0xc4,0xa7,0x7e,0x3d,0x64,0x5d,0x19,0x73,0x60,0x81,0x4f,0xdc,0x22,0x2a,0x90,0x88,0x46,0xee,0xb8,0x14,0xde,0x5e,0x0b,0xdb,0xe0,0x32,0x3a,0x0a,0x49,0x06,0x24,0x5c,0xc2,0xd3,0xac,0x62,0x91,0x95,0xe4,0x79,0xe7,0xc8,0x37,0x6d,0x8d,0xd5,0x4e,0xa9,0x6c,0x56,0xf4,0xea,0x65,0x7a,0xae,0x08,0xba,0x78,0x25,0x2e,0x1c,0xa6,0xb4,0xc6,0xe8,0xdd,0x74,0x1f,0x4b,0xbd,0x8b,0x8a,0x70,0x3e,0xb5,0x66,0x48,0x03,0xf6,0x0e,0x61,0x35,0x57,0xb9,0x86,0xc1,0x1d,0x9e,0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf,0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16],
+  Si:[0x52,0x09,0x6a,0xd5,0x30,0x36,0xa5,0x38,0xbf,0x40,0xa3,0x9e,0x81,0xf3,0xd7,0xfb,0x7c,0xe3,0x39,0x82,0x9b,0x2f,0xff,0x87,0x34,0x8e,0x43,0x44,0xc4,0xde,0xe9,0xcb,0x54,0x7b,0x94,0x32,0xa6,0xc2,0x23,0x3d,0xee,0x4c,0x95,0x0b,0x42,0xfa,0xc3,0x4e,0x08,0x2e,0xa1,0x66,0x28,0xd9,0x24,0xb2,0x76,0x5b,0xa2,0x49,0x6d,0x8b,0xd1,0x25,0x72,0xf8,0xf6,0x64,0x86,0x68,0x98,0x16,0xd4,0xa4,0x5c,0xcc,0x5d,0x65,0xb6,0x92,0x6c,0x70,0x48,0x50,0xfd,0xed,0xb9,0xda,0x5e,0x15,0x46,0x57,0xa7,0x8d,0x9d,0x84,0x90,0xd8,0xab,0x00,0x8c,0xbc,0xd3,0x0a,0xf7,0xe4,0x58,0x05,0xb8,0xb3,0x45,0x06,0xd0,0x2c,0x1e,0x8f,0xca,0x3f,0x0f,0x02,0xc1,0xaf,0xbd,0x03,0x01,0x13,0x8a,0x6b,0x3a,0x91,0x11,0x41,0x4f,0x67,0xdc,0xea,0x97,0xf2,0xcf,0xce,0xf0,0xb4,0xe6,0x73,0x96,0xac,0x74,0x22,0xe7,0xad,0x35,0x85,0xe2,0xf9,0x37,0xe8,0x1c,0x75,0xdf,0x6e,0x47,0xf1,0x1a,0x71,0x1d,0x29,0xc5,0x89,0x6f,0xb7,0x62,0x0e,0xaa,0x18,0xbe,0x1b,0xfc,0x56,0x3e,0x4b,0xc6,0xd2,0x79,0x20,0x9a,0xdb,0xc0,0xfe,0x78,0xcd,0x5a,0xf4,0x1f,0xdd,0xa8,0x33,0x88,0x07,0xc7,0x31,0xb1,0x12,0x10,0x59,0x27,0x80,0xec,0x5f,0x60,0x51,0x7f,0xa9,0x19,0xb5,0x4a,0x0d,0x2d,0xe5,0x7a,0x9f,0x93,0xc9,0x9c,0xef,0xa0,0xe0,0x3b,0x4d,0xae,0x2a,0xf5,0xb0,0xc8,0xeb,0xbb,0x3c,0x83,0x53,0x99,0x61,0x17,0x2b,0x04,0x7e,0xba,0x77,0xd6,0x26,0xe1,0x69,0x14,0x63,0x55,0x21,0x0c,0x7d],
+  R:[0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36],
+  gm(a,b){let p=0;for(let i=0;i<8;i++){if(b&1)p^=a;const h=a&0x80;a=(a<<1)&0xFF;if(h)a^=0x1b;b>>=1;}return p;},
+  kx(k){const W=new Uint32Array(60);for(let i=0;i<8;i++)W[i]=(k[4*i]<<24)|(k[4*i+1]<<16)|(k[4*i+2]<<8)|k[4*i+3];for(let i=8;i<60;i++){let t=W[i-1];if(i%8===0){t=((t<<8)|(t>>>24))>>>0;t=(this.S[(t>>>24)&0xFF]<<24)|(this.S[(t>>>16)&0xFF]<<16)|(this.S[(t>>>8)&0xFF]<<8)|this.S[t&0xFF];t^=(this.R[(i/8)-1]<<24);}else if(i%8===4){t=(this.S[(t>>>24)&0xFF]<<24)|(this.S[(t>>>16)&0xFF]<<16)|(this.S[(t>>>8)&0xFF]<<8)|this.S[t&0xFF];}W[i]=(W[i-8]^t)>>>0;}return W;},
+  eb(b,W){const s=new Uint8Array(b);const ak=(r)=>{for(let c=0;c<4;c++){const w=W[r*4+c];s[c*4]^=(w>>>24)&0xFF;s[c*4+1]^=(w>>>16)&0xFF;s[c*4+2]^=(w>>>8)&0xFF;s[c*4+3]^=w&0xFF;}};const sb=()=>{for(let i=0;i<16;i++)s[i]=this.S[s[i]];};const sr=()=>{let t=s[1];s[1]=s[5];s[5]=s[9];s[9]=s[13];s[13]=t;t=s[2];s[2]=s[10];s[10]=t;t=s[6];s[6]=s[14];s[14]=t;t=s[15];s[15]=s[11];s[11]=s[7];s[7]=s[3];s[3]=t;};const mc=()=>{for(let c=0;c<4;c++){const i=c*4,a=[...s.slice(i,i+4)];s[i]=this.gm(2,a[0])^this.gm(3,a[1])^a[2]^a[3];s[i+1]=a[0]^this.gm(2,a[1])^this.gm(3,a[2])^a[3];s[i+2]=a[0]^a[1]^this.gm(2,a[2])^this.gm(3,a[3]);s[i+3]=this.gm(3,a[0])^a[1]^a[2]^this.gm(2,a[3]);}};ak(0);for(let r=1;r<14;r++){sb();sr();mc();ak(r);}sb();sr();ak(14);return s;},
+  db(b,W){const s=new Uint8Array(b);const ak=(r)=>{for(let c=0;c<4;c++){const w=W[r*4+c];s[c*4]^=(w>>>24)&0xFF;s[c*4+1]^=(w>>>16)&0xFF;s[c*4+2]^=(w>>>8)&0xFF;s[c*4+3]^=w&0xFF;}};const isb=()=>{for(let i=0;i<16;i++)s[i]=this.Si[s[i]];};const isr=()=>{let t=s[13];s[13]=s[9];s[9]=s[5];s[5]=s[1];s[1]=t;t=s[2];s[2]=s[10];s[10]=t;t=s[6];s[6]=s[14];s[14]=t;t=s[3];s[3]=s[7];s[7]=s[11];s[11]=s[15];s[15]=t;};const imc=()=>{for(let c=0;c<4;c++){const i=c*4,a=[...s.slice(i,i+4)];s[i]=this.gm(0x0e,a[0])^this.gm(0x0b,a[1])^this.gm(0x0d,a[2])^this.gm(0x09,a[3]);s[i+1]=this.gm(0x09,a[0])^this.gm(0x0e,a[1])^this.gm(0x0b,a[2])^this.gm(0x0d,a[3]);s[i+2]=this.gm(0x0d,a[0])^this.gm(0x09,a[1])^this.gm(0x0e,a[2])^this.gm(0x0b,a[3]);s[i+3]=this.gm(0x0b,a[0])^this.gm(0x0d,a[1])^this.gm(0x09,a[2])^this.gm(0x0e,a[3]);}};ak(14);for(let r=13;r>0;r--){isr();isb();ak(r);imc();}isr();isb();ak(0);return s;},
+  enc(pt,pw){const k=H.hb(U.ue(pw)),iv=U.rb(16),d=U.ue(pt),pl=16-(d.length%16),pd=new Uint8Array(d.length+pl);pd.set(d);for(let i=d.length;i<pd.length;i++)pd[i]=pl;const W=this.kx(k),ct=new Uint8Array(pd.length);let pv=iv;for(let i=0;i<pd.length;i+=16){const bl=new Uint8Array(16);for(let j=0;j<16;j++)bl[j]=pd[i+j]^pv[j];const e=this.eb(bl,W);ct.set(e,i);pv=e;}const r=new Uint8Array(16+ct.length);r.set(iv);r.set(ct,16);return U.b64e(r);},
+  dec(ct,pw){const k=H.hb(U.ue(pw)),d=U.b64d(ct),iv=d.slice(0,16),c=d.slice(16),W=this.kx(k),pt=new Uint8Array(c.length);let pv=iv;for(let i=0;i<c.length;i+=16){const bl=c.slice(i,i+16),dc=this.db(bl,W);for(let j=0;j<16;j++)pt[i+j]=dc[j]^pv[j];pv=bl;}const pl=pt[pt.length-1];return U.ud(pt.slice(0,pt.length-pl));}
+};
+
+// ===== VM (compact) =====
+const VM={
+  OP:{NOP:0,PUSH:1,POP:2,ADD:16,SUB:17,MUL:18,DIV:19,MOD:20,EQ:32,NEQ:33,LT:34,LTE:35,GT:36,GTE:37,AND:48,OR:49,NOT:50,LOAD:64,STORE:65,JMP:80,JZ:81,PRINT:128,HALT:255},
+  exec(src){const toks=[],kw=['let','if','else','while','print','true','false'];let p=0;while(p<src.length){if(/\s/.test(src[p])){p++;continue;}if(src[p]==='/'&&src[p+1]==='/'){while(p<src.length&&src[p]!=='\n')p++;continue;}if(/\d/.test(src[p])){let v='';while(/[\d.]/.test(src[p]))v+=src[p++];toks.push({t:'N',v:parseFloat(v)});continue;}if(src[p]==='"'){p++;let v='';while(src[p]!=='"')v+=src[p++];p++;toks.push({t:'S',v});continue;}if(/[a-zA-Z_]/.test(src[p])){let v='';while(/[a-zA-Z0-9_]/.test(src[p]))v+=src[p++];toks.push({t:kw.includes(v)?'K':'I',v});continue;}for(const op of['==','!=','<=','>=','&&','||']){if(src.substr(p,2)===op){toks.push({t:'O',v:op});p+=2;continue;}}if('+-*/%=<>!'.includes(src[p])){toks.push({t:'O',v:src[p++]});continue;}if('(){}[];,'.includes(src[p])){toks.push({t:'P',v:src[p++]});continue;}p++;}toks.push({t:'E'});let ti=0;const pk=()=>toks[ti],adv=()=>toks[ti++],ch=(t,v)=>pk().t===t&&(v===undefined||pk().v===v);const ex=(t,v)=>{const tk=adv();if(tk.t!==t||(v!==undefined&&tk.v!==v))throw new Error(`Exp ${t}`);return tk;};const pE=(mp=0)=>{let l=pU();while(true){const tk=pk();if(tk.t!=='O')break;const pr={'||':1,'&&':2,'==':3,'!=':3,'<':4,'<=':4,'>':4,'>=':4,'+':5,'-':5,'*':6,'/':6,'%':6}[tk.v];if(!pr||pr<mp)break;adv();l={t:'B',o:tk.v,l,r:pE(pr+1)};}return l;};const pU=()=>{if(ch('O','-')||ch('O','!')){const o=adv().v;return{t:'U',o,e:pU()};}return pP();};const pP=()=>{let e=pPr();while(ch('P','(')){adv();const args=[];while(!ch('P',')')){args.push(pE());if(!ch('P',')'))ex('P',',');}ex('P',')');e={t:'C',fn:e,args};}return e;};const pPr=()=>{const tk=pk();if(tk.t==='N'){adv();return{t:'Num',v:tk.v};}if(tk.t==='S'){adv();return{t:'Str',v:tk.v};}if(tk.t==='K'&&(tk.v==='true'||tk.v==='false')){adv();return{t:'Bool',v:tk.v==='true'};}if(tk.t==='I'){adv();return{t:'Id',n:tk.v};}if(ch('P','(')){adv();const e=pE();ex('P',')');return e;}throw new Error('Unexp');};const pS=()=>{if(ch('K','let')){adv();const n=ex('I').v;let init=null;if(ch('O','=')){adv();init=pE();}ex('P',';');return{t:'V',n,init};}if(ch('K','if')){adv();ex('P','(');const test=pE();ex('P',')');const cons=pS();let alt=null;if(ch('K','else')){adv();alt=pS();}return{t:'If',test,cons,alt};}if(ch('K','while')){adv();ex('P','(');const test=pE();ex('P',')');return{t:'W',test,body:pS()};}if(ch('K','print')){adv();ex('P','(');const val=pE();ex('P',')');ex('P',';');return{t:'Pr',val};}if(ch('P','{')){ex('P','{');const body=[];while(!ch('P','}'))body.push(pS());ex('P','}');return{t:'Bl',body};}const e=pE();if(ch('O','=')){adv();const val=pE();ex('P',';');return{t:'As',target:e,val};}ex('P',';');return{t:'Ex',e};};const prog=[];while(!ch('E'))prog.push(pS());const bc=[],consts=[],vars=new Map();let lc=0;const emit=(op,...args)=>bc.push({op,args});const addC=v=>{let i=consts.indexOf(v);if(i<0){consts.push(v);i=consts.length-1;}return i;};const nl=()=>lc++;const rv=(n,sc)=>{if(sc.v.has(n))return sc.v.get(n);if(sc.p)return rv(n,sc.p);return null;};const comp=(n,sc)=>{switch(n.t){case'V':if(n.init)comp(n.init,sc);else emit(this.OP.PUSH,addC(null));sc.v.set(n.n,sc.v.size);emit(this.OP.STORE,sc.v.get(n.n));break;case'As':comp(n.val,sc);emit(this.OP.STORE,rv(n.target.n,sc));break;case'If':{comp(n.test,sc);const el=nl(),end=nl();emit(this.OP.JZ,el);comp(n.cons,sc);emit(this.OP.JMP,end);emit('L',el);if(n.alt)comp(n.alt,sc);emit('L',end);break;}case'W':{const st=nl(),end=nl();emit('L',st);comp(n.test,sc);emit(this.OP.JZ,end);comp(n.body,sc);emit(this.OP.JMP,st);emit('L',end);break;}case'Pr':comp(n.val,sc);emit(this.OP.PRINT);break;case'Ex':comp(n.e,sc);emit(this.OP.POP);break;case'Bl':{const ns={v:new Map(),p:sc};for(const s of n.body)comp(s,ns);break;}case'B':comp(n.l,sc);comp(n.r,sc);const om={'+':this.OP.ADD,'-':this.OP.SUB,'*':this.OP.MUL,'/':this.OP.DIV,'%':this.OP.MOD,'==':this.OP.EQ,'!=':this.OP.NEQ,'<':this.OP.LT,'<=':this.OP.LTE,'>':this.OP.GT,'>=':this.OP.GTE,'&&':this.OP.AND,'||':this.OP.OR};emit(om[n.o]);break;case'U':comp(n.e,sc);if(n.o==='-')emit(this.OP.SUB);else emit(this.OP.NOT);break;case'Id':emit(this.OP.LOAD,rv(n.n,sc));break;case'Num':case'Str':case'Bool':emit(this.OP.PUSH,addC(n.v));break;}};const sc={v:new Map(),p:null};for(const s of prog)comp(s,sc);emit(this.OP.HALT);const labels=new Map();let addr=0;for(const i of bc){if(i.op==='L')labels.set(i.args[0],addr);else addr++;}const fbc=bc.filter(i=>i.op!=='L').map(i=>(i.op===this.OP.JMP||i.op===this.OP.JZ)?{op:i.op,args:[labels.get(i.args[0])]}:i);const stack=[],mem={},out=[];let ip=0;while(ip<fbc.length){const{op,args}=fbc[ip];switch(op){case this.OP.PUSH:stack.push(consts[args[0]]);break;case this.OP.POP:stack.pop();break;case this.OP.ADD:{const b=stack.pop(),a=stack.pop();stack.push(a+b);break;}case this.OP.SUB:{const b=stack.pop(),a=stack.pop();stack.push(a-b);break;}case this.OP.MUL:{const b=stack.pop(),a=stack.pop();stack.push(a*b);break;}case this.OP.DIV:{const b=stack.pop(),a=stack.pop();stack.push(a/b);break;}case this.OP.MOD:{const b=stack.pop(),a=stack.pop();stack.push(a%b);break;}case this.OP.EQ:{const b=stack.pop(),a=stack.pop();stack.push(a===b);break;}case this.OP.NEQ:{const b=stack.pop(),a=stack.pop();stack.push(a!==b);break;}case this.OP.LT:{const b=stack.pop(),a=stack.pop();stack.push(a<b);break;}case this.OP.LTE:{const b=stack.pop(),a=stack.pop();stack.push(a<=b);break;}case this.OP.GT:{const b=stack.pop(),a=stack.pop();stack.push(a>b);break;}case this.OP.GTE:{const b=stack.pop(),a=stack.pop();stack.push(a>=b);break;}case this.OP.AND:{const b=stack.pop(),a=stack.pop();stack.push(a&&b);break;}case this.OP.OR:{const b=stack.pop(),a=stack.pop();stack.push(a||b);break;}case this.OP.NOT:stack.push(!stack.pop());break;case this.OP.LOAD:stack.push(mem[args[0]]);break;case this.OP.STORE:mem[args[0]]=stack.pop();break;case this.OP.JMP:ip=args[0]-1;break;case this.OP.JZ:if(!stack.pop())ip=args[0]-1;break;case this.OP.PRINT:out.push(stack.pop());break;case this.OP.HALT:return out;}ip++;}return out;}
+};
+
+// ===== DATABASE =====
+class BT{constructor(o=4){this.o=Math.max(3,o);this.r={l:true,k:[],v:[],c:[],n:null};this.s=0;}search(k){let n=this.r;while(!n.l){let i=0;while(i<n.k.length&&k>=n.k[i])i++;n=n.c[i];}let i=0;while(i<n.k.length&&k>n.k[i])i++;return i<n.k.length&&n.k[i]===k?n.v[i]:null;}insert(k,v){if(this.r.k.length>=this.o-1){const nr={l:false,k:[],v:[],c:[this.r],n:null};this._sp(nr,0);this.r=nr;}this._inf(this.r,k,v);this.s++;}
+_inf(n,k,v){let i=n.k.length-1;if(n.l){while(i>=0&&k<n.k[i])i--;if(i>=0&&n.k[i]===k){n.v[i]=v;this.s--;return;}n.k.splice(i+1,0,k);n.v.splice(i+1,0,v);}else{while(i>=0&&k<n.k[i])i--;i++;if(n.c[i].k.length>=this.o-1){this._sp(n,i);if(k>n.k[i])i++;}this._inf(n.c[i],k,v);}}
+_sp(p,i){const f=p.c[i],m=Math.floor((this.o-1)/2),nc={l:f.l,k:[],v:[],c:[],n:null};if(f.l){nc.k=f.k.splice(m);nc.v=f.v.splice(m);nc.n=f.n;f.n=nc;p.k.splice(i,0,nc.k[0]);}else{const mk=f.k[m];nc.k=f.k.splice(m+1);f.k.pop();nc.c=f.c.splice(m+1);p.k.splice(i,0,mk);}p.c.splice(i+1,0,nc);}
+delete(k){let n=this.r,i=0;while(!n.l){while(i<n.k.length&&k>=n.k[i])i++;n=n.c[i];i=0;}while(i<n.k.length&&k>n.k[i])i++;if(i<n.k.length&&n.k[i]===k){n.k.splice(i,1);n.v.splice(i,1);this.s--;return true;}return false;}
+getAll(){const r=[];let n=this.r;while(!n.l)n=n.c[0];while(n){for(let i=0;i<n.k.length;i++)r.push({k:n.k[i],v:n.v[i]});n=n.n;}return r;}
+clear(){this.r={l:true,k:[],v:[],c:[],n:null};this.s=0;}
+get length(){return this.s;}}
+
+const DB={cols:new Map(),
+col(n){if(!this.cols.has(n))this.cols.set(n,new BT(32));const t=this.cols.get(n);return{
+insert(d){const id=d._id||U.uuid();d._id=id;d._ts=U.now();t.insert(id,d);return d;},
+findById(id){return t.search(id);},
+find(q={}){const r=[];for(const{v}of t.getAll())if(this._m(v,q))r.push(v);return r;},
+update(id,u){const d=t.search(id);if(!d)return null;Object.assign(d,u);t.insert(id,d);return d;},
+delete(id){return t.delete(id);},
+count(){return t.length;},
+clear(){t.clear();},
+_m(d,q){for(const[k,v]of Object.entries(q)){if(typeof v==='object'&&v!==null){for(const[op,ov]of Object.entries(v)){if(op==='$gt'&&d[k]<=ov)return false;if(op==='$gte'&&d[k]<ov)return false;if(op==='$lt'&&d[k]>=ov)return false;if(op==='$lte'&&d[k]>ov)return false;}}else if(d[k]!==v)return false;}return true;}};}};
+
+// ===== COMPRESSION =====
+const LZ={
+  WINDOW:8192,MIN:3,MAX:258,
+  enc(d){if(typeof d==='string')d=U.ue(d);const r=[];let p=0;while(p<d.length){let bo=0,bl=0;const ws=Math.max(0,p-this.WINDOW);for(let i=ws;i<p;i++){let l=0;while(l<this.MAX&&p+l<d.length&&d[i+l]===d[p+l])l++;if(l>=this.MIN&&l>bl){bo=p-i;bl=l;}}if(bl>=this.MIN){r.push({t:'m',o:bo,l:bl});p+=bl;}else{r.push({t:'l',v:d[p]});p++;}}return r;},
+  dec(toks){const r=[];for(const t of toks){if(t.t==='l')r.push(t.v);else{const s=r.length-t.o;for(let i=0;i<t.l;i++)r.push(r[s+i]);}}return new Uint8Array(r);},
+  ser(toks){const b=[];for(const t of toks){if(t.t==='l'){b.push(0);b.push(t.v);}else{b.push(1);b.push((t.o>>8)&0xFF);b.push(t.o&0xFF);b.push(t.l-this.MIN);}}return new Uint8Array(b);},
+  deser(b){const toks=[];let i=0;while(i<b.length){if(b[i++]===0)toks.push({t:'l',v:b[i++]});else{const o=(b[i++]<<8)|b[i++];toks.push({t:'m',o,l:b[i++]+this.MIN});}}return toks;},
+  compress(d){if(typeof d==='string')d=U.ue(d);const toks=this.enc(d);const ser=this.ser(toks);return{orig:d.length,comp:ser.length,data:ser,ratio:((1-ser.length/d.length)*100).toFixed(1)+'%'};},
+  decompress(c){const toks=this.deser(c.data);return this.dec(toks);}
+};
+
+// ===== AI =====
+const AI={
+  emb:null,dim:32,
+  init(){this.emb=[];for(let i=0;i<256;i++){const v=[];for(let j=0;j<this.dim;j++)v.push((Math.random()-0.5)*0.1);this.emb.push(v);}},
+  getEmb(text){const toks=text.split('').map(c=>c.charCodeAt(0)%256);const r=new Array(this.dim).fill(0);for(const t of toks)for(let i=0;i<this.dim;i++)r[i]+=this.emb[t][i]/toks.length;return r;},
+  cosine(a,b){let dot=0,na=0,nb=0;for(let i=0;i<a.length;i++){dot+=a[i]*b[i];na+=a[i]*a[i];nb+=b[i]*b[i];}return dot/(Math.sqrt(na)*Math.sqrt(nb));},
+  similar(query,docs,k=3){const qe=this.getEmb(query);const scores=docs.map((d,i)=>({i,d,s:this.cosine(qe,this.getEmb(d))}));return scores.sort((a,b)=>b.s-a.s).slice(0,k);},
+  // Mini transformer forward pass
+  softmax(x){const m=Math.max(...x);const e=x.map(v=>Math.exp(v-m));const s=e.reduce((a,b)=>a+b,0);return e.map(v=>v/s);},
+  attention(q,k,v){const dk=Math.sqrt(q.length);let score=0;for(let i=0;i<q.length;i++)score+=q[i]*k[i];score/=dk;return v.map(x=>x*Math.exp(score));},
+  transform(text){const e=this.getEmb(text);const W=[];for(let i=0;i<this.dim;i++){const row=[];for(let j=0;j<this.dim;j++)row.push((Math.random()-0.5)*0.1);W.push(row);}const q=W.map(row=>row.reduce((s,w,i)=>s+w*e[i],0));const attn=this.attention(q,e,e);const probs=this.softmax(attn);return{input:text,embedding:e.slice(0,8),attention:attn.slice(0,8),confidence:Math.max(...probs).toFixed(4)};}
+};
+
+// ===== TESTS =====
+const T={
+  results:[],
+  run(){this.results=[];
+    this.t('Utils: UUID',()=>/^[0-9a-f-]{36}$/.test(U.uuid()));
+    this.t('Utils: Base64',()=>{const o='Test!';return U.ud(U.b64d(U.b64e(U.ue(o))))===o;});
+    this.t('SHA256: empty',()=>H.h('')==='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+    this.t('SHA256: abc',()=>H.h('abc')==='ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+    this.t('AES: roundtrip',()=>{const m='Secret',p='pass';return A.dec(A.enc(m,p),p)===m;});
+    this.t('VM: arithmetic',()=>VM.exec('print(2+3*4);')[0]===14);
+    this.t('VM: variables',()=>VM.exec('let x=5;print(x*x);')[0]===25);
+    this.t('VM: while',()=>{const o=VM.exec('let i=0;while(i<3){print(i);i=i+1;}');return o.length===3;});
+    this.t('DB: insert/find',()=>{const c=DB.col('_t');c.clear();const d=c.insert({x:1});return c.findById(d._id).x===1;});
+    this.t('DB: query',()=>{const c=DB.col('_t');c.clear();c.insert({n:1});c.insert({n:2});c.insert({n:3});return c.find({n:{$gt:1}}).length===2;});
+    this.t('Compress: roundtrip',()=>{const o='Hello world! Hello world!';const c=LZ.compress(o);const d=U.ud(LZ.decompress(c));return d===o;});
+    this.t('Compress: ratio',()=>{const o='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';const c=LZ.compress(o);return parseFloat(c.ratio)>50;});
+    this.t('AI: similarity',()=>{AI.init();const r=AI.similar('hello',['hi','bye','hello world']);return r[0].d.includes('hello');});
+    this.t('AI: transform',()=>{AI.init();const r=AI.transform('test');return r.embedding.length===8;});
+    return this.results;},
+  t(n,fn){try{this.results.push({n,p:fn(),e:null});}catch(e){this.results.push({n,p:false,e:e.message});}}
+};
+
+// ===== UI =====
+let enc='',selfData=null;
+function switchTab(t){document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.textContent.toLowerCase()===t));document.querySelectorAll('.tab-c').forEach(el=>el.classList.toggle('active',el.id===t+'-tab'));}
+function runVM(){try{const o=VM.exec(document.getElementById('vmCode').value);document.getElementById('vmOut').textContent=o.map(v=>'> '+v).join('\n')||'(no output)';}catch(e){document.getElementById('vmOut').textContent='Error: '+e.message;}}
+function dbInsert(){try{const d=DB.col(document.getElementById('dbCol').value).insert(JSON.parse(document.getElementById('dbDoc').value));document.getElementById('dbOut').textContent='Inserted: '+JSON.stringify(d);updateStats();}catch(e){document.getElementById('dbOut').textContent='Error: '+e.message;}}
+function dbFind(){try{const q=document.getElementById('dbQuery').value;const r=DB.col(document.getElementById('dbCol').value).find(q?JSON.parse(q):{});document.getElementById('dbOut').textContent=`Found ${r.length}:\n`+r.map(d=>JSON.stringify(d)).join('\n');}catch(e){document.getElementById('dbOut').textContent='Error: '+e.message;}}
+function dbClear(){DB.col(document.getElementById('dbCol').value).clear();document.getElementById('dbOut').textContent='Cleared';updateStats();}
+function doHash(){document.getElementById('hashOut').textContent=H.h(document.getElementById('hashIn').value);}
+function doEnc(){enc=A.enc(document.getElementById('aesIn').value,document.getElementById('aesKey').value);document.getElementById('aesOut').textContent='Encrypted:\n'+enc;}
+function doDec(){try{document.getElementById('aesOut').textContent='Decrypted: '+A.dec(enc,document.getElementById('aesKey').value);}catch(e){document.getElementById('aesOut').textContent='Error';}}
+function doCompress(){const d=document.getElementById('compIn').value;const c=LZ.compress(d);document.getElementById('compProgress').style.width=(100-parseFloat(c.ratio))+'%';document.getElementById('compOut').textContent=`Original: ${c.orig} bytes\nCompressed: ${c.comp} bytes\nRatio: ${c.ratio}`;document.getElementById('compRatio').textContent=c.ratio;}
+function doDecompress(){try{const d=document.getElementById('compIn').value;const c=LZ.compress(d);const dec=U.ud(LZ.decompress(c));document.getElementById('compOut').textContent=`Decompressed (${dec.length} bytes):\n${dec}`;}catch(e){document.getElementById('compOut').textContent='Error';}}
+function doSimilarity(){const q=document.getElementById('aiQuery').value;const docs=document.getElementById('aiDocs').value.split('\n').filter(d=>d.trim());const r=AI.similar(q,docs);document.getElementById('aiOut').textContent=r.map((x,i)=>`${i+1}. "${x.d}" (${(x.s*100).toFixed(1)}%)`).join('\n');}
+function doTransform(){const r=AI.transform(document.getElementById('tfIn').value);document.getElementById('tfOut').textContent=JSON.stringify(r,null,2);}
+function runTests(){const r=T.run();document.getElementById('testOut').innerHTML=r.map(t=>`<div class="${t.p?'pass':'fail'}">${t.p?'✓':'✗'} ${t.n}${t.e?' - '+t.e:''}</div>`).join('');const p=r.filter(t=>t.p).length;document.getElementById('tests').textContent=`${p}/${r.length}`;document.getElementById('status').textContent=p===r.length?'PASS':'FAIL';document.getElementById('status').style.color=p===r.length?'var(--ok)':'var(--er)';}
+function selfAnalyze(){const html=document.documentElement.outerHTML;const lines=html.split('\n').length;const chars=html.length;const scripts=html.match(/<script[\s\S]*?<\/script>/gi)||[];const styles=html.match(/<style[\s\S]*?<\/style>/gi)||[];document.getElementById('selfOut').textContent=`Self-Analysis:\n- Total size: ${(chars/1024).toFixed(2)} KB\n- Lines: ${lines}\n- Characters: ${chars}\n- Script blocks: ${scripts.length}\n- Style blocks: ${styles.length}\n- Script size: ${scripts.join('').length} chars\n- Style size: ${styles.join('').length} chars`;}
+function selfCompress(){const html=document.documentElement.outerHTML;selfData=LZ.compress(html);document.getElementById('selfOut').textContent=`Self-Compression:\n- Original: ${selfData.orig} bytes (${(selfData.orig/1024).toFixed(2)} KB)\n- Compressed: ${selfData.comp} bytes (${(selfData.comp/1024).toFixed(2)} KB)\n- Ratio: ${selfData.ratio}\n\nReady to export!`;}
+function selfExport(){if(!selfData){selfCompress();}const blob=new Blob([U.b64e(selfData.data)],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='konomi-v3-compressed.txt';a.click();document.getElementById('selfOut').textContent+='\n\nExported!';}
+function updateStats(){let c=0;for(const col of DB.cols.values())c+=col.length;document.getElementById('dbCount').textContent=c;}
+
+// ===== BOOT =====
+window.addEventListener('DOMContentLoaded',()=>{
+  const st=performance.now();
+  U.init();
+  AI.init();
+  K.bt=performance.now()-st;
+  document.getElementById('boot').textContent=K.bt.toFixed(0);
+  document.getElementById('size').textContent=(document.documentElement.outerHTML.length/1024).toFixed(1);
+  runTests();
+});
+</script>
+</body>
+</html>

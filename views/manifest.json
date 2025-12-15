@@ -1,0 +1,39 @@
+{
+  "name": "Konomi Konception Views",
+  "version": "1.0.0",
+  "description": "Self-contained HTML applications with increasing complexity",
+  "views": [
+    {
+      "file": "v1-minimal.html",
+      "version": "v1",
+      "title": "Minimal Core",
+      "description": "Utils + Crypto only",
+      "features": ["Utils", "SHA-256", "AES-256", "Base64", "UUID"],
+      "tests": 8
+    },
+    {
+      "file": "v2-core.html",
+      "version": "v2",
+      "title": "Core System",
+      "description": "Adds VM and Database",
+      "features": ["VM", "Database", "Bytecode", "Queries"],
+      "tests": 12
+    },
+    {
+      "file": "v3-advanced.html",
+      "version": "v3",
+      "title": "Advanced System",
+      "description": "Adds Compression and AI",
+      "features": ["Compression", "AI", "Embeddings", "Self-Analyze"],
+      "tests": 14
+    },
+    {
+      "file": "v4-full.html",
+      "version": "v4",
+      "title": "Full System",
+      "description": "Complete system with 3D renderer",
+      "features": ["3D Renderer", "Full UI", "Demos", "Canvas"],
+      "tests": 20
+    }
+  ]
+}

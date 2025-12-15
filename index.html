@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konomi Konception - Index</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a25;
+      --border: #2a2a35;
+      --text: #e0e0e0;
+      --text2: #888;
+      --accent: #00d4ff;
+      --accent2: #0099bb;
+      --success: #00ff88;
+      --warning: #ffaa00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 2rem;
+      color: var(--bg);
+    }
+
+    .logo-text {
+      text-align: left;
+    }
+
+    .logo-title {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent) 0%, #fff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-sub {
+      font-size: 0.85rem;
+      color: var(--text2);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .tagline {
+      color: var(--text2);
+      margin-top: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: var(--accent);
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .views-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .view-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .view-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0, 212, 255, 0.15);
+    }
+
+    .view-header {
+      background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .view-version {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .view-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .view-size {
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+
+    .view-body {
+      padding: 1.25rem;
+    }
+
+    .view-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .view-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .feature-tag {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    .view-footer {
+      padding: 1rem 1.25rem;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .view-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .view-btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .view-btn:hover {
+      background: var(--accent2);
+    }
+
+    .info-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .info-item h3 {
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-item p {
+      color: var(--text2);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th {
+      background: var(--surface2);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .comparison-table td {
+      font-size: 0.85rem;
+    }
+
+    .comparison-table tr:hover {
+      background: var(--surface2);
+    }
+
+    .check { color: var(--success); }
+    .cross { color: var(--text2); }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text2);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text2);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">K</div>
+      <div class="logo-text">
+        <div class="logo-title">KONOMI KONCEPTION</div>
+        <div class="logo-sub">Self-Contained System</div>
+      </div>
+    </div>
+    <p class="tagline">Zero Dependencies | Single HTML File | Works Offline | Pure JavaScript</p>
+  </header>
+
+  <div class="container">
+    <h2>Available Versions</h2>
+    <div id="viewsGrid" class="views-grid">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading views...</p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2 style="border:none;margin:0 0 1.5rem 0;padding:0;">System Overview</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <h3>Zero Dependencies</h3>
+          <p>No npm, pip, docker, or any external packages. Just pure HTML, CSS, and JavaScript.</p>
+        </div>
+        <div class="info-item">
+          <h3>Single File</h3>
+          <p>Everything contained in one HTML file. Download, double-click, done.</p>
+        </div>
+        <div class="info-item">
+          <h3>Works Offline</h3>
+          <p>No internet required after download. Fully functional in airplane mode.</p>
+        </div>
+        <div class="info-item">
+          <h3>Universal</h3>
+          <p>Works on any modern browser - Chrome, Firefox, Safari, Edge.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2 style="border:none;margin:0 0 1rem;padding:0;">Version Comparison</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>v1 Minimal</th>
+            <th>v2 Core</th>
+            <th>v3 Advanced</th>
+            <th>v4 Full</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Core Utilities</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>SHA-256 Hash</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>AES-256 Encryption</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Virtual Machine</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>B+Tree Database</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>LZ77 Compression</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Mini Transformer AI</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>3D Renderer</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Self-Compression</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Full UI</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="cross">-</td>
+            <td class="check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>KONOMI KONCEPTION - A product of <strong>Konomi Systems</strong></p>
+    <p>AI Controls | Automation | 3D Printing</p>
+  </footer>
+
+  <script>
+    // View definitions with metadata
+    const VIEWS = [
+      {
+        file: 'v1-minimal.html',
+        version: 'v1',
+        title: 'Minimal Core',
+        size: '~15 KB',
+        description: 'Lightweight build with essential utilities and cryptography. Perfect for embedding or minimal footprint needs.',
+        features: ['Utils', 'SHA-256', 'AES-256', 'Base64', 'UUID'],
+        tests: 8
+      },
+      {
+        file: 'v2-core.html',
+        version: 'v2',
+        title: 'Core System',
+        size: '~45 KB',
+        description: 'Adds custom bytecode VM with compiler/interpreter and B+Tree database with query support.',
+        features: ['VM', 'Database', 'Bytecode', 'Queries', 'Persistence'],
+        tests: 12
+      },
+      {
+        file: 'v3-advanced.html',
+        version: 'v3',
+        title: 'Advanced System',
+        size: '~85 KB',
+        description: 'Full-featured build with LZ77+Huffman compression and mini transformer AI. Includes self-analysis tools.',
+        features: ['Compression', 'AI', 'Embeddings', 'Self-Analyze', 'Export'],
+        tests: 14
+      },
+      {
+        file: 'v4-full.html',
+        version: 'v4',
+        title: 'Full System',
+        size: '~145 KB',
+        description: 'Complete Konomi Konception with all features including software 3D renderer, full UI, and comprehensive demos.',
+        features: ['3D Renderer', 'Full UI', 'Demos', 'Canvas', 'Z-Buffer'],
+        tests: 20
+      }
+    ];
+
+    // Render views
+    function renderViews() {
+      const grid = document.getElementById('viewsGrid');
+      grid.innerHTML = VIEWS.map(view => `
+        <a href="views/${view.file}" class="view-card">
+          <div class="view-header">
+            <span class="view-version">${view.version}</span>
+            <div class="view-title">${view.title}</div>
+            <div class="view-size">${view.size}</div>
+          </div>
+          <div class="view-body">
+            <p class="view-desc">${view.description}</p>
+            <div class="view-features">
+              ${view.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+            </div>
+          </div>
+          <div class="view-footer">
+            <div class="view-status">
+              <span class="status-dot"></span>
+              <span>${view.tests} tests</span>
+            </div>
+            <span class="view-btn">Open →</span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(renderViews, 300); // Small delay for effect
+    });
+  </script>
+</body>
+</html>
