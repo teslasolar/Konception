@@ -58,6 +58,14 @@
       "description": "Adds FSM, Pathfinding, Noise, Events",
       "features": ["State Machine", "A* Pathfinding", "Perlin Noise", "Event Bus", "Procedural Gen"],
       "tests": 32
+    },
+    {
+      "file": "v8-engine.html",
+      "version": "v8",
+      "title": "Engine System",
+      "description": "Adds Input, Camera, Sprites, Pooling",
+      "features": ["Input Manager", "2D Camera", "Sprite Animation", "Object Pool", "Action Mapping"],
+      "tests": 36
     }
   ]
 }
